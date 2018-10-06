@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  * Allows entering on the frontend and saving cyrillic symbols in the system.
  */
-public class CharsetEncoder implements Filter {
+public class CharsetEncoder_ implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {}
