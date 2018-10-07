@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-class SqlConnectionPool implements ConnectionPool {
+class SqlConnectionPool_ implements ConnectionPool {
     private static final String USER_NAME_DEFAULT = "test";
     private static final String USER_PASSWORD_DEFAULT = "test";
     private static final String DRIVER_NAME_DEFAULT = "com.mysql.jdbc.Driver";
@@ -29,7 +29,7 @@ class SqlConnectionPool implements ConnectionPool {
     private BasicDataSource dataSource;
     private String description;
 
-    private SqlConnectionPool(Builder builder) {
+    private SqlConnectionPool_(Builder builder) {
         dataSource = new BasicDataSource();
         dataSource.setDriverClassName(builder.driverClassName);
         dataSource.setUrl(generateUrl(builder));
@@ -80,7 +80,7 @@ class SqlConnectionPool implements ConnectionPool {
 
         private Builder(String url, String dbName) {
             checkNotNull(url, URL_SHOULD_NOT_BE_NULL);
-            checkNotNull(url, DB_NAME_SHOULD_NOT_BE_NULL);
+            checkNotNull(dbName, DB_NAME_SHOULD_NOT_BE_NULL);
             this.url = url;
             this.dbName = dbName;
             this.driverClassName = DRIVER_NAME_DEFAULT;
@@ -119,7 +119,7 @@ class SqlConnectionPool implements ConnectionPool {
         }
 
         public ConnectionPool build() {
-            return new SqlConnectionPool(this);
+            return new SqlConnectionPool_(this);
         }
     }
 }

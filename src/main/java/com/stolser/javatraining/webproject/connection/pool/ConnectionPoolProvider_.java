@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 /**
  * Reads database configuration data and creates a connection pool.
  */
-public class ConnectionPoolProvider {
+public class ConnectionPoolProvider_ {
     private static final String DB_CONFIG_FILENAME = "webproject/config/dbConfig.properties";
     private static final String TEST_DB_CONFIG_FILENAME = "webproject/config/testDbConfig.properties";
     private static final String DB_CONFIG_PARAM_URL = "database.url";

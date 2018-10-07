@@ -5,6 +5,6 @@ import com.stolser.javatraining.webproject.dao.AbstractConnection;
 /**
  * Represents an abstraction for reusable connection pool.
  */
-public interface ConnectionPool {
+public interface ConnectionPool_ {
     AbstractConnection getConnection();
 }
