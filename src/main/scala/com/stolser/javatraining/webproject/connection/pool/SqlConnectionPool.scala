@@ -17,15 +17,11 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 	private val description = builder.url + builder.dbName
 
 	override def getConnection: AbstractConnection = {
-		var newConn = null: Connection
-
 		try
-			newConn = dataSource.getConnection
+			new AbstractConnectionImpl(dataSource.getConnection)
 		catch {
 			case e: SQLException => throw new DaoException(CONNECTION_EXCEPTION_TEXT, e)
 		}
-
-		new AbstractConnectionImpl(newConn)
 	}
 
 	override def toString: String = description
@@ -50,7 +46,7 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 object SqlConnectionPool {
 	private val USER_NAME_DEFAULT = "test"
 	private val USER_PASSWORD_DEFAULT = "test"
-	private val DRIVER_NAME_DEFAULT = "com.mysql.jdbc.Driver"
+	private val DRIVER_NAME_DEFAULT = "com.mysql.cj.jdbc.Driver"
 	private val MAX_TOTAL_CONNECTIONS = 10
 	private val USE_SSL_FALSE = "?useSSL=false"
 	private val CONNECTION_EXCEPTION_TEXT = "Exception during getting a connection from a dataSource."

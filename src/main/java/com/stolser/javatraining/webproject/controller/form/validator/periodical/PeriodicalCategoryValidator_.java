@@ -15,22 +15,22 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Checks whether a periodical category name passed in the request exists.
  */
-public class PeriodicalCategoryValidator extends AbstractValidator {
+public class PeriodicalCategoryValidator_ extends AbstractValidator {
     private static ValidationResult failedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_PERIODICAL_CATEGORY_ERROR);
 
-    private PeriodicalCategoryValidator() {}
+    private PeriodicalCategoryValidator_() {}
 
     private static class InstanceHolder {
-        private static final PeriodicalCategoryValidator INSTANCE = new PeriodicalCategoryValidator();
+        private static final PeriodicalCategoryValidator_ INSTANCE = new PeriodicalCategoryValidator_();
     }
 
-    public static PeriodicalCategoryValidator getInstance() {
+    public static PeriodicalCategoryValidator_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
     @Override
-    protected Optional<ValidationResult> checkParameter(String category, HttpServletRequest request) {
+    public Optional<ValidationResult> checkParameter(String category, HttpServletRequest request) {
         if (isCategoryNameCorrect(category)) {
             return Optional.empty();
         }

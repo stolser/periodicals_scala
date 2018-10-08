@@ -88,7 +88,7 @@ public class CreateUser implements RequestProcessor {
     }
 
     private boolean arePasswordsValidAndEqual(String password, String repeatPassword) {
-        int validationResult = ValidatorFactory.getUserPasswordValidator().validate(password, null).getStatusCode();
+        int validationResult = ValidatorFactory.getUserPasswordValidator().validate(password, null).statusCode();
         return (validationResult == STATUS_CODE_SUCCESS) && password.equals(repeatPassword);
     }
 

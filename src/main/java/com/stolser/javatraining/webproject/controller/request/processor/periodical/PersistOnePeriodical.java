@@ -175,8 +175,8 @@ public class PersistOnePeriodical implements RequestProcessor {
         ValidationResult result = ValidatorFactory.getPeriodicalNameValidator()
                 .validate(periodicalToSave.getName(), request);
 
-        if (result.getStatusCode() != STATUS_CODE_SUCCESS) {
-            messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.getError(result.getMessageKey()));
+        if (result.statusCode() != STATUS_CODE_SUCCESS) {
+            messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.getError(result.messageKey()));
         }
     }
 
@@ -185,8 +185,8 @@ public class PersistOnePeriodical implements RequestProcessor {
         ValidationResult result = ValidatorFactory.getPeriodicalCategoryValidator()
                 .validate(periodicalToSave.getCategory().toString(), request);
 
-        if (result.getStatusCode() != STATUS_CODE_SUCCESS) {
-            messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.getError(result.getMessageKey()));
+        if (result.statusCode() != STATUS_CODE_SUCCESS) {
+            messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.getError(result.messageKey()));
         }
     }
 
@@ -195,8 +195,8 @@ public class PersistOnePeriodical implements RequestProcessor {
         ValidationResult result = ValidatorFactory.getPeriodicalPublisherValidator()
                 .validate(periodicalToSave.getPublisher(), request);
 
-        if (result.getStatusCode() != STATUS_CODE_SUCCESS) {
-            messages.put(PERIODICAL_PUBLISHER_PARAM_NAME, messageFactory.getError(result.getMessageKey()));
+        if (result.statusCode() != STATUS_CODE_SUCCESS) {
+            messages.put(PERIODICAL_PUBLISHER_PARAM_NAME, messageFactory.getError(result.messageKey()));
         }
     }
 
@@ -205,8 +205,8 @@ public class PersistOnePeriodical implements RequestProcessor {
         ValidationResult result = ValidatorFactory.getPeriodicalCostValidator()
                 .validate(String.valueOf(periodicalToSave.getOneMonthCost()), request);
 
-        if (result.getStatusCode() != STATUS_CODE_SUCCESS) {
-            messages.put(PERIODICAL_COST_PARAM_NAME, messageFactory.getError(result.getMessageKey()));
+        if (result.statusCode() != STATUS_CODE_SUCCESS) {
+            messages.put(PERIODICAL_COST_PARAM_NAME, messageFactory.getError(result.messageKey()));
         }
     }
 

@@ -12,22 +12,22 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Checks whether a periodical publisher name contains only acceptable symbols.
  */
-public class PeriodicalPublisherValidator extends AbstractValidator {
+public class PeriodicalPublisherValidator_ extends AbstractValidator {
     private static ValidationResult failedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_PERIODICAL_PUBLISHER_ERROR);
 
-    private PeriodicalPublisherValidator() {}
+    private PeriodicalPublisherValidator_() {}
 
     private static class InstanceHolder {
-        private static final PeriodicalPublisherValidator INSTANCE = new PeriodicalPublisherValidator();
+        private static final PeriodicalPublisherValidator_ INSTANCE = new PeriodicalPublisherValidator_();
     }
 
-    public static PeriodicalPublisherValidator getInstance() {
+    public static PeriodicalPublisherValidator_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
     @Override
-    protected Optional<ValidationResult> checkParameter(String publisher, HttpServletRequest request) {
+    public Optional<ValidationResult> checkParameter(String publisher, HttpServletRequest request) {
         if (isPublisherCorrect(publisher)) {
             return Optional.empty();
         }

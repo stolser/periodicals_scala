@@ -17,7 +17,7 @@ import static java.util.Objects.nonNull;
 /**
  * Checks whether a periodical name is acceptable for depending the operation ('create' or 'update').
  */
-public class PeriodicalNameValidator extends AbstractValidator {
+public class PeriodicalNameValidator_ extends AbstractValidator {
     private static final String INCORRECT_ENTITY_OPERATION_TYPE_DURING_VALIDATION =
             "Incorrect periodicalOperationType during validation!";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
@@ -26,18 +26,18 @@ public class PeriodicalNameValidator extends AbstractValidator {
     private static ValidationResult duplicationFailedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_PERIODICAL_NAME_DUPLICATION);
 
-    private PeriodicalNameValidator() {}
+    private PeriodicalNameValidator_() {}
 
     private static class InstanceHolder {
-        private static final PeriodicalNameValidator INSTANCE = new PeriodicalNameValidator();
+        private static final PeriodicalNameValidator_ INSTANCE = new PeriodicalNameValidator_();
     }
 
-    public static PeriodicalNameValidator getInstance() {
+    public static PeriodicalNameValidator_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
     @Override
-    protected Optional<ValidationResult> checkParameter(String periodicalName, HttpServletRequest request) {
+    public Optional<ValidationResult> checkParameter(String periodicalName, HttpServletRequest request) {
         if (nameDoesNotMatchRegex(periodicalName)) {
             return Optional.of(incorrectFailedResult);
         }

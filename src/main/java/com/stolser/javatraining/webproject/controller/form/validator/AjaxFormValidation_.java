@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
  * Validates a parameter from the request and sends a json with the validation result.
  * Can be used for ajax validation of input field values.
  */
-public class AjaxFormValidation implements RequestProcessor {
+public class AjaxFormValidation_ implements RequestProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(AjaxFormValidation.class);
     private static final String EXCEPTION_DURING_PUTTING_VALUES_INTO_JSON_OBJECT =
             "Exception during putting values into json object.";
@@ -32,13 +32,13 @@ public class AjaxFormValidation implements RequestProcessor {
     private static final String VALIDATION_MESSAGE_JSON_RESPONSE = "validationMessage";
     private static final String EXCEPTION_DURING_VALIDATION = "Exception during validation.";
 
-    private AjaxFormValidation() {}
+    private AjaxFormValidation_() {}
 
     private static class InstanceHolder {
-        private static final AjaxFormValidation INSTANCE = new AjaxFormValidation();
+        private static final AjaxFormValidation_ INSTANCE = new AjaxFormValidation_();
     }
 
-    public static AjaxFormValidation getInstance() {
+    public static AjaxFormValidation_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
@@ -54,7 +54,8 @@ public class AjaxFormValidation implements RequestProcessor {
         try {
             JSONObject jsonResponse = new JSONObject();
             ValidationResult result = ValidatorFactory.newValidator(paramName).validate(paramValue, request);
-            jsonResponse.put(STATUS_CODE_JSON_RESPONSE, result.getStatusCode());
+            result.statusCode_$eq(10);
+            jsonResponse.put(STATUS_CODE_JSON_RESPONSE, result.statusCode());
             jsonResponse.put(VALIDATION_MESSAGE_JSON_RESPONSE, getLocalizedMessage(session, result));
 
             writeJsonIntoResponse(response, jsonResponse);
@@ -104,6 +105,6 @@ public class AjaxFormValidation implements RequestProcessor {
 
     private String getLocalizedMessage(HttpSession session, ValidationResult result) {
         return ResourceBundle.getBundle(VALIDATION_BUNDLE_PATH, getLocaleFromSession(session))
-                .getString(result.getMessageKey());
+                .getString(result.messageKey());
     }
 }

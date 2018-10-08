@@ -10,24 +10,24 @@ import java.util.regex.Pattern;
 
 import static com.stolser.javatraining.webproject.controller.ApplicationResources.*;
 
-public class UserEmailValidator extends AbstractValidator {
+public class UserEmailValidator_ extends AbstractValidator {
     private static ValidationResult regexFailedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_USER_EMAIL_REGEX_ERROR);
     private static ValidationResult duplicationFailedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_USER_EMAIL_DUPLICATION_ERROR);
 
-    private UserEmailValidator() {}
+    private UserEmailValidator_() {}
 
     private static class InstanceHolder {
-        private static final UserEmailValidator INSTANCE = new UserEmailValidator();
+        private static final UserEmailValidator_ INSTANCE = new UserEmailValidator_();
     }
 
-    public static UserEmailValidator getInstance() {
+    public static UserEmailValidator_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
     @Override
-    protected Optional<ValidationResult> checkParameter(String userEmail, HttpServletRequest request) {
+    public Optional<ValidationResult> checkParameter(String userEmail, HttpServletRequest request) {
         if (!emailMatchesRegex((userEmail))) {
             return Optional.of(regexFailedResult);
         }

@@ -12,22 +12,22 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Checks whether a periodical cost is an integer number from the acceptable range.
  */
-public class PeriodicalCostValidator extends AbstractValidator {
+public class PeriodicalCostValidator_ extends AbstractValidator {
     private static ValidationResult failedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_PERIODICAL_COST_ERROR);
 
-    private PeriodicalCostValidator() {}
+    private PeriodicalCostValidator_() {}
 
     private static class InstanceHolder {
-        private static final PeriodicalCostValidator INSTANCE = new PeriodicalCostValidator();
+        private static final PeriodicalCostValidator_ INSTANCE = new PeriodicalCostValidator_();
     }
 
-    public static PeriodicalCostValidator getInstance() {
+    public static PeriodicalCostValidator_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
     @Override
-    protected Optional<ValidationResult> checkParameter(String periodicalCost, HttpServletRequest request) {
+    public Optional<ValidationResult> checkParameter(String periodicalCost, HttpServletRequest request) {
         if (isCostCorrect(periodicalCost)) {
             return Optional.empty();
         }

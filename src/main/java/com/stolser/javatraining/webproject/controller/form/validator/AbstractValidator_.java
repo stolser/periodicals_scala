@@ -6,18 +6,14 @@ import java.util.Optional;
 import static com.stolser.javatraining.webproject.controller.ApplicationResources.MSG_SUCCESS;
 import static com.stolser.javatraining.webproject.controller.ApplicationResources.STATUS_CODE_SUCCESS;
 
-public abstract class AbstractValidator implements Validator {
+public abstract class AbstractValidator_ implements Validator {
     private static ValidationResult successResult = new ValidationResult(STATUS_CODE_SUCCESS, MSG_SUCCESS);
 
     @Override
     public ValidationResult validate(String paramValue, HttpServletRequest request) {
         Optional<ValidationResult> failedResult = checkParameter(paramValue, request);
 
-        if (failedResult.isPresent()) {
-            return failedResult.get();
-        }
-
-        return successResult;
+        return failedResult.orElse(successResult);
     }
 
     /**

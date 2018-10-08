@@ -9,22 +9,22 @@ import java.util.regex.Pattern;
 
 import static com.stolser.javatraining.webproject.controller.ApplicationResources.*;
 
-public class UserPasswordValidator extends AbstractValidator {
+public class UserPasswordValidator_ extends AbstractValidator {
     private static ValidationResult failedResult =
             new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_USER_PASSWORD_ERROR);
 
-    private UserPasswordValidator() {}
+    private UserPasswordValidator_() {}
 
     private static class InstanceHolder {
-        private static final UserPasswordValidator INSTANCE = new UserPasswordValidator();
+        private static final UserPasswordValidator_ INSTANCE = new UserPasswordValidator_();
     }
 
-    public static UserPasswordValidator getInstance() {
+    public static UserPasswordValidator_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
     @Override
-    protected Optional<ValidationResult> checkParameter(String password, HttpServletRequest request) {
+    public Optional<ValidationResult> checkParameter(String password, HttpServletRequest request) {
         if (passwordMatchesRegex(password)) {
             return Optional.empty();
         }

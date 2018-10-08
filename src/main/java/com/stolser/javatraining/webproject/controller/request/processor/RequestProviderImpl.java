@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor;
 
-import com.stolser.javatraining.webproject.controller.form.validator.AjaxFormValidation;
+import com.stolser.javatraining.webproject.controller.form.validator.AjaxFormValidation$;
 import com.stolser.javatraining.webproject.controller.request.processor.admin.panel.DisplayAdminPanel;
 import com.stolser.javatraining.webproject.controller.request.processor.invoice.PayOneInvoice;
 import com.stolser.javatraining.webproject.controller.request.processor.invoice.PersistOneInvoice;
@@ -68,7 +68,7 @@ public final class RequestProviderImpl implements RequestProvider {
         requestMapping.put(GET_SIGN_OUT_REQUEST_PATTERN, SignOut.getInstance());
         requestMapping.put(POST_SIGN_UP_REQUEST_PATTERN, CreateUser.getInstance());
         requestMapping.put(GET_SIGN_UP_REQUEST_PATTERN, DisplaySignUpPage.getInstance());
-        requestMapping.put(POST_AJAX_FORM_VALIDATOR_REQUEST_PATTERN, AjaxFormValidation.getInstance());
+        requestMapping.put(POST_AJAX_FORM_VALIDATOR_REQUEST_PATTERN, AjaxFormValidation$.MODULE$);
     }
 
     private RequestProviderImpl() {}
