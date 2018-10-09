@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.invoice;
 
-import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory;
+import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory$;
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage;
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
@@ -33,7 +33,7 @@ public class PayOneInvoice implements RequestProcessor {
             "User id = {}. Exception during paying invoice {}.";
     private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
-    private FrontMessageFactory messageFactory = FrontMessageFactory.getInstance();
+    private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
     private PayOneInvoice() {
     }

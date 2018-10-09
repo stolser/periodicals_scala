@@ -2,7 +2,7 @@ package com.stolser.javatraining.webproject.controller.request.processor.periodi
 
 import com.stolser.javatraining.webproject.controller.form.validator.ValidationResult;
 import com.stolser.javatraining.webproject.controller.form.validator.ValidatorFactory;
-import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory;
+import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory$;
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage;
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
@@ -32,7 +32,7 @@ public class PersistOnePeriodical implements RequestProcessor {
     private static final String EXCEPTION_DURING_PERSISTING_PERIODICAL =
             "Exception during persisting periodical ({}).";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
-    private FrontMessageFactory messageFactory = FrontMessageFactory.getInstance();
+    private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
     private PersistOnePeriodical() {}
 

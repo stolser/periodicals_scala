@@ -1,7 +1,7 @@
 package com.stolser.javatraining.webproject.controller.request.processor.user;
 
 import com.stolser.javatraining.webproject.controller.form.validator.ValidatorFactory;
-import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory;
+import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory$;
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage;
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
 
 public class CreateUser implements RequestProcessor {
     private UserService userService = UserServiceImpl.getInstance();
-    private FrontMessageFactory messageFactory = FrontMessageFactory.getInstance();
+    private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
     private CreateUser() {}
 

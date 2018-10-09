@@ -4,10 +4,10 @@
     <div class="col-md-12">
         <c:forEach items="${messages['topMessages']}" var="message">
             <div class="topMessages alert
-                ${message.type == 'SUCCESS' ? 'alert-success' :
-                    (message.type == 'INFO' ? 'alert-info' :
-                    (message.type == 'ERROR' ? 'alert-danger' :
-                    (message.type == 'WARNING' ? 'alert-warning' : '')))}" role="alert">
+                ${message.messageType == 'SUCCESS' ? 'alert-success' :
+                    (message.messageType == 'INFO' ? 'alert-info' :
+                    (message.messageType == 'ERROR' ? 'alert-danger' :
+                    (message.messageType == 'WARNING' ? 'alert-warning' : '')))}" role="alert">
                 <fmt:message key="${message.messageKey}" bundle="${langValidation}"/>
             </div>
         </c:forEach>

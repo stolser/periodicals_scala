@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.invoice;
 
-import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory;
+import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory$;
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage;
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
@@ -32,7 +32,7 @@ public class PersistOneInvoice implements RequestProcessor {
     private static final String EXCEPTION_DURING_PERSISTING_INVOICE = "Exception during persisting an invoice: %s.";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
     private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
-    private FrontMessageFactory messageFactory = FrontMessageFactory.getInstance();
+    private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
     private PersistOneInvoice() {}
 

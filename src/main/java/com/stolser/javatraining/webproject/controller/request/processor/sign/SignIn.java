@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.sign;
 
-import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory;
+import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory$;
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage;
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
  */
 public final class SignIn implements RequestProcessor {
     private UserService userService = UserServiceImpl.getInstance();
-    private FrontMessageFactory messageFactory = FrontMessageFactory.getInstance();
+    private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
     private SignIn() {}
 

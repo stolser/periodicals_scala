@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Encapsulates data about a message displayed on the frontend.
  */
-public final class FrontendMessage implements Serializable {
+public final class FrontendMessage_ implements Serializable {
     private static final long serialVersionUID = -777L;
     private String messageKey;
     private MessageType type;
@@ -17,7 +17,7 @@ public final class FrontendMessage implements Serializable {
         ERROR
     }
 
-    public FrontendMessage(String messageKey, MessageType type) {
+    public FrontendMessage_(String messageKey, MessageType type) {
         this.messageKey = messageKey;
         this.type = type;
     }
