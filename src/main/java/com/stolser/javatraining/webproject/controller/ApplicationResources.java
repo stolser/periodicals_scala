@@ -82,7 +82,7 @@ public class ApplicationResources {
     public static final String MSG_KEY_CATEGORY_BUSINESS = "category.business";
     public static final String MSG_KEY_CATEGORY_SPORTS = "category.sports";
     public static final String MSG_KEY_CATEGORY_SCIENCE_AND_ENGINEERING = "category.scienceAndEngineering";
-    public static final String MSG_KEY_CATEGORY_TRAVELING = "category.traveling";
+    public static final String MSG_KEY_CATEGORY_TRAVELLING = "category.travelling";
 
     public static final String MSG_SUCCESS = "validation.ok";
     public static final String MSG_CREDENTIALS_ARE_NOT_CORRECT = "validation.credentialsAreNotCorrect";
