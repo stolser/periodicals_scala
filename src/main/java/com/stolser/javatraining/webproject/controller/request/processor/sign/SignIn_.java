@@ -2,7 +2,7 @@ package com.stolser.javatraining.webproject.controller.request.processor.sign;
 
 import com.stolser.javatraining.webproject.controller.message.FrontMessageFactory$;
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage;
-import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
+import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessorWrapper;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
 import com.stolser.javatraining.webproject.model.entity.user.Credential;
 import com.stolser.javatraining.webproject.model.entity.user.User;
@@ -22,17 +22,17 @@ import static java.util.Objects.nonNull;
  * Performs validation of the username, checks the password for correctness, checks that
  * this user is active (not blocked) and if everything is OK, adds this user into the session.
  */
-public final class SignIn implements RequestProcessor {
+public final class SignIn_ extends RequestProcessorWrapper {
     private UserService userService = UserServiceImpl.getInstance();
     private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
-    private SignIn() {}
+    private SignIn_() {}
 
     private static class InstanceHolder {
-        private static final SignIn INSTANCE = new SignIn();
+        private static final SignIn_ INSTANCE = new SignIn_();
     }
 
-    public static SignIn getInstance() {
+    public static SignIn_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
@@ -50,7 +50,7 @@ public final class SignIn implements RequestProcessor {
 
         setSessionAttributes(request, messages);
 
-        return REDIRECT + redirectUri;
+        return REDIRECT() + redirectUri;
     }
 
     private boolean isCredentialCorrect(HttpServletRequest request) {

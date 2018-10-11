@@ -21,17 +21,17 @@ import java.util.Map;
 import static com.stolser.javatraining.webproject.controller.ApplicationResources.*;
 import static java.util.Objects.nonNull;
 
-public class CreateUser implements RequestProcessor {
+public class CreateUser_ implements RequestProcessor {
     private UserService userService = UserServiceImpl.getInstance();
     private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
-    private CreateUser() {}
+    private CreateUser_() {}
 
     private static class InstanceHolder {
-        private static final CreateUser INSTANCE = new CreateUser();
+        private static final CreateUser_ INSTANCE = new CreateUser_();
     }
 
-    public static CreateUser getInstance() {
+    public static CreateUser_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

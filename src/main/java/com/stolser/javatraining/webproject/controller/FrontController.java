@@ -2,7 +2,7 @@ package com.stolser.javatraining.webproject.controller;
 
 import com.stolser.javatraining.webproject.controller.request.processor.DispatchException;
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProvider;
-import com.stolser.javatraining.webproject.controller.request.processor.RequestProviderImpl;
+import com.stolser.javatraining.webproject.controller.request.processor.RequestProviderImpl$;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
 import com.stolser.javatraining.webproject.view.JspViewResolver;
 import com.stolser.javatraining.webproject.view.ViewResolver;
@@ -25,7 +25,7 @@ public class FrontController extends HttpServlet {
     private static final String DISPATCHING_TO_THE_VIEW_NAME = "Dispatching to the viewName = '%s'.";
     private static final String INCORRECT_THE_DISPATCH_TYPE =
             "Incorrect the dispatch type of the abstractViewName: %s";
-    private RequestProvider requestProvider = RequestProviderImpl.getInstance();
+    private RequestProvider requestProvider = RequestProviderImpl$.MODULE$;
     private ViewResolver viewResolver = JspViewResolver.getInstance();
 
     @Override

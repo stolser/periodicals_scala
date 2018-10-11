@@ -15,15 +15,15 @@ import static java.util.Objects.nonNull;
 /**
  * Processes a GET request to a page where admin can create a new periodical.
  */
-public class DisplayNewPeriodicalPage implements RequestProcessor {
+public class DisplayNewPeriodicalPage_ implements RequestProcessor {
 
-    private DisplayNewPeriodicalPage() {}
+    private DisplayNewPeriodicalPage_() {}
 
     private static class InstanceHolder {
-        private static final DisplayNewPeriodicalPage INSTANCE = new DisplayNewPeriodicalPage();
+        private static final DisplayNewPeriodicalPage_ INSTANCE = new DisplayNewPeriodicalPage_();
     }
 
-    public static DisplayNewPeriodicalPage getInstance() {
+    public static DisplayNewPeriodicalPage_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

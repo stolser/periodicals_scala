@@ -25,14 +25,14 @@ public class DisplayNewPeriodicalPageTest {
 
     @Test
     public void process_Should_RemovePeriodicalFromSession() throws Exception {
-        DisplayNewPeriodicalPage.getInstance().process(request, response);
+        DisplayNewPeriodicalPage$.MODULE$.process(request, response);
 
         verify(session, times(1)).removeAttribute(PERIODICAL_ATTR_NAME);
     }
 
     @Test
     public void process_Should_CallSetAttributeOnRequestFiveTimes() throws Exception {
-        DisplayNewPeriodicalPage.getInstance().process(request, response);
+        DisplayNewPeriodicalPage$.MODULE$.process(request, response);
 
         verify(request, times(5)).setAttribute(anyString(), any());
     }

@@ -3,7 +3,7 @@ package com.stolser.javatraining.webproject.controller.request.processor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public interface RequestProcessor {
+public interface RequestProcessor_ {
     String FORWARD = "forward:";
     String REDIRECT = "redirect:";
     String NO_ACTION = "noAction:noUri";

@@ -27,20 +27,20 @@ import static java.util.Objects.nonNull;
  * Processes a POST request to persist one periodical. It handles both {@code create} and
  * {@code update} operations by analysing {@code periodicalOperationType} request parameter.
  */
-public class PersistOnePeriodical implements RequestProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersistOnePeriodical.class);
+public class PersistOnePeriodical_ implements RequestProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistOnePeriodical_.class);
     private static final String EXCEPTION_DURING_PERSISTING_PERIODICAL =
             "Exception during persisting periodical ({}).";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
     private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
-    private PersistOnePeriodical() {}
+    private PersistOnePeriodical_() {}
 
     private static class InstanceHolder {
-        private static final PersistOnePeriodical INSTANCE = new PersistOnePeriodical();
+        private static final PersistOnePeriodical_ INSTANCE = new PersistOnePeriodical_();
     }
 
-    public static PersistOnePeriodical getInstance() {
+    public static PersistOnePeriodical_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

@@ -13,16 +13,16 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Processes a GET request to a page with a list of all users in the system.
  */
-public class DisplayAllUsers implements RequestProcessor {
+public class DisplayAllUsers_ implements RequestProcessor {
     private UserService userService = UserServiceImpl.getInstance();
 
-    private DisplayAllUsers() {}
+    private DisplayAllUsers_() {}
 
     private static class InstanceHolder {
-        private static final DisplayAllUsers INSTANCE = new DisplayAllUsers();
+        private static final DisplayAllUsers_ INSTANCE = new DisplayAllUsers_();
     }
 
-    public static DisplayAllUsers getInstance() {
+    public static DisplayAllUsers_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

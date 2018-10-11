@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Used by {@link FrontController} to move each request processing logic into separate classes.
  */
-public interface RequestProvider {
+public interface RequestProvider_ {
     /**
      * Returns a specific request processing implementation of the {@code RequestProcessor} interface.
      */

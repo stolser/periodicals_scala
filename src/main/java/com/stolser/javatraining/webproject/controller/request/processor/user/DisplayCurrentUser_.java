@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.user;
 
-import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor;
+import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessorWrapper;
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils;
 import com.stolser.javatraining.webproject.model.entity.invoice.Invoice;
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription;
@@ -21,18 +21,18 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Processes a GET request to a current user personal account page.
  */
-public class DisplayCurrentUser implements RequestProcessor {
+public class DisplayCurrentUser_ extends RequestProcessorWrapper {
     private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
     private SubscriptionService subscriptionService = SubscriptionServiceImpl.getInstance();
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
 
-    private DisplayCurrentUser() {}
+    private DisplayCurrentUser_() {}
 
     private static class InstanceHolder {
-        private static final DisplayCurrentUser INSTANCE = new DisplayCurrentUser();
+        private static final DisplayCurrentUser_ INSTANCE = new DisplayCurrentUser_();
     }
 
-    public static DisplayCurrentUser getInstance() {
+    public static DisplayCurrentUser_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
@@ -57,7 +57,7 @@ public class DisplayCurrentUser implements RequestProcessor {
             request.setAttribute(USER_SUBSCRIPTIONS_PARAM_NAME, subscriptions);
         }
 
-        return FORWARD + ONE_USER_INFO_VIEW_NAME;
+        return FORWARD() + ONE_USER_INFO_VIEW_NAME;
     }
 
     private boolean areThereInvoicesToDisplay(List<Invoice> invoices) {
@@ -69,7 +69,7 @@ public class DisplayCurrentUser implements RequestProcessor {
     }
 
     private void sortInvoices(List<Invoice> invoices) {
-        Collections.sort(invoices, (first, second) -> {
+        invoices.sort((first, second) -> {
             if (first.getStatus() == second.getStatus()) {
                 if (Invoice.Status.NEW.equals(first.getStatus())) {
                     return second.getCreationDate().compareTo(first.getCreationDate());

@@ -25,7 +25,7 @@ import static com.stolser.javatraining.webproject.controller.utils.HttpUtils.fil
 /**
  * Provides mapping request uri to classes that will perform actual request processing.
  */
-public final class RequestProviderImpl implements RequestProvider {
+public final class RequestProviderImpl_ implements RequestProvider {
     public static final String GET_BACKEND_REQUEST_PATTERN = "GET:/backend/?";
     public static final String GET_ADMIN_PANEL_REQUEST_PATTERN = "GET:" + ADMIN_PANEL_URI + "/?";
     public static final String GET_ALL_USERS_REQUEST_PATTERN = "GET:" + USERS_LIST_URI + "/?";
@@ -53,7 +53,7 @@ public final class RequestProviderImpl implements RequestProvider {
 
     static {
         requestMapping.put(POST_SIGN_IN_REQUEST_PATTERN, SignIn.getInstance());
-        requestMapping.put(GET_BACKEND_REQUEST_PATTERN, DisplayBackendHomePage.getInstance());
+        requestMapping.put(GET_BACKEND_REQUEST_PATTERN, DisplayBackendHomePage$.MODULE$);
         requestMapping.put(GET_ADMIN_PANEL_REQUEST_PATTERN, DisplayAdminPanel.getInstance());
         requestMapping.put(GET_ALL_USERS_REQUEST_PATTERN, DisplayAllUsers.getInstance());
         requestMapping.put(GET_CURRENT_USER_REQUEST_PATTERN, DisplayCurrentUser.getInstance());
@@ -71,13 +71,13 @@ public final class RequestProviderImpl implements RequestProvider {
         requestMapping.put(POST_AJAX_FORM_VALIDATOR_REQUEST_PATTERN, AjaxFormValidation$.MODULE$);
     }
 
-    private RequestProviderImpl() {}
+    private RequestProviderImpl_() {}
 
     private static class InstanceHolder {
-        private static final RequestProviderImpl INSTANCE = new RequestProviderImpl();
+        private static final RequestProviderImpl_ INSTANCE = new RequestProviderImpl_();
     }
 
-    public static RequestProviderImpl getInstance() {
+    public static RequestProviderImpl_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

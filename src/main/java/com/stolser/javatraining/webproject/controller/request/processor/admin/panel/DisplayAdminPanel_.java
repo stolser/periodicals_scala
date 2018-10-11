@@ -19,17 +19,17 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Processes a GET request to the Admin Panel page.
  */
-public class DisplayAdminPanel implements RequestProcessor {
+public class DisplayAdminPanel_ implements RequestProcessor {
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
     private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
 
-    private DisplayAdminPanel() {}
+    private DisplayAdminPanel_() {}
 
     private static class InstanceHolder {
-        private static final DisplayAdminPanel INSTANCE = new DisplayAdminPanel();
+        private static final DisplayAdminPanel_ INSTANCE = new DisplayAdminPanel_();
     }
 
-    public static DisplayAdminPanel getInstance() {
+    public static DisplayAdminPanel_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

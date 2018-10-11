@@ -27,20 +27,20 @@ import static java.util.Objects.nonNull;
 /**
  * Processes a POST request to create a new invoice.
  */
-public class PersistOneInvoice implements RequestProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersistOneInvoice.class);
+public class PersistOneInvoice_ implements RequestProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistOneInvoice_.class);
     private static final String EXCEPTION_DURING_PERSISTING_INVOICE = "Exception during persisting an invoice: %s.";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
     private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
     private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
-    private PersistOneInvoice() {}
+    private PersistOneInvoice_() {}
 
     private static class InstanceHolder {
-        private static final PersistOneInvoice INSTANCE = new PersistOneInvoice();
+        private static final PersistOneInvoice_ INSTANCE = new PersistOneInvoice_();
     }
 
-    public static PersistOneInvoice getInstance() {
+    public static PersistOneInvoice_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

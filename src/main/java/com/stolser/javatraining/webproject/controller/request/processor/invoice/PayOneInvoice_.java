@@ -27,22 +27,22 @@ import static java.util.Objects.nonNull;
  * to {@code paid} and a subscription is updated (created a new one or the status
  * and the end date are updated).
  */
-public class PayOneInvoice implements RequestProcessor {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PayOneInvoice.class);
+public class PayOneInvoice_ implements RequestProcessor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PayOneInvoice_.class);
     private static final String EXCEPTION_DURING_PAYING_THE_INVOICE_WITH_ID =
             "User id = {}. Exception during paying invoice {}.";
     private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
     private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
-    private PayOneInvoice() {
+    private PayOneInvoice_() {
     }
 
     private static class InstanceHolder {
-        private static final PayOneInvoice INSTANCE = new PayOneInvoice();
+        private static final PayOneInvoice_ INSTANCE = new PayOneInvoice_();
     }
 
-    public static PayOneInvoice getInstance() {
+    public static PayOneInvoice_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

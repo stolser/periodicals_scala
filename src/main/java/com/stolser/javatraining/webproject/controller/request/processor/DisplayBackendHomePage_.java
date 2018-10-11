@@ -8,14 +8,14 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Processes a GET request to a backend main page.
  */
-public class DisplayBackendHomePage implements RequestProcessor {
-    private DisplayBackendHomePage() {}
+public class DisplayBackendHomePage_ implements RequestProcessor {
+    private DisplayBackendHomePage_() {}
 
     private static class InstanceHolder {
-        private static final DisplayBackendHomePage INSTANCE = new DisplayBackendHomePage();
+        private static final DisplayBackendHomePage_ INSTANCE = new DisplayBackendHomePage_();
     }
 
-    public static DisplayBackendHomePage getInstance() {
+    public static DisplayBackendHomePage_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

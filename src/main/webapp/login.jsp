@@ -19,7 +19,7 @@
                                name="signInUsername"
                                value="${sessionScope.username}"/>
                         <c:if test="${(not empty messages) && (not empty messages['signInUsername'])}">
-                            <label class="messages ${messages['signInUsername'].type == 'ERROR' ? 'error' : ''}">
+                            <label class="messages ${messages['signInUsername'].messageType == 'ERROR' ? 'error' : ''}">
                                 <fmt:message key="${messages['signInUsername'].messageKey}" bundle="${validation}"/>
                             </label>
                         </c:if>
@@ -32,7 +32,7 @@
                                placeholder="<fmt:message key="credential.password.label" bundle="${credential}"/>"
                                name="password"/>
                         <c:if test="${(not empty messages) && (not empty messages['password'])}">
-                            <label class="messages ${messages['password'].type == 'ERROR' ? 'error' : ''}">
+                            <label class="messages ${messages['password'].messageType == 'ERROR' ? 'error' : ''}">
                                 <fmt:message key="${messages['password'].messageKey}" bundle="${validation}"/>
                             </label>
                         </c:if>

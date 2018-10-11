@@ -17,18 +17,18 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Processes a POST request to delete all periodicals with status = "discarded".
  */
-public class DeleteDiscardedPeriodicals implements RequestProcessor {
+public class DeleteDiscardedPeriodicals_ implements RequestProcessor {
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
     private FrontMessageFactory$ messageFactory = FrontMessageFactory$.MODULE$;
 
-    private DeleteDiscardedPeriodicals() {
+    private DeleteDiscardedPeriodicals_() {
     }
 
     private static class InstanceHolder {
-        private static final DeleteDiscardedPeriodicals INSTANCE = new DeleteDiscardedPeriodicals();
+        private static final DeleteDiscardedPeriodicals_ INSTANCE = new DeleteDiscardedPeriodicals_();
     }
 
-    public static DeleteDiscardedPeriodicals getInstance() {
+    public static DeleteDiscardedPeriodicals_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

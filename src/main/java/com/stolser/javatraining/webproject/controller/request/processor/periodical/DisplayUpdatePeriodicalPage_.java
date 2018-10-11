@@ -17,17 +17,17 @@ import static java.util.Objects.isNull;
 /**
  * Processes a GET request to a page where admin can update information of one periodical.
  */
-public class DisplayUpdatePeriodicalPage implements RequestProcessor {
+public class DisplayUpdatePeriodicalPage_ implements RequestProcessor {
     private static final String NO_PERIODICAL_WITH_ID_IN_DB = "There is no periodical with id %d in the db.";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
 
-    private DisplayUpdatePeriodicalPage() {}
+    private DisplayUpdatePeriodicalPage_() {}
 
     private static class InstanceHolder {
-        private static final DisplayUpdatePeriodicalPage INSTANCE = new DisplayUpdatePeriodicalPage();
+        private static final DisplayUpdatePeriodicalPage_ INSTANCE = new DisplayUpdatePeriodicalPage_();
     }
 
-    public static DisplayUpdatePeriodicalPage getInstance() {
+    public static DisplayUpdatePeriodicalPage_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

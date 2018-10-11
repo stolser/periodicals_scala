@@ -23,12 +23,12 @@ final class Authorization {
     static {
         Set<User.Role> admin = new HashSet<>(Collections.singletonList(User.Role.ADMIN));
 
-        permissionMapping.put(GET_ALL_USERS_REQUEST_PATTERN, admin);
-        permissionMapping.put(GET_CREATE_PERIODICAL_REQUEST_PATTERN, admin);
-        permissionMapping.put(GET_UPDATE_PERIODICAL_REQUEST_PATTERN, admin);
-        permissionMapping.put(POST_PERSIST_PERIODICAL_REQUEST_PATTERN, admin);
-        permissionMapping.put(POST_DELETE_PERIODICALS_REQUEST_PATTERN, admin);
-        permissionMapping.put(GET_ADMIN_PANEL_REQUEST_PATTERN, admin);
+        permissionMapping.put(GET_ALL_USERS_REQUEST_PATTERN(), admin);
+        permissionMapping.put(GET_CREATE_PERIODICAL_REQUEST_PATTERN(), admin);
+        permissionMapping.put(GET_UPDATE_PERIODICAL_REQUEST_PATTERN(), admin);
+        permissionMapping.put(POST_PERSIST_PERIODICAL_REQUEST_PATTERN(), admin);
+        permissionMapping.put(POST_DELETE_PERIODICALS_REQUEST_PATTERN(), admin);
+        permissionMapping.put(GET_ADMIN_PANEL_REQUEST_PATTERN(), admin);
     }
 
     private Authorization() {

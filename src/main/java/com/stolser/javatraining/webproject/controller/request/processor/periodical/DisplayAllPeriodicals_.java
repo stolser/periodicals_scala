@@ -15,16 +15,16 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
  * A user with role = 'subscriber' will see only those that have status = 'active'. <br/>
  * A user with role = 'admin' will see all periodicals in the system.
  */
-public class DisplayAllPeriodicals implements RequestProcessor {
+public class DisplayAllPeriodicals_ implements RequestProcessor {
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
 
-    private DisplayAllPeriodicals() {}
+    private DisplayAllPeriodicals_() {}
 
     private static class InstanceHolder {
-        private static final DisplayAllPeriodicals INSTANCE = new DisplayAllPeriodicals();
+        private static final DisplayAllPeriodicals_ INSTANCE = new DisplayAllPeriodicals_();
     }
 
-    public static DisplayAllPeriodicals getInstance() {
+    public static DisplayAllPeriodicals_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

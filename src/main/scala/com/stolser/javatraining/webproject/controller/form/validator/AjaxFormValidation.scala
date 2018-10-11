@@ -25,8 +25,6 @@ object AjaxFormValidation extends RequestProcessor {
 	private val EXCEPTION_DURING_VALIDATION = "Exception during validation."
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
-		import RequestProcessor._
-
 		val session = request.getSession
 		val paramName = request.getParameter(PARAM_NAME)
 		val paramValue = request.getParameter(PARAM_VALUE)

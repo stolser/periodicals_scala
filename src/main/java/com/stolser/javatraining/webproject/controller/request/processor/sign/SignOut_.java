@@ -11,15 +11,15 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
 /**
  * Processes a GET request to sing out the current user and redirects to a 'login' page.
  */
-public class SignOut implements RequestProcessor {
+public class SignOut_ implements RequestProcessor {
 
-    private SignOut() {}
+    private SignOut_() {}
 
     private static class InstanceHolder {
-        private static final SignOut INSTANCE = new SignOut();
+        private static final SignOut_ INSTANCE = new SignOut_();
     }
 
-    public static SignOut getInstance() {
+    public static SignOut_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

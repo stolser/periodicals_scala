@@ -29,7 +29,7 @@
                            name="periodicalName" value="${periodical.name}"
                            placeholder="<fmt:message key="name.label" bundle="${langPeriodical}"/>"/>
                     <c:if test="${(not empty messages) && (not empty messages['periodicalName'])}">
-                        <label class="messages ${messages['periodicalName'].type == 'ERROR' ? 'error' : ''}">
+                        <label class="messages ${messages['periodicalName'].messageType == 'ERROR' ? 'error' : ''}">
                             <fmt:message key="${messages['periodicalName'].messageKey}" bundle="${validation}"/>
                         </label>
                     </c:if>
@@ -59,7 +59,7 @@
                            placeholder="<fmt:message key="publisher.label" bundle="${langPeriodical}"/>"/>
                     <c:if test="${(not empty messages) && (not empty messages['periodicalPublisher'])}">
                         <label class="messages
-                            ${messages['periodicalPublisher'].type == 'ERROR' ? 'error' : ''}">
+                            ${messages['periodicalPublisher'].messageType == 'ERROR' ? 'error' : ''}">
                             <fmt:message key="${messages['periodicalPublisher'].messageKey}" bundle="${validation}"/>
                         </label>
                     </c:if>
@@ -85,7 +85,7 @@
                            value="${periodical.oneMonthCost}"
                            placeholder="<fmt:message key="oneMonthCost.label" bundle="${langPeriodical}"/>"/>
                     <c:if test="${(not empty messages) && (not empty messages['periodicalCost'])}">
-                        <label class="messages ${messages['periodicalCost'].type == 'ERROR' ? 'error' : ''}">
+                        <label class="messages ${messages['periodicalCost'].messageType == 'ERROR' ? 'error' : ''}">
                             <fmt:message key="${messages['periodicalCost'].messageKey}" bundle="${validation}"/>
                         </label>
                     </c:if>

@@ -19,18 +19,18 @@ import static java.util.Objects.isNull;
 /**
  * Processes a GET request to page with the information of the selected individual periodical.
  */
-public final class DisplayOnePeriodical implements RequestProcessor {
+public final class DisplayOnePeriodical_ implements RequestProcessor {
     private static final String NO_PERIODICAL_WITH_ID_IN_DB = "There is no periodical with id %d in the db.";
     private static final String ACCESS_DENIED_TO = "Access denied to '%s'";
     private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
 
-    private DisplayOnePeriodical() {}
+    private DisplayOnePeriodical_() {}
 
     private static class InstanceHolder {
-        private static final DisplayOnePeriodical INSTANCE = new DisplayOnePeriodical();
+        private static final DisplayOnePeriodical_ INSTANCE = new DisplayOnePeriodical_();
     }
 
-    public static DisplayOnePeriodical getInstance() {
+    public static DisplayOnePeriodical_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 
