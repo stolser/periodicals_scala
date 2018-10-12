@@ -16,7 +16,7 @@ import static java.util.Objects.isNull;
 /**
  * Makes sure that this request comes from a signed in user and the session has not expired.
  */
-public class AuthenticationFilter implements Filter {
+public class AuthenticationFilter_ implements Filter {
     private List<String> unProtectedUris = Arrays.asList("/backend/signIn", "/backend/signUp",
             "/backend/validation");
 
@@ -42,7 +42,7 @@ public class AuthenticationFilter implements Filter {
             request.getSession().setAttribute(ORIGINAL_URI_ATTR_NAME, requestUri);
             response.sendRedirect(LOGIN_PAGE);
 
-        } else if (isUserActive(currentUser)) {
+        } else if (isUserNotActive(currentUser)) {
             response.sendRedirect(SIGN_OUT_URI);
 
         } else {
@@ -54,7 +54,7 @@ public class AuthenticationFilter implements Filter {
         return unProtectedUris.contains(request.getRequestURI());
     }
 
-    private boolean isUserActive(User currentUser) {
+    private boolean isUserNotActive(User currentUser) {
         return !User.Status.ACTIVE.equals(currentUser.getStatus());
     }
 

@@ -18,8 +18,8 @@ import static com.stolser.javatraining.webproject.controller.ApplicationResource
  * Checks whether a current user has enough permissions to get a requested resource or perform
  * an operation.
  */
-public class AuthorizationFilter implements Filter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationFilter.class);
+public class AuthorizationFilter_ implements Filter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationFilter_.class);
     private static final String ACCESS_DENIED_FOR_USER = "Access denied for user '%s' to '%s'!!!%n";
     private ViewResolver viewResolver = JspViewResolver.getInstance();
 
@@ -57,7 +57,7 @@ public class AuthorizationFilter implements Filter {
     }
 
     private boolean isRequestAuthorized(HttpServletRequest request) {
-        return Authorization.getInstance().checkPermissions(request);
+        return Authorization_.getInstance().checkPermissions(request);
     }
 
     @Override

@@ -16,7 +16,7 @@ import static com.stolser.javatraining.webproject.controller.utils.HttpUtils.fil
 /**
  * Encapsulates information about resource access permissions of each type of roles.
  */
-final class Authorization {
+final class Authorization_ {
     private static final Map<String, Set<User.Role>> permissionMapping = new HashMap<>();
     private static final String USERS_URI_WITH_ID = "/backend/users/\\d+";
 
@@ -31,14 +31,14 @@ final class Authorization {
         permissionMapping.put(GET_ADMIN_PANEL_REQUEST_PATTERN(), admin);
     }
 
-    private Authorization() {
+    private Authorization_() {
     }
 
     private static class InstanceHolder {
-        private static final Authorization INSTANCE = new Authorization();
+        private static final Authorization_ INSTANCE = new Authorization_();
     }
 
-    static Authorization getInstance() {
+    static Authorization_ getInstance() {
         return InstanceHolder.INSTANCE;
     }
 

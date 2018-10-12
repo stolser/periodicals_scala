@@ -45,7 +45,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
 
-        Assert.assertTrue(Authorization.getInstance().checkPermissions(request));
+        Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -55,7 +55,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
 
-        Assert.assertFalse(Authorization.getInstance().checkPermissions(request));
+        Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -65,7 +65,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
 
-        Assert.assertTrue(Authorization.getInstance().checkPermissions(request));
+        Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -75,7 +75,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
 
-        Assert.assertTrue(Authorization.getInstance().checkPermissions(request));
+        Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -85,7 +85,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn("/backend/users");
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
 
-        Assert.assertFalse(Authorization.getInstance().checkPermissions(request));
+        Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -95,7 +95,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn("/backend/users");
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
 
-        Assert.assertTrue(Authorization.getInstance().checkPermissions(request));
+        Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -105,7 +105,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn(ADMIN_PANEL_URI);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
 
-        Assert.assertFalse(Authorization.getInstance().checkPermissions(request));
+        Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -115,7 +115,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn(ADMIN_PANEL_URI);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
 
-        Assert.assertTrue(Authorization.getInstance().checkPermissions(request));
+        Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -125,7 +125,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn("/backend/periodicals/10/update");
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
 
-        Assert.assertTrue(Authorization.getInstance().checkPermissions(request));
+        Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
     }
 
@@ -135,7 +135,7 @@ public class AuthorizationTest {
         when(request.getRequestURI()).thenReturn("/backend/periodicals/10/update");
         when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
 
-        Assert.assertFalse(Authorization.getInstance().checkPermissions(request));
+        Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
     }
 }
