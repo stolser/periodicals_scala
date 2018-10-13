@@ -58,13 +58,13 @@
         <custom:if-authorized mustHaveRoles="admin">
             <div class="row">
                 <div class="col-sm-6 col-xs-6 text-left">
-                    <a href="${ApplicationResources.PERIODICAL_CREATE_NEW_URI}"
+                    <a href="${ApplicationResources.PERIODICAL_CREATE_NEW_URI()}"
                        class="btn btn-primary" role="button">
                         <fmt:message key="newPeriodicalBt.label" bundle="${langPeriodical}"/>
                     </a>
                 </div>
                 <div class="col-sm-6 col-xs-6 text-right">
-                    <form method="post" action="${ApplicationResources.PERIODICAL_DELETE_DISCARDED_URI}">
+                    <form method="post" action="${ApplicationResources.PERIODICAL_DELETE_DISCARDED_URI()}">
                         <button type="submit" class="btn btn-danger">
                             <fmt:message key="deleteDiscardedBt.label" bundle="${langPeriodical}"/>
                         </button>

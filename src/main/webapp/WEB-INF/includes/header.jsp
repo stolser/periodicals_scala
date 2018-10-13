@@ -36,19 +36,19 @@
         </div>
         <div class="col-xs-6 col-md-4 col-md-push-6 text-right">
             <c:choose>
-                <c:when test="${sessionScope[ApplicationResources.CURRENT_USER_ATTR_NAME] != null}">
+                <c:when test="${sessionScope[ApplicationResources.CURRENT_USER_ATTR_NAME()] != null}">
                     <%@include file="/WEB-INF/includes/topUserInfo.jsp" %>
                 </c:when>
                 <c:otherwise>
                     <c:if test="${pageContext.request.requestURI != '/login.jsp'}">
-                        <p><a href="${ApplicationResources.LOGIN_PAGE}"><fmt:message key="signin.label" bundle="${langGeneral}"/></a></p>
+                        <p><a href="${ApplicationResources.LOGIN_PAGE()}"><fmt:message key="signin.label" bundle="${langGeneral}"/></a></p>
                     </c:if>
                 </c:otherwise>
             </c:choose>
         </div>
 
         <div class="col-xs-12 col-md-6 col-md-pull-6">
-            <c:if test="${sessionScope[ApplicationResources.CURRENT_USER_ATTR_NAME] != null}">
+            <c:if test="${sessionScope[ApplicationResources.CURRENT_USER_ATTR_NAME()] != null}">
                 <%@include file="/WEB-INF/includes/topMenu.jsp" %>
             </c:if>
         </div>

@@ -58,7 +58,7 @@ public class FrontController extends HttpServlet {
 
         switch (dispatchType) {
             case "forward":
-                performForward(viewName, request, response);
+                sendForward(viewName, request, response);
                 break;
             case "redirect":
                 performRedirect(viewName, request, response);

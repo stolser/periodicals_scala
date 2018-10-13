@@ -9,7 +9,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title"><fmt:message key="credential.signUp.title" bundle="${credential}"/></h3>
                 <form method="POST" name="loginform" id="loginform"
-                      action="<c:url value="${ApplicationResources.SIGN_UP_URI}"/>"
+                      action="<c:url value="${ApplicationResources.SIGN_UP_URI()}"/>"
                       accept-charset="UTF-8" role="form">
 <!-- userName -->
                     <div class="form-group validated required">
@@ -92,9 +92,9 @@
     </div>
 </div>
 
-<% session.removeAttribute(ApplicationResources.USERNAME_ATTR_NAME);%>
-<% session.removeAttribute(ApplicationResources.USER_ROLE_ATTR_NAME);%>
-<% session.removeAttribute(ApplicationResources.USER_EMAIL_ATTR_NAME);%>
+<% session.removeAttribute(ApplicationResources.USERNAME_ATTR_NAME());%>
+<% session.removeAttribute(ApplicationResources.USER_ROLE_ATTR_NAME());%>
+<% session.removeAttribute(ApplicationResources.USER_EMAIL_ATTR_NAME());%>
 
 <%@include file="/WEB-INF/includes/footer.jsp" %>
 

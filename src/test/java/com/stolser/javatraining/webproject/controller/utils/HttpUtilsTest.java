@@ -27,7 +27,7 @@ public class HttpUtilsTest {
         user.setId(USER_ID);
 
         session = mock(HttpSession.class);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(user);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(user);
 
         request = mock(HttpServletRequest.class);
         when(request.getSession()).thenReturn(session);
@@ -53,13 +53,13 @@ public class HttpUtilsTest {
     @Test
     public void getPeriodicalFromRequest_Should_ReturnPeriodical() {
         when(request.getSession()).thenReturn(session);
-        when(request.getParameter(ENTITY_ID_PARAM_NAME)).thenReturn("10");
-        when(request.getParameter(PERIODICAL_NAME_PARAM_NAME)).thenReturn("Test Name");
-        when(request.getParameter(PERIODICAL_CATEGORY_PARAM_NAME)).thenReturn("news");
-        when(request.getParameter(PERIODICAL_PUBLISHER_PARAM_NAME)).thenReturn("Test Publisher");
-        when(request.getParameter(PERIODICAL_DESCRIPTION_PARAM_NAME)).thenReturn("Test description");
-        when(request.getParameter(PERIODICAL_COST_PARAM_NAME)).thenReturn("99");
-        when(request.getParameter(PERIODICAL_STATUS_PARAM_NAME)).thenReturn("active");
+        when(request.getParameter(ENTITY_ID_PARAM_NAME())).thenReturn("10");
+        when(request.getParameter(PERIODICAL_NAME_PARAM_NAME())).thenReturn("Test Name");
+        when(request.getParameter(PERIODICAL_CATEGORY_PARAM_NAME())).thenReturn("news");
+        when(request.getParameter(PERIODICAL_PUBLISHER_PARAM_NAME())).thenReturn("Test Publisher");
+        when(request.getParameter(PERIODICAL_DESCRIPTION_PARAM_NAME())).thenReturn("Test description");
+        when(request.getParameter(PERIODICAL_COST_PARAM_NAME())).thenReturn("99");
+        when(request.getParameter(PERIODICAL_STATUS_PARAM_NAME())).thenReturn("active");
 
         Periodical periodical = HttpUtils.getPeriodicalFromRequest(request);
 

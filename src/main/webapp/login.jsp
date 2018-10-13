@@ -9,7 +9,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title"><fmt:message key="credential.signin.title" bundle="${credential}"/></h3>
                 <form method="POST" name="loginform" id="loginform"
-                      action="<c:url value="${ApplicationResources.SIGN_IN_URI}"/>"
+                      action="<c:url value="${ApplicationResources.SIGN_IN_URI()}"/>"
                       accept-charset="UTF-8" role="form">
                     <div class="form-group validated required">
                         <label class="control-label" for="userName">
@@ -47,7 +47,7 @@
             </div>
 
         </div>
-        <p><a href="${ApplicationResources.SIGN_UP_URI}">
+        <p><a href="${ApplicationResources.SIGN_UP_URI()}">
             <fmt:message key="signUp.link.label" bundle="${credential}"/></a></p>
 
     </div>

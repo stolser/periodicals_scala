@@ -43,7 +43,7 @@ object RequestProviderImpl extends RequestProvider {
 	initializeRequestMapping
 
 	override def getRequestProcessor(request: HttpServletRequest): RequestProcessor = {
-		val currentMapping = requestMapping.filterKeys(filterRequestByHttpMethod(request, _))
+		val currentMapping = requestMapping.filterKeys((key: String) => filterRequestByHttpMethod(request, key))
 			.filterKeys(filterRequestByUri(request, _))
 			.headOption
 
@@ -54,7 +54,7 @@ object RequestProviderImpl extends RequestProvider {
 	}
 
 	private def initializeRequestMapping = {
-		requestMapping.put(POST_SIGN_IN_REQUEST_PATTERN, SignIn)
+		requestMapping += (POST_SIGN_IN_REQUEST_PATTERN -> SignIn)
 		requestMapping += (GET_BACKEND_REQUEST_PATTERN -> DisplayBackendHomePage)
 		requestMapping.put(GET_ADMIN_PANEL_REQUEST_PATTERN, DisplayAdminPanel)
 		requestMapping.put(GET_ALL_USERS_REQUEST_PATTERN, DisplayAllUsers)

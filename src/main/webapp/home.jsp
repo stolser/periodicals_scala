@@ -4,9 +4,9 @@
 <div class="row">
     <h1><fmt:message key="home.topMessage" bundle="${frontGeneral}"/></h1>
     <c:choose>
-        <c:when test="${sessionScope[ApplicationResources.CURRENT_USER_ATTR_NAME] != null}">
+        <c:when test="${sessionScope[ApplicationResources.CURRENT_USER_ATTR_NAME()] != null}">
             <p><fmt:message key="visitYour.text" bundle="${frontGeneral}"/>
-                <a href="<c:url value="${ApplicationResources.CURRENT_USER_ACCOUNT_URI}"/>">
+                <a href="<c:url value="${ApplicationResources.CURRENT_USER_ACCOUNT_URI()}"/>">
                     <fmt:message key="accountPage.text" bundle="${frontGeneral}"/>
                 </a>.
             </p>
