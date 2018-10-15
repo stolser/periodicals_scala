@@ -18,7 +18,7 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 
 	override def getConnection: AbstractConnection = {
 		try
-			new AbstractConnectionImpl(dataSource.getConnection)
+			AbstractConnectionImpl(dataSource.getConnection)
 		catch {
 			case e: SQLException => throw new DaoException(CONNECTION_EXCEPTION_TEXT, e)
 		}

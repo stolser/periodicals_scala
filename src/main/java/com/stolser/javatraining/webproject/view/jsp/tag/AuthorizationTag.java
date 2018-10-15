@@ -39,7 +39,7 @@ public class AuthorizationTag extends TagSupport {
 
     private User getUserFromSession() {
         return (User) pageContext.getSession()
-                .getAttribute(ApplicationResources.CURRENT_USER_ATTR_NAME);
+                .getAttribute(ApplicationResources.CURRENT_USER_ATTR_NAME());
     }
 
     private boolean hasUserLegitRoles() {

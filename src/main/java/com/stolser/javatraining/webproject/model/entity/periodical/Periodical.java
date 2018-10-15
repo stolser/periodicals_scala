@@ -133,7 +133,7 @@ public class Periodical implements Serializable {
 
     @Override
     public String toString() {
-        String description = (this.description.length() <= 15)
+        String description = (this.description == null || this.description.length() <= 15)
                 ? this.description
                 : this.description.substring(0, 15);
 

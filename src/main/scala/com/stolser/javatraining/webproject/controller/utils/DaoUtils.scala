@@ -2,7 +2,7 @@ package com.stolser.javatraining.webproject.controller.utils
 
 import java.sql.{ResultSet, SQLException}
 
-import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlPeriodicalDao
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlPeriodicalDao._
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
 
 /**
@@ -14,16 +14,14 @@ object DaoUtils {
 	  */
 	@throws[SQLException]
 	def getPeriodicalFromResultSet(rs: ResultSet): Periodical = {
-		val periodicalBuilder = new Periodical.Builder
-		periodicalBuilder
-			.setId(rs.getLong(MysqlPeriodicalDao.DB_PERIODICALS_ID))
-			.setName(rs.getString(MysqlPeriodicalDao.DB_PERIODICALS_NAME))
-			.setCategory(PeriodicalCategory.valueOf(rs.getString(MysqlPeriodicalDao.DB_PERIODICALS_CATEGORY).toUpperCase))
-			.setPublisher(rs.getString(MysqlPeriodicalDao.DB_PERIODICALS_PUBLISHER))
-			.setDescription(rs.getString(MysqlPeriodicalDao.DB_PERIODICALS_DESCRIPTION))
-			.setOneMonthCost(rs.getLong(MysqlPeriodicalDao.DB_PERIODICALS_ONE_MONTH_COST))
-			.setStatus(Periodical.Status.valueOf(rs.getString(MysqlPeriodicalDao.DB_PERIODICALS_STATUS).toUpperCase))
-
-		periodicalBuilder.build
+		(new Periodical.Builder)
+			.setId(rs.getLong(DB_PERIODICALS_ID))
+			.setName(rs.getString(DB_PERIODICALS_NAME))
+			.setCategory(PeriodicalCategory.valueOf(rs.getString(DB_PERIODICALS_CATEGORY).toUpperCase))
+			.setPublisher(rs.getString(DB_PERIODICALS_PUBLISHER))
+			.setDescription(rs.getString(DB_PERIODICALS_DESCRIPTION))
+			.setOneMonthCost(rs.getLong(DB_PERIODICALS_ONE_MONTH_COST))
+			.setStatus(Periodical.Status.valueOf(rs.getString(DB_PERIODICALS_STATUS).toUpperCase))
+			.build
 	}
 }

@@ -9,7 +9,7 @@ class ValidationProcessorException(message: String = null, cause: Throwable = nu
 	extends RuntimeException(defaultMessage(message, cause), cause) {}
 
 object ValidationProcessorException {
-	def defaultMessage(message: String, cause: Throwable): String =
+	private def defaultMessage(message: String, cause: Throwable): String =
 		if (message != null) message
 		else if (cause != null) cause.toString
 		else null
