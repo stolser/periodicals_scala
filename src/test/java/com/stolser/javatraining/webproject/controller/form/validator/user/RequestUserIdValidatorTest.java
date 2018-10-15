@@ -22,7 +22,7 @@ public class RequestUserIdValidatorTest {
         user.setId(USER_ID);
 
         session = mock(HttpSession.class);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(user);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(user);
 
         when(request.getSession()).thenReturn(session);
         when(request.getRequestURI()).thenReturn(TestResources.USER_2_INVOICE_10_PAYMENT);

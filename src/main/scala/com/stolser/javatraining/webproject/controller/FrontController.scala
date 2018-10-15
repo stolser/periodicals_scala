@@ -18,7 +18,7 @@ class FrontController extends HttpServlet {
 	private val DISPATCHING_TO_THE_VIEW_NAME = "Dispatching to the viewName = '%s'."
 	private val INCORRECT_THE_DISPATCH_TYPE = "Incorrect the dispatch type of the abstractViewName: %s"
 	private val requestProvider = RequestProviderImpl
-	private val viewResolver = JspViewResolver.getInstance
+	private val viewResolver = JspViewResolver
 
 	@throws[ServletException]
 	@throws[IOException]

@@ -42,8 +42,8 @@ public class AuthorizationTest {
     @Test
     public void checkPermissions_AccessToPersistPeriodical_ShouldReturn_TrueForAdmin() throws Exception {
         when(request.getMethod()).thenReturn("post");
-        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
+        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI());
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(admin);
 
         Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
@@ -52,8 +52,8 @@ public class AuthorizationTest {
     @Test
     public void checkPermissions_AccessToPersistPeriodical_ShouldReturn_FalseForNotAdmin() throws Exception {
         when(request.getMethod()).thenReturn("post");
-        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
+        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI());
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(notAdmin);
 
         Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
@@ -62,8 +62,8 @@ public class AuthorizationTest {
     @Test
     public void checkPermissions_AccessToDisplayPeriodicals_ShouldReturn_TrueForAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
-        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
+        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI());
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(admin);
 
         Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
@@ -72,8 +72,8 @@ public class AuthorizationTest {
     @Test
     public void checkPermissions_AccessToDisplayPeriodicals_ShouldReturn_TrueForNotAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
-        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
+        when(request.getRequestURI()).thenReturn(PERIODICAL_LIST_URI());
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(notAdmin);
 
         Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
@@ -83,7 +83,7 @@ public class AuthorizationTest {
     public void checkPermissions_AccessToDisplayUsers_ShouldReturn_FalseForNotAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
         when(request.getRequestURI()).thenReturn("/backend/users");
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(notAdmin);
 
         Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
@@ -93,7 +93,7 @@ public class AuthorizationTest {
     public void checkPermissions_AccessToDisplayUsers_ShouldReturn_TrueForAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
         when(request.getRequestURI()).thenReturn("/backend/users");
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(admin);
 
         Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
@@ -102,8 +102,8 @@ public class AuthorizationTest {
     @Test
     public void checkPermissions_AccessToAdminPanel_ShouldReturn_FalseForNotAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
-        when(request.getRequestURI()).thenReturn(ADMIN_PANEL_URI);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
+        when(request.getRequestURI()).thenReturn(ADMIN_PANEL_URI());
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(notAdmin);
 
         Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 
@@ -112,8 +112,8 @@ public class AuthorizationTest {
     @Test
     public void checkPermissions_AccessToAdminPanel_ShouldReturn_TrueForAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
-        when(request.getRequestURI()).thenReturn(ADMIN_PANEL_URI);
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
+        when(request.getRequestURI()).thenReturn(ADMIN_PANEL_URI());
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(admin);
 
         Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
@@ -123,7 +123,7 @@ public class AuthorizationTest {
     public void checkPermissions_AccessToUpdatePeriodical_ShouldReturn_TrueForAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
         when(request.getRequestURI()).thenReturn("/backend/periodicals/10/update");
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(admin);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(admin);
 
         Assert.assertTrue(Authorization$.MODULE$.checkPermissions(request));
 
@@ -133,7 +133,7 @@ public class AuthorizationTest {
     public void checkPermissions_AccessToUpdatePeriodical_ShouldReturn_FalseForNotAdmin() throws Exception {
         when(request.getMethod()).thenReturn("get");
         when(request.getRequestURI()).thenReturn("/backend/periodicals/10/update");
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(notAdmin);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(notAdmin);
 
         Assert.assertFalse(Authorization$.MODULE$.checkPermissions(request));
 

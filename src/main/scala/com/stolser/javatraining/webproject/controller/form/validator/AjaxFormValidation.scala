@@ -84,11 +84,10 @@ object AjaxFormValidation extends RequestProcessor {
 
 	private def getLocaleFromSession(session: HttpSession): Locale = {
 		val localeAttr: AnyRef = session.getAttribute(LANGUAGE_ATTR_NAME)
-		val locale = localeAttr match {
+		localeAttr match {
 			case _: Locale => localeAttr.asInstanceOf[Locale]
-			case _ => SystemLocale.valueOf(localeAttr.asInstanceOf[String].toUpperCase).getLocale
+			case _ => SystemLocale.withName(localeAttr.asInstanceOf[String].toUpperCase).locale
 		}
-		locale
 	}
 
 	private def getLocalizedMessage(session: HttpSession, result: ValidationResult) =

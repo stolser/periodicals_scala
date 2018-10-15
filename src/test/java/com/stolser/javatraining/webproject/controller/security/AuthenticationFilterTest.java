@@ -28,7 +28,7 @@ public class AuthenticationFilterTest {
         user = new User();
         user.setId(USER_ID);
 
-        when(session.getAttribute(CURRENT_USER_ATTR_NAME)).thenReturn(user);
+        when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(user);
         when(request.getSession()).thenReturn(session);
     }
 
@@ -39,8 +39,8 @@ public class AuthenticationFilterTest {
 
         new AuthenticationFilter().doFilter(request, response, chain);
 
-        verify(session, times(1)).setAttribute(ORIGINAL_URI_ATTR_NAME, requestURI);
-        verify(response, times(1)).sendRedirect(LOGIN_PAGE);
+        verify(session, times(1)).setAttribute(ORIGINAL_URI_ATTR_NAME(), requestURI);
+        verify(response, times(1)).sendRedirect(LOGIN_PAGE());
 
     }
 }

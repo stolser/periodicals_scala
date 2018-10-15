@@ -18,7 +18,7 @@ public class DisplayNewPeriodicalPageTest {
 
     @Before
     public void setUp() throws Exception {
-        when(session.getAttribute(PERIODICAL_ATTR_NAME)).thenReturn(new Periodical());
+        when(session.getAttribute(PERIODICAL_ATTR_NAME())).thenReturn(new Periodical());
         when(request.getSession()).thenReturn(session);
 
     }
@@ -27,7 +27,7 @@ public class DisplayNewPeriodicalPageTest {
     public void process_Should_RemovePeriodicalFromSession() throws Exception {
         DisplayNewPeriodicalPage$.MODULE$.process(request, response);
 
-        verify(session, times(1)).removeAttribute(PERIODICAL_ATTR_NAME);
+        verify(session, times(1)).removeAttribute(PERIODICAL_ATTR_NAME());
     }
 
     @Test

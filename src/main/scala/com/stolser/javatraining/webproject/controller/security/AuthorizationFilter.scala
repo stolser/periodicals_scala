@@ -14,7 +14,7 @@ import org.slf4j.{Logger, LoggerFactory}
 class AuthorizationFilter extends Filter {
 	private val LOGGER = LoggerFactory.getLogger(classOf[AuthorizationFilter])
 	private val ACCESS_DENIED_FOR_USER = "Access denied for user '%s' to '%s'!!!%n"
-	private val viewResolver = JspViewResolver.getInstance
+	private val viewResolver = JspViewResolver
 
 	override def init(filterConfig: FilterConfig): Unit = {}
 

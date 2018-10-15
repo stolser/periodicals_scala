@@ -34,6 +34,13 @@
             <version>2.12.7</version>
         </dependency>
 
+        <!--Enumeratum-->
+        <dependency>
+            <groupId>com.beachape</groupId>
+            <artifactId>enumeratum_2.11</artifactId>
+            <version>1.5.13</version>
+        </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
