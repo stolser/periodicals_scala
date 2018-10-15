@@ -17,9 +17,9 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Processes a GET request to a current user personal account page.
   */
 object DisplayCurrentUser extends RequestProcessor {
-	private val invoiceService = InvoiceServiceImpl.getInstance
-	private val subscriptionService = SubscriptionServiceImpl.getInstance
-	private val periodicalService = PeriodicalServiceImpl.getInstance
+	private val invoiceService = InvoiceServiceImpl
+	private val subscriptionService = SubscriptionServiceImpl
+	private val periodicalService = PeriodicalServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		val currentUserId: Long = HttpUtils.getUserIdFromSession(request)

@@ -22,7 +22,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   */
 object DisplayOnePeriodical extends RequestProcessor {
 	private val ACCESS_DENIED_TO = "Access denied to '%s'"
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		val currentUser = HttpUtils.getCurrentUserFromFromDb(request)

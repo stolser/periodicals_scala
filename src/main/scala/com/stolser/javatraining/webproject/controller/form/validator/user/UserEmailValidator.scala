@@ -29,5 +29,5 @@ object UserEmailValidator extends AbstractValidator {
 
 	private def emailMatchesRegex(userEmail: String) = Pattern.matches(USER_EMAIL_PATTERN_REGEX, userEmail)
 
-	private def emailExistsInDb(userEmail: String) = UserServiceImpl.getInstance.emailExistsInDb(userEmail)
+	private def emailExistsInDb(userEmail: String) = UserServiceImpl.emailExistsInDb(userEmail)
 }

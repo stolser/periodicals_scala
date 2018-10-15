@@ -6,9 +6,9 @@ import java.util.Objects.nonNull
 import java.util.{ArrayList, Date, List}
 
 import com.stolser.javatraining.webproject.dao.DaoUtils._
-import com.stolser.javatraining.webproject.dao.TryWithResources.withResources
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 import com.stolser.javatraining.webproject.dao.exception.DaoException
-import com.stolser.javatraining.webproject.dao.{DaoUtils, TryWithResources, UserDao}
+import com.stolser.javatraining.webproject.dao.{DaoUtils, UserDao}
 import com.stolser.javatraining.webproject.model.entity.user.User
 
 /**

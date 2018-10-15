@@ -1,4 +1,4 @@
-package com.stolser.javatraining.webproject.dao
+package com.stolser.javatraining.webproject.utils
 
 import scala.util.control.NonFatal
 

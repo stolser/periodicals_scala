@@ -17,8 +17,8 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Processes a GET request to the Admin Panel page.
   */
 object DisplayAdminPanel extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
-	private val invoiceService: InvoiceService = InvoiceServiceImpl.getInstance
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private val invoiceService: InvoiceService = InvoiceServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		addPeriodicalStatsIntoRequest(request)

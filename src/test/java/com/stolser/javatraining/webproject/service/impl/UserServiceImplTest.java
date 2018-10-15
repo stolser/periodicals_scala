@@ -30,7 +30,7 @@ public class UserServiceImplTest {
     @Mock
     private AbstractConnection conn;
     @InjectMocks
-    private UserService userService = UserServiceImpl.getInstance();
+    private UserService userService = UserServiceImpl$.MODULE$;
 
     @Before
     public void setUp() throws Exception {

@@ -24,8 +24,8 @@ import org.slf4j.{Logger, LoggerFactory}
 object PersistOneInvoice extends RequestProcessor {
 	private val LOGGER = LoggerFactory.getLogger(PersistOneInvoice.getClass)
 	private val EXCEPTION_DURING_PERSISTING_INVOICE = "Exception during persisting an invoice: %s."
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
-	private val invoiceService: InvoiceService = InvoiceServiceImpl.getInstance
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private val invoiceService: InvoiceService = InvoiceServiceImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest
   */
 object PeriodicalNameValidator extends AbstractValidator {
 	private val INCORRECT_ENTITY_OPERATION_TYPE_DURING_VALIDATION = "Incorrect periodicalOperationType during validation!"
-	private val periodicalService = PeriodicalServiceImpl.getInstance
+	private val periodicalService = PeriodicalServiceImpl
 	private val incorrectFailedResult = new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_PERIODICAL_NAME_INCORRECT)
 	private val duplicationFailedResult = new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_PERIODICAL_NAME_DUPLICATION)
 

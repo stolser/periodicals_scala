@@ -18,7 +18,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
   * Created by Oleg Stoliarov on 10/11/18.
   */
 object CreateUser extends RequestProcessor {
-	private val userService = UserServiceImpl.getInstance
+	private val userService = UserServiceImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {

@@ -24,7 +24,7 @@ import org.slf4j.{Logger, LoggerFactory}
   */
 object PersistOnePeriodical extends RequestProcessor {
 	private val LOGGER = LoggerFactory.getLogger(PersistOnePeriodical.getClass)
-	private val periodicalService = PeriodicalServiceImpl.getInstance
+	private val periodicalService = PeriodicalServiceImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
@@ -150,7 +150,7 @@ object PersistOnePeriodical extends RequestProcessor {
 		private val cache = new util.HashMap[String, PeriodicalStatusChange]
 
 		private[periodical] def getInstance(periodicalToSave: Periodical) = {
-			val periodicalInDb = PeriodicalServiceImpl.getInstance.findOneById(periodicalToSave.getId)
+			val periodicalInDb = PeriodicalServiceImpl.findOneById(periodicalToSave.getId)
 			val oldStatus = if (nonNull(periodicalInDb)) periodicalInDb.getStatus else null
 			val newStatus = periodicalToSave.getStatus
 			val cacheKey = getCacheKey(oldStatus, newStatus)

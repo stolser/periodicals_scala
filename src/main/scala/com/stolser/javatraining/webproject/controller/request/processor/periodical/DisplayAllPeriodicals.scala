@@ -17,7 +17,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * - a user with role = 'admin' will see all periodicals in the system.
   */
 object DisplayAllPeriodicals extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		request.setAttribute(ALL_PERIODICALS_ATTR_NAME, periodicalService.findAll)

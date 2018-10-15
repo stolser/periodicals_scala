@@ -34,7 +34,7 @@ public class SubscriptionServiceImplTest {
     @Mock
     private AbstractConnection conn;
     @InjectMocks
-    private SubscriptionService subscriptionService = SubscriptionServiceImpl.getInstance();
+    private SubscriptionService subscriptionService = SubscriptionServiceImpl$.MODULE$;
     private User user;
     private List<Subscription> userSubscriptions = new ArrayList<>();
 

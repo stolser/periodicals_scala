@@ -23,8 +23,8 @@ import org.slf4j.{Logger, LoggerFactory}
   */
 object PayOneInvoice extends RequestProcessor {
 	private val LOGGER = LoggerFactory.getLogger(PayOneInvoice.getClass)
-	private val invoiceService: InvoiceService = InvoiceServiceImpl.getInstance
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
+	private val invoiceService: InvoiceService = InvoiceServiceImpl
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {

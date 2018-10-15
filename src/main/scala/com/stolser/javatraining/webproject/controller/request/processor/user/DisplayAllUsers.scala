@@ -11,7 +11,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Processes a GET request to a page with a list of all users in the system.
   */
 object DisplayAllUsers extends RequestProcessor {
-	private val userService = UserServiceImpl.getInstance
+	private val userService = UserServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		request.setAttribute(ALL_USERS_ATTR_NAME, userService.findAll)

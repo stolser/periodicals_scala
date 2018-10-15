@@ -19,7 +19,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Processes a POST request to delete all periodicals with status = "discarded".
   */
 object DeleteDiscardedPeriodicals extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {

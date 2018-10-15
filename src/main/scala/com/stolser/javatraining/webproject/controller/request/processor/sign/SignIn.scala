@@ -19,7 +19,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
   * this user is active (not blocked) and if everything is OK, adds this user into the session.
   */
 object SignIn extends RequestProcessor {
-	private val userService = UserServiceImpl.getInstance
+	private val userService = UserServiceImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {

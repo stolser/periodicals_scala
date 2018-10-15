@@ -28,7 +28,7 @@ object HttpUtils {
 	private val REDIRECTION_FROM_TO_TEXT = "During redirection from \"%s\" to \"%s\""
 	private val URI_MUST_CONTAIN_ID_TEXT = "Uri (%s) must contain id."
 	private val NUMBER_REGEX = "\\d+"
-	private val userService = UserServiceImpl.getInstance
+	private val userService = UserServiceImpl
 
 	/**
 	  * Retrieves a current user's id from the session.

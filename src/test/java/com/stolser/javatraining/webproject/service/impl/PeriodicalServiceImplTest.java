@@ -31,7 +31,7 @@ public class PeriodicalServiceImplTest {
     private AbstractConnection conn;
 
     @InjectMocks
-    private PeriodicalService periodicalService = PeriodicalServiceImpl.getInstance();
+    private PeriodicalService periodicalService = PeriodicalServiceImpl$.MODULE$;
     private Periodical periodical;
     private Periodical newPeriodical;
 

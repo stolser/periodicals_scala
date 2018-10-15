@@ -45,7 +45,7 @@ public class InvoiceServiceImplTest {
     private Periodical periodical = new Periodical();
 
     @InjectMocks
-    private InvoiceService invoiceService = InvoiceServiceImpl.getInstance();
+    private InvoiceService invoiceService = InvoiceServiceImpl$.MODULE$;
 
     @Before
     public void setUp() throws Exception {

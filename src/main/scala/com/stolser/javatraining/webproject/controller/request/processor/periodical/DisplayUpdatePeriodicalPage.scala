@@ -16,7 +16,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Processes a GET request to a page where admin can update information of one periodical.
   */
 object DisplayUpdatePeriodicalPage extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl.getInstance
+	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		val periodicalId = HttpUtils.getFirstIdFromUri(request.getRequestURI)
