@@ -10,7 +10,7 @@ import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
 import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 import com.stolser.javatraining.webproject.dao.{DaoUtils, InvoiceDao}
 import com.stolser.javatraining.webproject.dao.exception.DaoException
-import com.stolser.javatraining.webproject.model.entity.invoice.Invoice
+import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
 
@@ -135,7 +135,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 				st: PreparedStatement => {
 					st.setTimestamp(1, new Timestamp(since.toEpochMilli))
 					st.setTimestamp(2, new Timestamp(until.toEpochMilli))
-					st.setString(3, Invoice.Status.PAID.name().toLowerCase())
+					st.setString(3, InvoiceStatus.PAID.toString.toLowerCase())
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet => {
@@ -175,7 +175,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setCreateUpdateStatementFromInvoice(st, invoice)
-					st.setLong(8, invoice.getId)
+					st.setLong(8, invoice.id)
 
 					st.executeUpdate()
 				}
@@ -193,16 +193,14 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 			.setId(rs.getLong(DB_INVOICES_PERIODICAL_ID))
 			.build()
 
-		(new Invoice.Builder)
-			.setId(rs.getLong(DB_INVOICES_ID))
-			.setUser(user)
-			.setPeriodical(periodical)
-			.setSubscriptionPeriod(rs.getInt(DB_INVOICES_PERIOD))
-			.setTotalSum(rs.getLong(DB_INVOICES_TOTAL_SUM))
-			.setCreationDate(getCreationDateFromResults(rs))
-			.setPaymentDate(getPaymentDateFromResults(rs))
-			.setStatus(Invoice.Status.valueOf(rs.getString(DB_INVOICES_STATUS).toUpperCase))
-			.build
+		Invoice(id = rs.getLong(DB_INVOICES_ID),
+			user = user,
+			periodical = periodical,
+			subscriptionPeriod = rs.getInt(DB_INVOICES_PERIOD),
+			totalSum = rs.getLong(DB_INVOICES_TOTAL_SUM),
+			creationDate = getCreationDateFromResults(rs),
+			paymentDate = getPaymentDateFromResults(rs),
+			status = InvoiceStatus.withName(rs.getString(DB_INVOICES_STATUS).toUpperCase))
 	}
 
 	@throws[SQLException]
@@ -222,17 +220,17 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 	@throws[SQLException]
 	private def setCreateUpdateStatementFromInvoice(st: PreparedStatement,
 													invoice: Invoice): Unit = {
-		st.setLong(1, invoice.getUser.getId)
-		st.setLong(2, invoice.getPeriodical.getId)
-		st.setInt(3, invoice.getSubscriptionPeriod)
-		st.setDouble(4, invoice.getTotalSum)
-		st.setTimestamp(5, new Timestamp(invoice.getCreationDate.toEpochMilli))
+		st.setLong(1, invoice.user.getId)
+		st.setLong(2, invoice.periodical.getId)
+		st.setInt(3, invoice.subscriptionPeriod)
+		st.setDouble(4, invoice.totalSum)
+		st.setTimestamp(5, new Timestamp(invoice.creationDate.toEpochMilli))
 		st.setTimestamp(6, getPaymentDate(invoice))
-		st.setString(7, invoice.getStatus.name.toLowerCase)
+		st.setString(7, invoice.status.toString.toLowerCase)
 	}
 
 	private def getPaymentDate(invoice: Invoice): Timestamp = {
-		val paymentDate: Instant = invoice.getPaymentDate
+		val paymentDate: Instant = invoice.paymentDate
 
 		if (nonNull(paymentDate))
 			new Timestamp(paymentDate.toEpochMilli)

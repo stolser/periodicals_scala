@@ -8,7 +8,7 @@ import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.invoice.Invoice
+import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
@@ -52,7 +52,7 @@ object PayOneInvoice extends RequestProcessor {
 	}
 
 	private def isInvoiceNew(invoiceInDb: Invoice, generalMessages: util.List[FrontendMessage]) = {
-		val isNew = Invoice.Status.NEW == invoiceInDb.getStatus
+		val isNew = InvoiceStatus.NEW == invoiceInDb.status
 		if (!isNew) generalMessages.add(messageFactory.getError(MSG_VALIDATION_INVOICE_IS_NOT_NEW))
 		isNew
 	}
@@ -82,5 +82,5 @@ object PayOneInvoice extends RequestProcessor {
 		Periodical.Status.ACTIVE == periodicalInDb.getStatus
 	}
 
-	private def getPeriodicalIdFromInvoice(invoiceInDb: Invoice) = invoiceInDb.getPeriodical.getId
+	private def getPeriodicalIdFromInvoice(invoiceInDb: Invoice) = invoiceInDb.periodical.getId
 }

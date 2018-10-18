@@ -7,7 +7,7 @@ import java.util.Objects.isNull
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
 import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory, InvoiceDao, SubscriptionDao}
-import com.stolser.javatraining.webproject.model.entity.invoice.Invoice
+import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.statistics.FinancialStatistics
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
@@ -47,19 +47,19 @@ object InvoiceServiceImpl extends InvoiceService {
 	override def payInvoice(invoiceToPay: Invoice): Boolean =
 		withAbstractConnectionResource { conn =>
 			val subscriptionDao = factory.getSubscriptionDao(conn)
-			invoiceToPay.setStatus(Invoice.Status.PAID)
-			invoiceToPay.setPaymentDate(Instant.now)
+			invoiceToPay.status = InvoiceStatus.PAID
+			invoiceToPay.paymentDate = Instant.now
 
 			conn.beginTransaction()
-			val userFromDb = factory.getUserDao(conn).findOneById(invoiceToPay.getUser.getId)
-			val periodical = invoiceToPay.getPeriodical
+			val userFromDb = factory.getUserDao(conn).findOneById(invoiceToPay.user.getId)
+			val periodical = invoiceToPay.periodical
 
 			val existingSubscription = subscriptionDao
 				.findOneByUserIdAndPeriodicalId(userFromDb.getId, periodical.getId)
 
 			factory.getInvoiceDao(conn).update(invoiceToPay)
 
-			val subscriptionPeriod = invoiceToPay.getSubscriptionPeriod
+			val subscriptionPeriod = invoiceToPay.subscriptionPeriod
 
 			if (isNull(existingSubscription))
 				createAndPersistNewSubscription(userFromDb, periodical, subscriptionPeriod, subscriptionDao)

@@ -4,6 +4,7 @@ import com.stolser.javatraining.webproject.connection.pool.ConnectionPool;
 import com.stolser.javatraining.webproject.dao.*;
 import com.stolser.javatraining.webproject.dao.exception.DaoException;
 import com.stolser.javatraining.webproject.model.entity.invoice.Invoice;
+import com.stolser.javatraining.webproject.model.entity.invoice.InvoiceStatus;
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical;
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription;
 import com.stolser.javatraining.webproject.model.entity.user.User;
@@ -56,12 +57,10 @@ public class InvoiceServiceImplTest {
 
         periodical.setId(PERIODICAL_ID);
 
-        Invoice.Builder invoiceBuilder = new Invoice.Builder();
-        invoiceBuilder.setId(INVOICE_ID)
-                .setUser(user)
-                .setPeriodical(periodical)
-                .setSubscriptionPeriod(1);
-        invoice = invoiceBuilder.build();
+        invoice = Invoice.apply(INVOICE_ID, user, periodical, 1, 0,
+                null,
+                null,
+                InvoiceStatus.NEW());
 
         when(subscription.getId()).thenReturn(SUBSCRIPTION_ID);
         when(subscription.getStatus()).thenReturn(Subscription.Status.INACTIVE);

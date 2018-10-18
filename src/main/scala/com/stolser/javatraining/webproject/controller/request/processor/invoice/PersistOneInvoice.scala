@@ -9,7 +9,7 @@ import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.invoice.Invoice
+import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
@@ -97,14 +97,11 @@ object PersistOneInvoice extends RequestProcessor {
 		userBuilder.setId(userIdFromUri)
 		val user = userBuilder.build
 
-		val invoiceBuilder = new Invoice.Builder
-		invoiceBuilder.setUser(user)
-			.setPeriodical(periodicalInDb)
-			.setSubscriptionPeriod(subscriptionPeriod)
-			.setTotalSum(totalSum)
-			.setCreationDate(Instant.now)
-			.setStatus(Invoice.Status.NEW)
-
-		invoiceBuilder.build
+		Invoice(user = user,
+			periodical = periodicalInDb,
+			subscriptionPeriod = subscriptionPeriod,
+			totalSum = totalSum,
+			creationDate = Instant.now(),
+			status = InvoiceStatus.NEW)
 	}
 }

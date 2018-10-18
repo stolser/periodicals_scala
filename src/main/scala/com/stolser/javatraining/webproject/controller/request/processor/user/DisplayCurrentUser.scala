@@ -6,7 +6,7 @@ import java.util.{Collections, List}
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{ONE_USER_INFO_VIEW_NAME, USER_INVOICES_PARAM_NAME, USER_SUBSCRIPTIONS_PARAM_NAME}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.invoice.Invoice
+import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl, SubscriptionServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService, SubscriptionService}
@@ -28,8 +28,8 @@ object DisplayCurrentUser extends RequestProcessor {
 
 		if (areThereInvoicesToDisplay(invoices)) {
 			invoices.forEach(invoice => {
-				val periodicalId: Long = invoice.getPeriodical.getId
-				invoice.setPeriodical(periodicalService.findOneById(periodicalId))
+				val periodicalId: Long = invoice.periodical.getId
+				invoice.periodical = periodicalService.findOneById(periodicalId)
 			})
 
 			sortInvoices(invoices)
@@ -50,10 +50,10 @@ object DisplayCurrentUser extends RequestProcessor {
 
 	private def sortInvoices(invoices: util.List[Invoice]): Unit = {
 		invoices.sort((first, second) => {
-			if (first.getStatus == second.getStatus)
-				if (Invoice.Status.NEW == first.getStatus) second.getCreationDate.compareTo(first.getCreationDate)
-				else second.getPaymentDate.compareTo(first.getPaymentDate)
-			else if (first.getStatus == Invoice.Status.NEW) -1
+			if (first.status == second.status)
+				if (InvoiceStatus.NEW == first.status) second.creationDate.compareTo(first.creationDate)
+				else second.paymentDate.compareTo(first.paymentDate)
+			else if (first.status == InvoiceStatus.NEW) -1
 			else 1
 		})
 	}
