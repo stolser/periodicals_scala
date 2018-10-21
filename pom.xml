@@ -33,6 +33,31 @@
             <artifactId>scala-library</artifactId>
             <version>2.12.7</version>
         </dependency>
+        <!--Scala testing-->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.12</artifactId>
+            <version>3.0.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalamock</groupId>
+            <artifactId>scalamock_2.12</artifactId>
+            <version>4.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalamock</groupId>
+            <artifactId>scalamock-scalatest-support_2.12</artifactId>
+            <version>3.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>-->
+        <!--<groupId>org.mockito</groupId>-->
+        <!--<artifactId>mockito-scala_2.12</artifactId>-->
+        <!--<version>1.0.0-beta.4</version>-->
+        <!--</dependency>-->
+        <!--END of Scala testing-->
 
         <!--Enumeratum-->
         <dependency>
