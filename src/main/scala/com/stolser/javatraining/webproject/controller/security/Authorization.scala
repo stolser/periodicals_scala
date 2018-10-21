@@ -5,21 +5,23 @@ import java.util.regex.{Matcher, Pattern}
 import java.util.{Collections, HashMap, HashSet, Map, Optional, Set}
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.CURRENT_USER_ATTR_NAME
-import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProviderImpl._
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils.{filterRequestByHttpMethod, filterRequestByUri}
 import javax.servlet.http.HttpServletRequest
+
+import scala.collection.mutable
 
 /**
   * Created by Oleg Stoliarov on 10/12/18.
   * Encapsulates information about resource access permissions of each type of roles.
   */
 object Authorization {
-	private val permissionMapping = new util.HashMap[String, util.Set[User.Role]]
+	private val permissionMapping = new util.HashMap[String, util.Set[UserRole.Value]]
 	private val USERS_URI_WITH_ID = "/backend/users/\\d+"
 
-	val admin = new util.HashSet[User.Role](Collections.singletonList(User.Role.ADMIN))
+	val admin = new util.HashSet[UserRole.Value](Collections.singletonList(UserRole.ADMIN))
 
 	permissionMapping.put(GET_ALL_USERS_REQUEST_PATTERN, admin)
 	permissionMapping.put(GET_CREATE_PERIODICAL_REQUEST_PATTERN, admin)
@@ -58,20 +60,21 @@ object Authorization {
 
 	private def getPermissionMapping(request: HttpServletRequest) =
 		permissionMapping.entrySet.stream
-			.filter((entry: util.Map.Entry[String, util.Set[User.Role]]) => filterRequestByHttpMethod(request, entry.getKey))
-			.filter((entry: util.Map.Entry[String, util.Set[User.Role]]) => filterRequestByUri(request, entry.getKey))
+			.filter((entry: util.Map.Entry[String, util.Set[UserRole.Value]]) => filterRequestByHttpMethod(request, entry.getKey))
+			.filter((entry: util.Map.Entry[String, util.Set[UserRole.Value]]) => filterRequestByUri(request, entry.getKey))
 			.findFirst
 
-	private def isPermissionGranted(permissionMapping: util.Map.Entry[String, util.Set[User.Role]], request: HttpServletRequest) = {
-		val userRoles = getUserFromSession(request).getRoles
+	private def isPermissionGranted(permissionMapping: util.Map.Entry[String, util.Set[UserRole.Value]], request: HttpServletRequest) = {
+		import scala.collection.JavaConverters._
+		val userRoles = getUserFromSession(request).getRoles.asJava
 		val legitRoles = permissionMapping.getValue
 		hasUserLegitRole(userRoles, legitRoles)
 	}
 
 	private def getUserFromSession(request: HttpServletRequest) = request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User]
 
-	private def hasUserLegitRole(userRoles: util.Set[User.Role], legitRoles: util.Set[User.Role]) = {
-		val userLegitRoles = new util.HashSet[User.Role](legitRoles)
+	private def hasUserLegitRole(userRoles: util.Set[UserRole.Value], legitRoles: util.Set[UserRole.Value]) = {
+		val userLegitRoles = new util.HashSet[UserRole.Value](legitRoles)
 		userLegitRoles.retainAll(userRoles)
 		!userLegitRoles.isEmpty
 	}

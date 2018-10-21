@@ -9,7 +9,7 @@ import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
 import com.stolser.javatraining.webproject.dao.SubscriptionDao
 import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
-import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
+import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
 
 /**
@@ -58,7 +58,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 	}
 
 	override def findAllByPeriodicalIdAndStatus(periodicalId: Long,
-												status: Subscription.Status): util.List[Subscription] = {
+												status: SubscriptionStatus.Value): util.List[Subscription] = {
 		val sqlStatement = "SELECT * FROM subscriptions " +
 			"JOIN periodicals ON (subscriptions.periodical_id = periodicals.id) " +
 			"WHERE periodicals.id = ? AND subscriptions.status = ?"
@@ -67,7 +67,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, periodicalId)
-					st.setString(2, status.name.toLowerCase)
+					st.setString(2, status.toString.toLowerCase)
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
@@ -85,22 +85,22 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 
 	@throws[SQLException]
 	private def newSubscriptionFromRs(rs: ResultSet) = {
-		val user = (new User.Builder)
-			.setId(rs.getLong(DB_SUBSCRIPTIONS_USER_ID))
-			.build()
+		val user = User(
+			id = rs.getLong(DB_SUBSCRIPTIONS_USER_ID)
+		)
 
-		val periodical = (new Periodical.Builder)
-			.setId(rs.getLong(DB_SUBSCRIPTIONS_PERIODICAL_ID))
-			.build()
+		val periodical = Periodical(
+			id = rs.getLong(DB_SUBSCRIPTIONS_PERIODICAL_ID)
+		)
 
-		(new Subscription.Builder)
-			.setId(rs.getLong(DB_SUBSCRIPTIONS_ID))
-			.setUser(user)
-			.setPeriodical(periodical)
-			.setDeliveryAddress(rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS))
-			.setEndDate(rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant)
-			.setStatus(Subscription.Status.valueOf(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase))
-			.build
+		Subscription(
+			id = rs.getLong(DB_SUBSCRIPTIONS_ID),
+			user = user,
+			periodical = periodical,
+			deliveryAddress = rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS),
+			endDate = rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant,
+			status = SubscriptionStatus.withName(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase)
+		)
 	}
 
 	override def findAllByUser(user: User): util.List[Subscription] = {
@@ -117,17 +117,15 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							val subscriptions = new util.ArrayList[Subscription]
-							while (rs.next) {
-								val subscription = (new Subscription.Builder)
-									.setId(rs.getLong(DB_SUBSCRIPTIONS_ID))
-									.setUser(user)
-									.setPeriodical(DaoUtils.getPeriodicalFromResultSet(rs))
-									.setDeliveryAddress(rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS))
-									.setEndDate(rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant)
-									.setStatus(Subscription.Status.valueOf(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase))
-									.build()
-								subscriptions.add(subscription)
-							}
+							while (rs.next)
+								subscriptions.add(Subscription(
+									id = rs.getLong(DB_SUBSCRIPTIONS_ID),
+									user = user,
+									periodical = DaoUtils.getPeriodicalFromResultSet(rs),
+									deliveryAddress = rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS),
+									endDate = rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant,
+									status = SubscriptionStatus.withName(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase)
+								))
 
 							subscriptions
 					}
@@ -159,7 +157,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 		st.setLong(2, subscription.getPeriodical.getId)
 		st.setString(3, subscription.getDeliveryAddress)
 		st.setTimestamp(4, new Timestamp(subscription.getEndDate.toEpochMilli))
-		st.setString(5, subscription.getStatus.name.toLowerCase)
+		st.setString(5, subscription.getStatus.toString.toLowerCase)
 	}
 
 	override def update(subscription: Subscription): Int = {

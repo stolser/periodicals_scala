@@ -37,7 +37,7 @@
         <!--Enumeratum-->
         <dependency>
             <groupId>com.beachape</groupId>
-            <artifactId>enumeratum_2.11</artifactId>
+            <artifactId>enumeratum_2.12</artifactId>
             <version>1.5.13</version>
         </dependency>
 

@@ -3,7 +3,7 @@ package com.stolser.javatraining.webproject.service
 import java.util
 import java.util.List
 
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
 
 /**
@@ -16,7 +16,7 @@ trait PeriodicalService {
 
 	def findAll: util.List[Periodical]
 
-	def findAllByStatus(status: Periodical.Status): util.List[Periodical]
+	def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical]
 
 	/**
 	  * If the id of this periodical is 0, creates a new one. Otherwise tries to update

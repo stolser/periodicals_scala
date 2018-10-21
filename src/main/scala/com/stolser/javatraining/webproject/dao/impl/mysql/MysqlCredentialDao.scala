@@ -45,13 +45,12 @@ class MysqlCredentialDao(conn: Connection) extends CredentialDao {
 		}
 	}
 
-	def getCredentialFromResultSet(rs: ResultSet): Credential = {
-		(new Credential.Builder)
-			.setId(rs.getLong(DB_CREDENTIALS_ID))
-			.setUserName(rs.getString(DB_CREDENTIALS_USER_NAME))
-			.setPasswordHash(rs.getString(DB_CREDENTIALS_PASSWORD_HASH))
-			.build()
-	}
+	def getCredentialFromResultSet(rs: ResultSet): Credential =
+		Credential(
+			id = rs.getLong(DB_CREDENTIALS_ID),
+			userName = rs.getString(DB_CREDENTIALS_USER_NAME),
+			passwordHash = rs.getString(DB_CREDENTIALS_PASSWORD_HASH)
+		)
 
 	override def createNew(credential: Credential): Boolean = {
 		val sqlStatement = "INSERT INTO credentials (user_name, password_hash, user_id) " +

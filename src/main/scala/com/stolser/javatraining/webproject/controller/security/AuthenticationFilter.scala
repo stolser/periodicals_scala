@@ -4,13 +4,9 @@ import java.util
 import java.util.Objects.isNull
 import java.util.{Arrays, List}
 
-import com.stolser.javatraining.webproject.controller.ApplicationResources.{
-	LOGIN_PAGE,
-	ORIGINAL_URI_ATTR_NAME,
-	SIGN_OUT_URI
-}
+import com.stolser.javatraining.webproject.controller.ApplicationResources.{LOGIN_PAGE, ORIGINAL_URI_ATTR_NAME, SIGN_OUT_URI}
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
 import javax.servlet._
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
@@ -50,7 +46,7 @@ class AuthenticationFilter extends Filter {
 		unProtectedUris.contains(request.getRequestURI)
 
 	private def isUserNotActive(currentUser: User) =
-		User.Status.ACTIVE != currentUser.getStatus
+		UserStatus.ACTIVE != currentUser.getStatus
 
 
 	override def destroy(): Unit = {}

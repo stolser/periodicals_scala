@@ -11,7 +11,7 @@ import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage
 import com.stolser.javatraining.webproject.controller.security.AccessDeniedException
 import com.stolser.javatraining.webproject.dao.exception.DaoException
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.service.UserService
 import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
@@ -50,19 +50,16 @@ object HttpUtils {
 	/**
 	  * Creates a new periodical using the data from the request.
 	  */
-	def getPeriodicalFromRequest(request: HttpServletRequest): Periodical = {
-		val periodicalBuilder: Periodical.Builder = new Periodical.Builder
-		periodicalBuilder
-			.setId(java.lang.Long.parseLong(request.getParameter(ENTITY_ID_PARAM_NAME)))
-			.setName(request.getParameter(PERIODICAL_NAME_PARAM_NAME))
-			.setCategory(PeriodicalCategory.valueOf(request.getParameter(PERIODICAL_CATEGORY_PARAM_NAME).toUpperCase))
-			.setPublisher(request.getParameter(PERIODICAL_PUBLISHER_PARAM_NAME))
-			.setDescription(request.getParameter(PERIODICAL_DESCRIPTION_PARAM_NAME).trim)
-			.setOneMonthCost(java.lang.Long.parseLong(request.getParameter(PERIODICAL_COST_PARAM_NAME)))
-			.setStatus(Periodical.Status.valueOf(request.getParameter(PERIODICAL_STATUS_PARAM_NAME).toUpperCase))
-
-		periodicalBuilder.build
-	}
+	def getPeriodicalFromRequest(request: HttpServletRequest): Periodical =
+		Periodical(
+			id = java.lang.Long.parseLong(request.getParameter(ENTITY_ID_PARAM_NAME)),
+			name = request.getParameter(PERIODICAL_NAME_PARAM_NAME),
+			category = PeriodicalCategory.withName(request.getParameter(PERIODICAL_CATEGORY_PARAM_NAME).toUpperCase),
+			publisher = request.getParameter(PERIODICAL_PUBLISHER_PARAM_NAME),
+			description = request.getParameter(PERIODICAL_DESCRIPTION_PARAM_NAME).trim,
+			oneMonthCost = java.lang.Long.parseLong(request.getParameter(PERIODICAL_COST_PARAM_NAME)),
+			status = PeriodicalStatus.withName(request.getParameter(PERIODICAL_STATUS_PARAM_NAME).toUpperCase)
+		)
 
 	/**
 	  * Tries to find the first number in the uri.

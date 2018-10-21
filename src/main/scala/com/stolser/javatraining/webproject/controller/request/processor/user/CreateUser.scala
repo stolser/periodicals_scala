@@ -9,7 +9,7 @@ import com.stolser.javatraining.webproject.controller.form.validator.ValidatorFa
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.user.{Credential, User}
+import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.stolser.javatraining.webproject.service.UserService
 import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
@@ -31,7 +31,7 @@ object CreateUser extends RequestProcessor {
 		val userEmail: String = request.getParameter(USER_EMAIL_PARAM_NAME)
 		val password: String = request.getParameter(USER_PASSWORD_PARAM_NAME)
 		val repeatPassword: String = request.getParameter(USER_REPEAT_PASSWORD_PARAM_NAME)
-		val userRole: User.Role = User.Role.valueOf(request.getParameter(USER_ROLE_PARAM_NAME).toUpperCase)
+		val userRole: UserRole.Value = UserRole.withName(request.getParameter(USER_ROLE_PARAM_NAME).toUpperCase)
 
 		if (!arePasswordsValidAndEqual(password, repeatPassword))
 			formMessages.put(USER_PASSWORD_PARAM_NAME, messageFactory.getError(MSG_VALIDATION_PASSWORDS_ARE_NOT_EQUAL))
@@ -54,14 +54,15 @@ object CreateUser extends RequestProcessor {
 		REDIRECT + redirectUri
 	}
 
-	private def createUser(username: String, userEmail: String, password: String, userRole: User.Role) = {
-		val credentialBuilder = new Credential.Builder
-		credentialBuilder.setUserName(username).setPasswordHash(HttpUtils.getPasswordHash(password))
-		val userBuilder = new User.Builder
-		userBuilder.setStatus(User.Status.ACTIVE)
-		userBuilder.setEmail(userEmail)
-		userService.createNewUser(userBuilder.build, credentialBuilder.build, userRole)
-	}
+	private def createUser(username: String, userEmail: String, password: String, userRole: UserRole.Value) =
+		userService.createNewUser(
+			User(
+				status = UserStatus.ACTIVE,
+				email = userEmail),
+			Credential(
+				userName = username,
+				passwordHash = HttpUtils.getPasswordHash(password)),
+			userRole)
 
 	private def arePasswordsValidAndEqual(password: String, repeatPassword: String) = {
 		val validationResult = ValidatorFactory.getUserPasswordValidator.validate(password, null).statusCode

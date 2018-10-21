@@ -85,6 +85,7 @@ object ApplicationResources {
 	val MSG_KEY_CATEGORY_SPORTS = "category.sports"
 	val MSG_KEY_CATEGORY_SCIENCE_AND_ENGINEERING = "category.scienceAndEngineering"
 	val MSG_KEY_CATEGORY_TRAVELLING = "category.travelling"
+	val MSG_KEY_CATEGORY_UNKNOWN = "category.unknown"
 
 	val MSG_SUCCESS = "validation.ok"
 	val MSG_CREDENTIALS_ARE_NOT_CORRECT = "validation.credentialsAreNotCorrect"

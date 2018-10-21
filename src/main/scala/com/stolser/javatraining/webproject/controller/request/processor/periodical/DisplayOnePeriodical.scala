@@ -3,15 +3,12 @@ package com.stolser.javatraining.webproject.controller.request.processor.periodi
 import java.util.NoSuchElementException
 import java.util.Objects.isNull
 
-import com.stolser.javatraining.webproject.controller.ApplicationResources.{
-	ONE_PERIODICAL_VIEW_NAME,
-	PERIODICAL_ATTR_NAME
-}
+import com.stolser.javatraining.webproject.controller.ApplicationResources.{ONE_PERIODICAL_VIEW_NAME, PERIODICAL_ATTR_NAME}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.security.AccessDeniedException
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
-import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import com.stolser.javatraining.webproject.service.PeriodicalService
 import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -45,6 +42,6 @@ object DisplayOnePeriodical extends RequestProcessor {
 	}
 
 	private def hasUserNotEnoughPermissions(currentUser: User, periodicalInDb: Periodical) =
-		!(Periodical.Status.ACTIVE == periodicalInDb.getStatus) &&
-			!currentUser.hasRole(User.Role.ADMIN)
+		!(PeriodicalStatus.ACTIVE == periodicalInDb.getStatus) &&
+			!currentUser.hasRole(UserRole.ADMIN)
 }

@@ -22,6 +22,6 @@ object PeriodicalCategoryValidator extends AbstractValidator {
 
 	private def isCategoryNameCorrect(category: String) =
 		PeriodicalCategory.values
-			.map(_.name)
+			.map(_.toString)
 			.contains(category)
 }

@@ -185,13 +185,12 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 
 	@throws[SQLException]
 	private def getInvoiceFromRs(rs: ResultSet): Invoice = {
-		val user: User = (new User.Builder)
-			.setId(rs.getLong(DB_INVOICES_USER_ID))
-			.build()
-
-		val periodical: Periodical = (new Periodical.Builder)
-			.setId(rs.getLong(DB_INVOICES_PERIODICAL_ID))
-			.build()
+		val user = User(
+			id = rs.getLong(DB_INVOICES_USER_ID)
+		)
+		val periodical = Periodical(
+			id = rs.getLong(DB_INVOICES_PERIODICAL_ID)
+		)
 
 		Invoice(id = rs.getLong(DB_INVOICES_ID),
 			user = user,

@@ -7,7 +7,7 @@ import com.stolser.javatraining.webproject.controller.ApplicationResources.{ONE_
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
-import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
+import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl, SubscriptionServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService, SubscriptionService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -61,7 +61,7 @@ object DisplayCurrentUser extends RequestProcessor {
 	private def sortSubscriptions(subscriptions: util.List[Subscription]): Unit = {
 		subscriptions.sort((first, second) => {
 			if (first.getStatus == second.getStatus) first.getEndDate.compareTo(second.getEndDate)
-			else if (first.getStatus == Subscription.Status.ACTIVE) -1
+			else if (first.getStatus == SubscriptionStatus.ACTIVE) -1
 			else 1
 		})
 	}

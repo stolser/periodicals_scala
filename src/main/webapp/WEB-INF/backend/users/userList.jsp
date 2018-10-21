@@ -32,7 +32,7 @@
                     <td><fmt:message key="${user.status}" bundle="${langUser}"/></td>
                     <td>
                         <ul>
-                            <c:forEach items="${user.roles}" var="role" varStatus="rowCount">
+                            <c:forEach items="${user.rolesAsJavaCollection}" var="role" varStatus="rowCount">
                                 <li><fmt:message key="${role}" bundle="${general}"/></li>
                             </c:forEach>
                         </ul>

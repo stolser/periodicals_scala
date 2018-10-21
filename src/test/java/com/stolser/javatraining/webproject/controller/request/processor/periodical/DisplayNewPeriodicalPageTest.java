@@ -18,7 +18,7 @@ public class DisplayNewPeriodicalPageTest {
 
     @Before
     public void setUp() throws Exception {
-        when(session.getAttribute(PERIODICAL_ATTR_NAME())).thenReturn(new Periodical());
+        when(session.getAttribute(PERIODICAL_ATTR_NAME())).thenReturn(Periodical.apply());
         when(request.getSession()).thenReturn(session);
 
     }

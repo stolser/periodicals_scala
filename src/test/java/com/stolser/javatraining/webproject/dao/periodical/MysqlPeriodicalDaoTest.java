@@ -6,6 +6,7 @@ import com.stolser.javatraining.webproject.dao.DaoFactory;
 import com.stolser.javatraining.webproject.dao.PeriodicalDao;
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical;
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalCategory;
+import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -29,13 +30,8 @@ public class MysqlPeriodicalDaoTest {
         factory = DaoFactory.getMysqlDaoFactory();
         periodicalDao = factory.getPeriodicalDao(conn);
 
-        Periodical.Builder periodicalBuilder = new Periodical.Builder();
-        periodicalBuilder.setName(PERIODICAL_NAME)
-                .setCategory(PeriodicalCategory.NEWS)
-                .setOneMonthCost(ONE_MONTH_COST)
-                .setStatus(Periodical.Status.INACTIVE);
-
-        expected = periodicalBuilder.build();
+        expected = Periodical.apply(0, "", PeriodicalCategory.NEWS$.MODULE$, "", "",
+                ONE_MONTH_COST, PeriodicalStatus.INACTIVE());
     }
 
     @Test
@@ -69,9 +65,9 @@ public class MysqlPeriodicalDaoTest {
         int inActiveExpectedNumber = 2;
         int discardedExpectedNumber = 1;
 
-        int activeActualNumber = periodicalDao.findAllByStatus(Periodical.Status.ACTIVE).size();
-        int inActiveActualNumber = periodicalDao.findAllByStatus(Periodical.Status.INACTIVE).size();
-        int discardedActualNumber = periodicalDao.findAllByStatus(Periodical.Status.DISCARDED).size();
+        int activeActualNumber = periodicalDao.findAllByStatus(PeriodicalStatus.ACTIVE()).size();
+        int inActiveActualNumber = periodicalDao.findAllByStatus(PeriodicalStatus.INACTIVE()).size();
+        int discardedActualNumber = periodicalDao.findAllByStatus(PeriodicalStatus.DISCARDED()).size();
 
         assertEquals("active periodicals", activeExpectedNumber, activeActualNumber);
         assertEquals("inActive periodicals", inActiveExpectedNumber, inActiveActualNumber);
@@ -85,11 +81,11 @@ public class MysqlPeriodicalDaoTest {
         int discardedNewsExpectedNumber = 1;
 
         int activeNewsActualNumber = periodicalDao.findNumberOfPeriodicalsWithCategoryAndStatus(
-                PeriodicalCategory.NEWS, Periodical.Status.ACTIVE);
+                PeriodicalCategory.NEWS$.MODULE$, PeriodicalStatus.ACTIVE());
         int inActiveNewsActualNumber = periodicalDao.findNumberOfPeriodicalsWithCategoryAndStatus(
-                PeriodicalCategory.NEWS, Periodical.Status.INACTIVE);
+                PeriodicalCategory.NEWS$.MODULE$, PeriodicalStatus.INACTIVE());
         int discardedNewsActualNumber = periodicalDao.findNumberOfPeriodicalsWithCategoryAndStatus(
-                PeriodicalCategory.NEWS, Periodical.Status.DISCARDED);
+                PeriodicalCategory.NEWS$.MODULE$, PeriodicalStatus.DISCARDED());
 
         assertEquals("activeNews periodicals", activeNewsExpectedNumber, activeNewsActualNumber);
         assertEquals("inActiveNews periodicals", inActiveNewsExpectedNumber, inActiveNewsActualNumber);

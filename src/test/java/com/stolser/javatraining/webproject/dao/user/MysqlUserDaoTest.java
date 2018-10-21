@@ -5,11 +5,13 @@ import com.stolser.javatraining.webproject.dao.AbstractConnection;
 import com.stolser.javatraining.webproject.dao.DaoFactory;
 import com.stolser.javatraining.webproject.dao.UserDao;
 import com.stolser.javatraining.webproject.model.entity.user.User;
+import com.stolser.javatraining.webproject.model.entity.user.UserStatus;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.assertEquals;
@@ -28,15 +30,8 @@ public class MysqlUserDaoTest {
         factory = DaoFactory.getMysqlDaoFactory();
         userDao = factory.getUserDao(conn);
 
-        User.Builder userBuilder = new User.Builder();
-        userBuilder.setUserName("stolser")
-                .setFirstName("Oleg")
-                .setLastName("Stoliarov")
-                .setEmail("stolser@gmail.com")
-                .setStatus(User.Status.ACTIVE);
-
-        expected = userBuilder.build();
-
+        expected = User.apply(0, "stolser", "Oleg", "Stoliarov", new Date(), "stolser@gmail.com",
+                 "", UserStatus.ACTIVE(), null);
     }
 
     @Test

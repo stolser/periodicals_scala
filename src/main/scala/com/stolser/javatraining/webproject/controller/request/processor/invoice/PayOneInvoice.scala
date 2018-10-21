@@ -9,7 +9,7 @@ import com.stolser.javatraining.webproject.controller.message.{FrontMessageFacto
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -79,7 +79,7 @@ object PayOneInvoice extends RequestProcessor {
 
 	private def isPeriodicalActive(invoiceInDb: Invoice) = {
 		val periodicalInDb = periodicalService.findOneById(getPeriodicalIdFromInvoice(invoiceInDb))
-		Periodical.Status.ACTIVE == periodicalInDb.getStatus
+		PeriodicalStatus.ACTIVE == periodicalInDb.getStatus
 	}
 
 	private def getPeriodicalIdFromInvoice(invoiceInDb: Invoice) = invoiceInDb.periodical.getId

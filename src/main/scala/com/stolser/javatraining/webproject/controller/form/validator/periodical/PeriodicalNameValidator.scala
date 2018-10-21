@@ -6,7 +6,7 @@ import java.util.regex.Pattern
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.form.validator.{AbstractValidator, ValidationProcessorException, ValidationResult}
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType}
 import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.HttpServletRequest
 
@@ -33,17 +33,17 @@ object PeriodicalNameValidator extends AbstractValidator {
 		val periodicalWithSuchNameInDb = periodicalService.findOneByName(periodicalName)
 		val operationType =
 			try
-				Periodical.OperationType.valueOf(request.getParameter(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME).toUpperCase)
+				PeriodicalOperationType.withName(request.getParameter(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME).toUpperCase)
 			catch {
 				case e: IllegalArgumentException =>
 					throw new ValidationProcessorException(INCORRECT_ENTITY_OPERATION_TYPE_DURING_VALIDATION, e)
 			}
 
-		def isOperationCreate(periodicalOperationType: Periodical.OperationType) =
-			Periodical.OperationType.CREATE == periodicalOperationType
+		def isOperationCreate(periodicalOperationType: PeriodicalOperationType.Value) =
+			PeriodicalOperationType.CREATE == periodicalOperationType
 
-		def isOperationUpdate(periodicalOperationType: Periodical.OperationType) =
-			Periodical.OperationType.UPDATE == periodicalOperationType
+		def isOperationUpdate(periodicalOperationType: PeriodicalOperationType.Value) =
+			PeriodicalOperationType.UPDATE == periodicalOperationType
 
 		/*
 		 * if this is 'create' --> there must not be any periodical with the same name in the db;

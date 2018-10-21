@@ -9,8 +9,8 @@ import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 import com.stolser.javatraining.webproject.dao.PeriodicalDao
 import com.stolser.javatraining.webproject.dao.DaoUtils._
 import com.stolser.javatraining.webproject.dao.exception.DaoException
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
-import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
+import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -106,13 +106,13 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 		}
 	}
 
-	override def findAllByStatus(status: Periodical.Status): util.List[Periodical] = {
+	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] = {
 		val sqlStatement: String = "SELECT * FROM periodicals WHERE status = ?"
 
 		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ALL_BY_STATUS.format(status)) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
-					st.setString(1, status.name.toLowerCase)
+					st.setString(1, status.toString.toLowerCase)
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet => {
@@ -130,15 +130,15 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 	}
 
 	override def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory,
-															  status: Periodical.Status): Int = {
+															  status: PeriodicalStatus.Value): Int = {
 		val sqlStatement: String = "SELECT COUNT(id) FROM periodicals " +
 			"WHERE category = ? AND status = ?"
 
 		tryAndCatchSqlException(EXCEPTION_DURING_GETTING_NUMBER_OF_PERIODICALS.format(category, status)) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
-					st.setString(1, category.name.toLowerCase)
-					st.setString(2, status.name.toLowerCase)
+					st.setString(1, category.toString.toLowerCase)
+					st.setString(2, status.toString.toLowerCase)
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet => {
@@ -171,11 +171,11 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 	private def setStatementFromPeriodical(st: PreparedStatement,
 										   periodical: Periodical): Unit = {
 		st.setString(1, periodical.getName)
-		st.setString(2, periodical.getCategory.name.toLowerCase)
+		st.setString(2, periodical.getCategory.toString.toLowerCase)
 		st.setString(3, periodical.getPublisher)
 		st.setString(4, periodical.getDescription)
 		st.setLong(5, periodical.getOneMonthCost)
-		st.setString(6, periodical.getStatus.name.toLowerCase)
+		st.setString(6, periodical.getStatus.toString.toLowerCase)
 	}
 
 	override def update(periodical: Periodical): Int = {
@@ -206,7 +206,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
 					st.setLong(7, periodical.getId)
-					st.setString(8, Subscription.Status.ACTIVE.name.toLowerCase)
+					st.setString(8, SubscriptionStatus.ACTIVE.toString.toLowerCase)
 
 					st.executeUpdate()
 				}
@@ -220,7 +220,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_DELETING_DISCARDED_PERIODICALS) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
-					st.setString(1, Periodical.Status.DISCARDED.name)
+					st.setString(1, PeriodicalStatus.DISCARDED.toString)
 
 					st.executeUpdate
 				}

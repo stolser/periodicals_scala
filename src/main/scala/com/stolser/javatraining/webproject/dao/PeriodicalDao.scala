@@ -3,7 +3,7 @@ package com.stolser.javatraining.webproject.dao
 import java.util
 import java.util.List
 
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 
 /**
   * Created by Oleg Stoliarov on 10/13/18.
@@ -11,9 +11,9 @@ import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, 
 trait PeriodicalDao extends GenericDao[Periodical] {
 	def findOneByName(name: String): Periodical
 
-	def findAllByStatus(status: Periodical.Status): util.List[Periodical]
+	def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical]
 
-	def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory, status: Periodical.Status): Int
+	def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory, status: PeriodicalStatus.Value): Int
 
 	/**
 	  * Updates a periodical and sets a new status 'discarded' only if there is no active subscriptions

@@ -2,7 +2,7 @@ package com.stolser.javatraining.webproject.controller.request.processor.sign
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.SIGN_UP_PAGE_VIEW_NAME
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
@@ -10,7 +10,9 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   */
 object DisplaySignUpPage extends RequestProcessor {
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
-		request.setAttribute("roles", User.Role.values)
+		import scala.collection.JavaConverters._
+
+		request.setAttribute("roles", UserRole.values.asJava)
 		FORWARD + SIGN_UP_PAGE_VIEW_NAME
 	}
 }

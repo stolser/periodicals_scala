@@ -8,7 +8,7 @@ import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.user.{Credential, User}
+import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.stolser.javatraining.webproject.service.UserService
 import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
@@ -63,7 +63,7 @@ object SignIn extends RequestProcessor {
 		redirectUri
 	}
 
-	private def isUserActive(currentUser: User) = currentUser.getStatus == User.Status.ACTIVE
+	private def isUserActive(currentUser: User) = currentUser.getStatus == UserStatus.ACTIVE
 
 	private def signInUserAndGetRedirectUri(request: HttpServletRequest, currentUser: User) = {
 		val session = request.getSession
@@ -81,7 +81,7 @@ object SignIn extends RequestProcessor {
 	private def getRedirectUri(request: HttpServletRequest, currentUser: User) = {
 		val originalUri = request.getSession.getAttribute(ORIGINAL_URI_ATTR_NAME).asInstanceOf[String]
 		val defaultUri =
-			if (currentUser.hasRole(User.Role.ADMIN)) ADMIN_PANEL_URI
+			if (currentUser.hasRole(UserRole.ADMIN)) ADMIN_PANEL_URI
 			else CURRENT_USER_ACCOUNT_URI
 
 		if (nonNull(originalUri) && (!(SIGN_OUT_URI == originalUri))) originalUri

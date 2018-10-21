@@ -51,7 +51,7 @@
                     <fmt:message key="user.roles.label" bundle="${langUser}"/></label>
                 <div class="col-xs-8">
                     <ul>
-                        <c:forEach items="${currentUser.roles}" var="role">
+                        <c:forEach items="${currentUser.rolesAsJavaCollection}" var="role">
                             <li><fmt:message key="${role}" bundle="${general}"/></li>
                         </c:forEach>
                     </ul>

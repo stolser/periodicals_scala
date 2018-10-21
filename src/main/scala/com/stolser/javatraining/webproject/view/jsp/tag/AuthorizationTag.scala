@@ -5,7 +5,7 @@ import java.util.Objects.nonNull
 import java.util.stream.Collectors
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources
-import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.jsp.JspException
 import javax.servlet.jsp.tagext.{Tag, TagSupport}
 
@@ -42,7 +42,7 @@ class AuthorizationTag extends TagSupport {
 			true
 		else {
 			val legitRoles = parseUserRoles(mustHaveRoles).asJava
-			val userRoles = new util.HashSet[User.Role](user.getRoles)
+			val userRoles = new util.HashSet[UserRole.Value](user.getRoles.asJava)
 			userRoles.retainAll(legitRoles)
 
 			!userRoles.isEmpty
@@ -51,7 +51,7 @@ class AuthorizationTag extends TagSupport {
 	private def parseUserRoles(userRoles: String) = {
 		if (nonNull(userRoles)) {
 			userRoles.split(" ")
-				.map((roleStr: String) => User.Role.valueOf(roleStr.toUpperCase()))
+				.map((roleStr: String) => UserRole.withName(roleStr.toUpperCase()))
 				.toSet
 		} else
 			Set()
@@ -62,20 +62,19 @@ class AuthorizationTag extends TagSupport {
 			false
 		else {
 			val prohibitedRoles = parseUserRoles(mustNotHaveRoles).asJava
-			val userRoles = new util.HashSet[User.Role](user.getRoles)
+			val userRoles = new util.HashSet[UserRole.Value](user.getRoles.asJava)
 			userRoles.retainAll(prohibitedRoles)
 
 			userRoles.isEmpty
 		}
 
-	//	def getMustHaveRoles: String = mustHaveRoles
-	//
+	def getMustHaveRoles: String = mustHaveRoles
+
 	def setMustHaveRoles(mustHaveRoles: String): Unit =
 		this.mustHaveRoles = mustHaveRoles
 
-	//
-	//	def getMustNotHaveRoles: String = mustNotHaveRoles
-	//
+	def getMustNotHaveRoles: String = mustNotHaveRoles
+
 	def setMustNotHaveRoles(mustNotHaveRoles: String): Unit =
 		this.mustNotHaveRoles = mustNotHaveRoles
 }

@@ -42,8 +42,8 @@ public class SubscriptionServiceImplTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        user = new User();
-        userSubscriptions.add(new Subscription());
+        user = User.apply();
+        userSubscriptions.add(Subscription.apply());
 
         when(connectionPool.getConnection()).thenReturn(conn);
 

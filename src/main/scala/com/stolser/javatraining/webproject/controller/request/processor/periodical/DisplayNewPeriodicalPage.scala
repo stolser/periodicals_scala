@@ -7,7 +7,7 @@ import java.util.Objects.nonNull
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalOperationType, PeriodicalStatus}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
@@ -23,6 +23,8 @@ object DisplayNewPeriodicalPage extends RequestProcessor {
 	}
 
 	private def setRequestAttributes(request: HttpServletRequest): Unit = {
+		import scala.collection.JavaConverters.asJavaIterableConverter
+
 		val periodicalFromSession: Periodical = getPeriodicalFromSession(request)
 		val periodicalToForward: Periodical =
 			if (nonNull(periodicalFromSession)) periodicalFromSession
@@ -30,9 +32,9 @@ object DisplayNewPeriodicalPage extends RequestProcessor {
 
 		request.setAttribute(MESSAGES_ATTR_NAME, getMessagesFromSession(request))
 		request.setAttribute(PERIODICAL_ATTR_NAME, periodicalToForward)
-		request.setAttribute(PERIODICAL_STATUSES_ATTR_NAME, Periodical.Status.values)
-		request.setAttribute(PERIODICAL_CATEGORIES_ATTR_NAME, PeriodicalCategory.values)
-		request.setAttribute(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME, Periodical.OperationType.CREATE.name.toLowerCase)
+		request.setAttribute(PERIODICAL_STATUSES_ATTR_NAME, PeriodicalStatus.values.asJava)
+		request.setAttribute(PERIODICAL_CATEGORIES_ATTR_NAME, PeriodicalCategory.values.asJava)
+		request.setAttribute(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME, PeriodicalOperationType.CREATE.toString.toLowerCase)
 	}
 
 	private def getPeriodicalFromSession(request: HttpServletRequest) =

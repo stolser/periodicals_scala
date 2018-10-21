@@ -5,9 +5,9 @@ import java.util.{ArrayList, List, NoSuchElementException}
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
 import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory, PeriodicalDao}
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
-import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
+import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.service.ServiceUtils.withAbstractConnectionResource
 import com.stolser.javatraining.webproject.service.{PeriodicalService, ServiceUtils}
 
@@ -34,7 +34,7 @@ object PeriodicalServiceImpl extends PeriodicalService {
 			factory.getPeriodicalDao(conn).findAll
 		}
 
-	override def findAllByStatus(status: Periodical.Status): util.List[Periodical] =
+	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] =
 		withAbstractConnectionResource { conn =>
 			factory.getPeriodicalDao(conn).findAllByStatus(status)
 		}
@@ -79,7 +79,7 @@ object PeriodicalServiceImpl extends PeriodicalService {
 	override def hasActiveSubscriptions(periodicalId: Long): Boolean =
 		withAbstractConnectionResource { conn =>
 			!factory.getSubscriptionDao(conn)
-				.findAllByPeriodicalIdAndStatus(periodicalId, Subscription.Status.ACTIVE)
+				.findAllByPeriodicalIdAndStatus(periodicalId, SubscriptionStatus.ACTIVE)
 				.isEmpty
 		}
 
@@ -97,17 +97,18 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	private def getPeriodicalNumberByCategory(dao: PeriodicalDao,
 											  category: PeriodicalCategory): PeriodicalNumberByCategory = {
-		val active = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
-			Periodical.Status.ACTIVE)
-		val inActive = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
-			Periodical.Status.INACTIVE)
-		val discarded = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
-			Periodical.Status.DISCARDED)
+		val activeNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
+			PeriodicalStatus.ACTIVE)
+		val inActiveNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
+			PeriodicalStatus.INACTIVE)
+		val discardedNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
+			PeriodicalStatus.DISCARDED)
 
-		PeriodicalNumberByCategory.newBuilder(category)
-			.setActive(active)
-			.setInActive(inActive)
-			.setDiscarded(discarded)
-			.build
+		PeriodicalNumberByCategory(
+			category = category,
+			active = activeNumber,
+			inActive = inActiveNumber,
+			discarded = discardedNumber
+		)
 	}
 }

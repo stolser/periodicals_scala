@@ -10,7 +10,7 @@ import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory, 
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.statistics.FinancialStatistics
-import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
+import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.service.ServiceUtils.withAbstractConnectionResource
 import com.stolser.javatraining.webproject.service.{InvoiceService, ServiceUtils}
@@ -74,30 +74,27 @@ object InvoiceServiceImpl extends InvoiceService {
 										   subscriptionPeriod: Int,
 										   subscriptionDao: SubscriptionDao): Unit = {
 		val newEndDate =
-			if (Subscription.Status.INACTIVE == existingSubscription.getStatus)
+			if (SubscriptionStatus.INACTIVE == existingSubscription.getStatus)
 				getEndDate(Instant.now, subscriptionPeriod)
 			else
 				getEndDate(existingSubscription.getEndDate, subscriptionPeriod)
 
-		existingSubscription.setEndDate(newEndDate)
-		existingSubscription.setStatus(Subscription.Status.ACTIVE)
+		existingSubscription.endDate = newEndDate
+		existingSubscription.status = SubscriptionStatus.ACTIVE
 		subscriptionDao.update(existingSubscription)
 	}
 
 	private def createAndPersistNewSubscription(userFromDb: User,
 												periodical: Periodical,
 												subscriptionPeriod: Int,
-												subscriptionDao: SubscriptionDao): Unit = {
-		val subscription = (new Subscription.Builder)
-			.setUser(userFromDb)
-			.setPeriodical(periodical)
-			.setDeliveryAddress(userFromDb.getAddress)
-			.setEndDate(getEndDate(Instant.now, subscriptionPeriod))
-			.setStatus(Subscription.Status.ACTIVE)
-			.build()
-
-		subscriptionDao.createNew(subscription)
-	}
+												subscriptionDao: SubscriptionDao): Unit =
+		subscriptionDao.createNew(Subscription(
+			user = userFromDb,
+			periodical = periodical,
+			deliveryAddress = userFromDb.getAddress,
+			endDate = getEndDate(Instant.now, subscriptionPeriod),
+			status = SubscriptionStatus.ACTIVE
+		))
 
 	private def getEndDate(startInstant: Instant,
 						   subscriptionPeriod: Int) = {

@@ -14,7 +14,7 @@ object DisplayAllUsers extends RequestProcessor {
 	private val userService = UserServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
-		request.setAttribute(ALL_USERS_ATTR_NAME, userService.findAll)
+		request.setAttribute(ALL_USERS_ATTR_NAME, userService.findAll())
 		FORWARD + USER_LIST_VIEW_NAME
 	}
 }

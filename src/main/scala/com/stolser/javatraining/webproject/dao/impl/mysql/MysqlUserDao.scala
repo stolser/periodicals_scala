@@ -9,7 +9,7 @@ import com.stolser.javatraining.webproject.dao.DaoUtils._
 import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.dao.{DaoUtils, UserDao}
-import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -31,6 +31,7 @@ object MysqlUserDao {
 }
 
 class MysqlUserDao(conn: Connection) extends UserDao {
+
 	import MysqlUserDao._
 
 	override def findOneById(id: Long): User = {
@@ -117,18 +118,17 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 	}
 
 	@throws[SQLException]
-	private def getUserFromResults(rs: ResultSet) = {
-		(new User.Builder)
-			.setId(rs.getLong(DB_USERS_ID))
-			.setUserName(rs.getString(MysqlCredentialDao.DB_CREDENTIALS_USER_NAME))
-			.setFirstName(rs.getString(DB_USERS_FIRST_NAME))
-			.setLastName(rs.getString(DB_USERS_LAST_NAME))
-			.setBirthday(getBirthdayFromRs(rs))
-			.setEmail(rs.getString(DB_USERS_EMAIL))
-			.setAddress(rs.getString(DB_USERS_ADDRESS))
-			.setStatus(User.Status.valueOf(rs.getString(DB_USERS_STATUS).toUpperCase))
-			.build
-	}
+	private def getUserFromResults(rs: ResultSet) =
+		User(
+			id = rs.getLong(DB_USERS_ID),
+			userName = rs.getString(MysqlCredentialDao.DB_CREDENTIALS_USER_NAME),
+			firstName = rs.getString(DB_USERS_FIRST_NAME),
+			lastName = rs.getString(DB_USERS_LAST_NAME),
+			birthday = getBirthdayFromRs(rs),
+			email = rs.getString(DB_USERS_EMAIL),
+			address = rs.getString(DB_USERS_ADDRESS),
+			status = UserStatus.withName(rs.getString(DB_USERS_STATUS).toUpperCase)
+		)
 
 	@throws[SQLException]
 	private def getBirthdayFromRs(rs: ResultSet) = {
@@ -155,7 +155,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 					st.setDate(3, getBirthdayFromUser(user))
 					st.setString(4, user.getEmail)
 					st.setString(5, user.getAddress)
-					st.setString(6, user.getStatus.name.toLowerCase)
+					st.setString(6, user.getStatus.toString.toLowerCase)
 
 					tryExecuteUpdate(st, exceptionMessage)
 

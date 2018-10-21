@@ -10,7 +10,7 @@ import com.stolser.javatraining.webproject.controller.message.{FrontMessageFacto
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
@@ -49,7 +49,7 @@ object PersistOneInvoice extends RequestProcessor {
 	}
 
 	private def isPeriodicalVisible(periodicalInDb: Periodical, generalMessages: util.List[FrontendMessage]) = {
-		val isVisible = Periodical.Status.ACTIVE == periodicalInDb.getStatus
+		val isVisible = PeriodicalStatus.ACTIVE == periodicalInDb.getStatus
 		if (!isVisible) generalMessages.add(messageFactory.getError(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE))
 		isVisible
 	}
@@ -93,9 +93,7 @@ object PersistOneInvoice extends RequestProcessor {
 
 		val totalSum = subscriptionPeriod * periodicalInDb.getOneMonthCost
 		val userIdFromUri = HttpUtils.getFirstIdFromUri(request.getRequestURI)
-		val userBuilder = new User.Builder
-		userBuilder.setId(userIdFromUri)
-		val user = userBuilder.build
+		val user = User(id = userIdFromUri)
 
 		Invoice(user = user,
 			periodical = periodicalInDb,

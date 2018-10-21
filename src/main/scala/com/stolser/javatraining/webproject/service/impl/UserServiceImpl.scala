@@ -6,9 +6,12 @@ import java.util.Objects.nonNull
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
 import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory}
-import com.stolser.javatraining.webproject.model.entity.user.{Credential, User}
+import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole}
 import com.stolser.javatraining.webproject.service.ServiceUtils.withAbstractConnectionResource
 import com.stolser.javatraining.webproject.service.{ServiceUtils, UserService}
+import scala.collection.JavaConverters._
+
+import scala.collection.mutable
 
 /**
   * Created by Oleg Stoliarov on 10/15/18.
@@ -29,10 +32,10 @@ object UserServiceImpl extends UserService {
 	private def setUserRoles(user: User,
 							 conn: AbstractConnection): Unit = {
 		if (nonNull(user)) {
-			val roles = factory.getRoleDao(conn)
-				.findRolesByUserName(user.getUserName)
+			val roles: mutable.Set[UserRole.Value] = factory.getRoleDao(conn)
+				.findRolesByUserName(user.getUserName).asScala
 
-			user.setRoles(roles)
+			user.roles = roles
 		}
 	}
 
@@ -56,8 +59,9 @@ object UserServiceImpl extends UserService {
 			val allUser = factory.getUserDao(conn).findAll
 
 			allUser.forEach(user => {
-				val roles = factory.getRoleDao(conn).findRolesByUserName(user.getUserName)
-				user.setRoles(roles)
+				val roles: mutable.Set[UserRole.Value] = factory.getRoleDao(conn)
+					.findRolesByUserName(user.getUserName).asScala
+				user.roles = roles
 			})
 
 			allUser
@@ -65,12 +69,12 @@ object UserServiceImpl extends UserService {
 
 	override def createNewUser(user: User,
 							   credential: Credential,
-							   userRole: User.Role): Boolean =
+							   userRole: UserRole.Value): Boolean =
 		withAbstractConnectionResource { conn =>
 			conn.beginTransaction()
 
 			val userId = factory.getUserDao(conn).createNew(user)
-			credential.setUserId(userId)
+			credential.userId = userId
 			val isNewCredentialCreated = factory.getCredentialDao(conn)
 				.createNew(credential)
 

@@ -3,7 +3,7 @@ package com.stolser.javatraining.webproject.dao
 import java.util
 import java.util.List
 
-import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
+import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
 
 /**
@@ -17,5 +17,5 @@ trait SubscriptionDao extends GenericDao[Subscription] {
 	  */
 	def findAllByUser(user: User): util.List[Subscription]
 
-	def findAllByPeriodicalIdAndStatus(periodicalId: Long, status: Subscription.Status): util.List[Subscription]
+	def findAllByPeriodicalIdAndStatus(periodicalId: Long, status: SubscriptionStatus.Value): util.List[Subscription]
 }

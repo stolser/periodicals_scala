@@ -9,9 +9,9 @@ import com.stolser.javatraining.webproject.controller.form.validator.{Validation
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical.OperationType.{CREATE, UPDATE}
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical.Status.{ACTIVE, DISCARDED, INACTIVE}
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType, PeriodicalStatus}
+import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalOperationType.{CREATE, UPDATE}
+import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE}
 import com.stolser.javatraining.webproject.service.PeriodicalService
 import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -67,7 +67,7 @@ object PersistOnePeriodical extends RequestProcessor {
 		periodicalService.hasActiveSubscriptions(periodicalToSave.getId)
 
 	private def getOperationTypeFromRequest(request: HttpServletRequest) =
-		Periodical.OperationType.valueOf(request.getParameter(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME).toUpperCase)
+		PeriodicalOperationType.withName(request.getParameter(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME).toUpperCase)
 
 	private def checkPeriodicalForActiveSubscriptions(periodicalToSave: Periodical,
 													  statusChange: PersistOnePeriodical.PeriodicalStatusChange,
@@ -160,13 +160,13 @@ object PersistOnePeriodical extends RequestProcessor {
 			cache.get(cacheKey)
 		}
 
-		private def getCacheKey(oldStatus: Periodical.Status, newStatus: Periodical.Status) =
-			(if (nonNull(oldStatus)) oldStatus.name	else "null") +
-				(if (nonNull(newStatus)) newStatus.name	else "null")
+		private def getCacheKey(oldStatus: PeriodicalStatus.Value, newStatus: PeriodicalStatus.Value) =
+			(if (nonNull(oldStatus)) oldStatus.toString	else "null") +
+				(if (nonNull(newStatus)) newStatus.toString	else "null")
 	}
 
-	final private class PeriodicalStatusChange private(var oldStatus: Periodical.Status,
-													   var newStatus: Periodical.Status) {
+	final private class PeriodicalStatusChange private(var oldStatus: PeriodicalStatus.Value,
+													   var newStatus: PeriodicalStatus.Value) {
 		private[periodical] def getOldStatus = oldStatus
 		private[periodical] def getNewStatus = newStatus
 	}

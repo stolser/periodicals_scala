@@ -7,6 +7,7 @@ import com.stolser.javatraining.webproject.model.entity.invoice.Invoice;
 import com.stolser.javatraining.webproject.model.entity.invoice.InvoiceStatus;
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical;
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription;
+import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus;
 import com.stolser.javatraining.webproject.model.entity.user.User;
 import com.stolser.javatraining.webproject.service.InvoiceService;
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class InvoiceServiceImplTest {
 
     private Invoice invoice;
     private Subscription subscription = mock(Subscription.class);
-    private Periodical periodical = new Periodical();
+    private Periodical periodical = Periodical.apply(PERIODICAL_ID);
 
     @InjectMocks
     private InvoiceService invoiceService = InvoiceServiceImpl$.MODULE$;
@@ -55,15 +56,13 @@ public class InvoiceServiceImplTest {
         when(user.getId()).thenReturn(USER_ID);
         when(user.getAddress()).thenReturn("Some address");
 
-        periodical.setId(PERIODICAL_ID);
-
         invoice = Invoice.apply(INVOICE_ID, user, periodical, 1, 0,
                 null,
                 null,
                 InvoiceStatus.NEW());
 
         when(subscription.getId()).thenReturn(SUBSCRIPTION_ID);
-        when(subscription.getStatus()).thenReturn(Subscription.Status.INACTIVE);
+        when(subscription.getStatus()).thenReturn(SubscriptionStatus.INACTIVE());
 
         when(connectionPool.getConnection()).thenReturn(conn);
 
@@ -89,7 +88,7 @@ public class InvoiceServiceImplTest {
 
         verify(subscription, times(0)).getEndDate();
         verify(subscription, times(1)).setEndDate(any());
-        verify(subscription, times(1)).setStatus(Subscription.Status.ACTIVE);
+        verify(subscription, times(1)).setStatus(SubscriptionStatus.ACTIVE());
 
         verify(subscriptionDao, times(1)).update(subscription);
 
@@ -97,7 +96,7 @@ public class InvoiceServiceImplTest {
 
     @Test
     public void payInvoice_Should_GetEndDateIfSubscriptionIsActive() throws Exception {
-        when(subscription.getStatus()).thenReturn(Subscription.Status.ACTIVE);
+        when(subscription.getStatus()).thenReturn(SubscriptionStatus.ACTIVE());
         when(subscription.getEndDate()).thenReturn(Instant.now());
 
         assertTrue(invoiceService.payInvoice(invoice));

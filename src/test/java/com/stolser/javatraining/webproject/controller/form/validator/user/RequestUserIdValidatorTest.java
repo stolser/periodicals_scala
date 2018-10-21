@@ -15,11 +15,10 @@ public class RequestUserIdValidatorTest {
     private static final int USER_ID = 2;
     private HttpSession session = mock(HttpSession.class);
     private HttpServletRequest request = mock(HttpServletRequest.class);
-    private User user = new User();
+    private User user = User.apply(USER_ID);
 
     @Before
     public void setUp() throws Exception {
-        user.setId(USER_ID);
 
         session = mock(HttpSession.class);
         when(session.getAttribute(CURRENT_USER_ATTR_NAME())).thenReturn(user);

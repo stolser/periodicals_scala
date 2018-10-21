@@ -39,11 +39,7 @@ public class PeriodicalServiceImplTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        periodical = new Periodical();
-        periodical.setName(TEST_NAME);
-
-        newPeriodical = new Periodical();
-        newPeriodical.setId(NEW_PERIODICAL_ID);
+        newPeriodical = Periodical.apply(NEW_PERIODICAL_ID);
 
         when(connectionPool.getConnection()).thenReturn(conn);
         when(factory.getPeriodicalDao(conn)).thenReturn(periodicalDao);
@@ -51,7 +47,8 @@ public class PeriodicalServiceImplTest {
 
     @Test
     public void save_Should_CreateNewPeriodical_IfIdIsZero() throws Exception {
-        periodical.setId(0);
+        periodical = Periodical.apply(0, TEST_NAME);
+
         when(periodicalDao.findOneByName(TEST_NAME)).thenReturn(newPeriodical);
 
         assertEquals(NEW_PERIODICAL_ID, periodicalService.save(periodical).getId());
@@ -63,7 +60,8 @@ public class PeriodicalServiceImplTest {
 
     @Test(expected = NoSuchElementException.class)
     public void save_Should_ThrowExceptionIfIdIsNotZero_AndPeriodicalDoesNotExist() {
-        periodical.setId(PERIODICAL_ID);
+        periodical = Periodical.apply(PERIODICAL_ID, TEST_NAME);
+
         when(periodicalDao.findOneById(PERIODICAL_ID)).thenReturn(null);
 
         periodicalService.save(periodical).getId();
