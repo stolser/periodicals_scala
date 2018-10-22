@@ -1,5 +1,8 @@
 package com.stolser.javatraining.webproject.model.entity.periodical
 
+import com.google.common.base.Preconditions
+import com.google.common.base.Preconditions._
+
 import scala.beans.BeanProperty
 
 /**
@@ -13,9 +16,15 @@ case class Periodical(@BeanProperty id: Long = 0,
 					  @BeanProperty oneMonthCost: Long = 0,
 					  @BeanProperty status: PeriodicalStatus.Value = PeriodicalStatus.ACTIVE) {
 
+	checkNotNull(name)
+	checkNotNull(category)
+	checkNotNull(publisher)
+	checkNotNull(description)
+	checkNotNull(status)
+
 	override def toString: String = {
 		val description =
-			if (this.description == null || this.description.length <= 15)
+			if (this.description.length <= 15)
 				this.description
 			else
 				this.description.substring(0, 15)

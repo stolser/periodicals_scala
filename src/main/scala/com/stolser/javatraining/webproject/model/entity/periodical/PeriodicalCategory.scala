@@ -10,7 +10,7 @@ import scala.collection.immutable
   * Created by Oleg Stoliarov on 10/19/18.
   */
 sealed abstract class PeriodicalCategory(messageKey: String) extends EnumEntry {
-	def getMessageKey: String = messageKey
+	def getMessageKey: String = messageKey					// for some reason @BeanProperty does not work;
 }
 
 object PeriodicalCategory extends Enum[PeriodicalCategory] {

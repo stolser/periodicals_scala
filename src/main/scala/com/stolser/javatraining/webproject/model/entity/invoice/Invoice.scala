@@ -2,6 +2,8 @@ package com.stolser.javatraining.webproject.model.entity.invoice
 
 import java.time.Instant
 
+import com.google.common.base.Preconditions
+import com.google.common.base.Preconditions._
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
 
@@ -19,6 +21,10 @@ case class Invoice(
 					  @BeanProperty creationDate: Instant = null,
 					  @BeanProperty var paymentDate: Instant = null,
 					  @BeanProperty var status: InvoiceStatus.Value = InvoiceStatus.NEW) {
+
+	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
+	checkNotNull(periodical, "The periodical cannot be null. Use Periodical() instead!": Any)
+	checkNotNull(status)
 
 	override def toString: String = s"Invoice_{id=$id, user=$user, periodical=$periodical, " +
 		s"subscriptionPeriod=$subscriptionPeriod, totalSum=$totalSum, creationDate=$creationDate, " +

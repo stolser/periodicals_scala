@@ -1,5 +1,8 @@
 package com.stolser.javatraining.webproject.model.entity.user
 
+import com.google.common.base.Preconditions.checkNotNull
+
+import scala.Predef._
 import scala.beans.BeanProperty
 
 /**
@@ -9,6 +12,9 @@ case class Credential(@BeanProperty id: Long = 0,
 					  @BeanProperty userName: String = "",
 					  @BeanProperty passwordHash: String = "",
 					  @BeanProperty var userId: Long = 0) {
+
+	checkNotNull(userName)
+	checkNotNull(passwordHash)
 
 	override def toString: String = s"Credentials{id=$id, userName='$userName', userId='$userId'}"
 }

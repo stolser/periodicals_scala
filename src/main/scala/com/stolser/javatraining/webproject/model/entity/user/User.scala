@@ -2,6 +2,8 @@ package com.stolser.javatraining.webproject.model.entity.user
 
 import java.util.Date
 
+import com.google.common.base.Preconditions.checkNotNull
+
 import scala.beans.BeanProperty
 import scala.collection.mutable
 
@@ -20,6 +22,15 @@ case class User(@BeanProperty id: Long = 0,
 				@BeanProperty address: String = "",
 				@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
 				@BeanProperty var roles: mutable.Set[UserRole.Value] = mutable.Set()) {
+
+	checkNotNull(userName)
+	checkNotNull(firstName)
+	checkNotNull(lastName)
+	checkNotNull(birthday)
+	checkNotNull(email)
+	checkNotNull(address)
+	checkNotNull(status)
+	checkNotNull(roles, "Use an empty set instead.": Any)
 
 	override def toString: String = s"User{id=$id, userName='%s', firstName='%s', lastName='%s', " +
 		"birthDate=%s, email='%s', address='%s', status=%s, roles=%s}"

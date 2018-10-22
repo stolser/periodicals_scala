@@ -15,7 +15,6 @@ case class PeriodicalNumberByCategory(@BeanProperty category: PeriodicalCategory
 									  @BeanProperty active: Int = 0,
 									  @BeanProperty inActive: Int = 0,
 									  @BeanProperty discarded: Int = 0) {
-	checkNotNull(category)
 	require(active >= 0, negativeQuantityErrorMessage)
 	require(inActive >= 0, negativeQuantityErrorMessage)
 	require(discarded >= 0, negativeQuantityErrorMessage)

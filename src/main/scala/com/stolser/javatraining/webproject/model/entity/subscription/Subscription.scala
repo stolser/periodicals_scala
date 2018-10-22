@@ -2,6 +2,7 @@ package com.stolser.javatraining.webproject.model.entity.subscription
 
 import java.time.Instant
 
+import com.google.common.base.Preconditions.checkNotNull
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
 import org.apache.commons.lang3.Validate
@@ -25,6 +26,11 @@ case class Subscription(@BeanProperty id: Long = 0,
 						@BeanProperty deliveryAddress: String = "",
 						@BeanProperty var endDate: Instant = null,
 						@BeanProperty var status: SubscriptionStatus.Value = SubscriptionStatus.INACTIVE) {
+
+	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
+	checkNotNull(periodical, "The periodical cannot be null. Use Periodical() instead!": Any)
+	checkNotNull(deliveryAddress)
+	checkNotNull(status)
 
 	override def toString: String = s"Subscription{id=$id, user='$user', periodical='$periodical', " +
 		s"deliveryAddress='$deliveryAddress', endDate='$endDate', status='$status'}"
