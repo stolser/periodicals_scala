@@ -15,20 +15,16 @@ import scala.collection.mutable
   */
 case class User(@BeanProperty id: Long = 0,
 				@BeanProperty userName: String = "",
-				@BeanProperty firstName: String = "",
-				@BeanProperty lastName: String = "",
-				@BeanProperty birthday: Date = new Date(),
+				@BeanProperty firstName: Option[String] = None,
+				@BeanProperty lastName: Option[String] = None,
+				@BeanProperty birthday: Option[Date] = None,
 				@BeanProperty email: String = "",
-				@BeanProperty address: String = "",
+				@BeanProperty address: Option[String] = None,
 				@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
 				@BeanProperty var roles: mutable.Set[UserRole.Value] = mutable.Set()) {
 
 	checkNotNull(userName)
-	checkNotNull(firstName)
-	checkNotNull(lastName)
-	checkNotNull(birthday)
 	checkNotNull(email)
-	checkNotNull(address)
 	checkNotNull(status)
 	checkNotNull(roles, "Use an empty set instead.": Any)
 
@@ -41,7 +37,15 @@ case class User(@BeanProperty id: Long = 0,
 	def hasRole(role: String): Boolean =
 		hasRole(UserRole.withName(role.toUpperCase))
 
-	def getRolesAsJavaCollection: java.util.Set[UserRole.Value] = {
+	def getFirstNameAsString: String = firstName.getOrElse("") // used by JSP tags;
+
+	def getLastNameAsString: String = lastName.getOrElse("") // used by JSP tags;
+
+	def getBirthdayAsDate: Date = birthday.orNull // used by JSP tags;
+
+	def getAddressAsString: String = address.getOrElse("") // used by JSP tags;
+
+	def getRolesAsJavaCollection: java.util.Set[UserRole.Value] = { // used by JSP tags;
 		import scala.collection.JavaConverters._
 
 		roles.asJava

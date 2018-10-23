@@ -19,7 +19,7 @@ object DaoUtils {
 			name = rs.getString(DB_PERIODICALS_NAME),
 			category = PeriodicalCategory.withName(rs.getString(DB_PERIODICALS_CATEGORY).toUpperCase),
 			publisher = rs.getString(DB_PERIODICALS_PUBLISHER),
-			description = rs.getString(DB_PERIODICALS_DESCRIPTION),
+			description = Option(rs.getString(DB_PERIODICALS_DESCRIPTION)),
 			oneMonthCost = rs.getLong(DB_PERIODICALS_ONE_MONTH_COST),
 			status = PeriodicalStatus.withName(rs.getString(DB_PERIODICALS_STATUS).toUpperCase)
 		)

@@ -18,8 +18,8 @@ case class Invoice(
 					  @BeanProperty var periodical: Periodical = Periodical(),
 					  @BeanProperty subscriptionPeriod: Int = 0,
 					  @BeanProperty totalSum: Long = 0,
-					  @BeanProperty creationDate: Instant = null,
-					  @BeanProperty var paymentDate: Instant = null,
+					  @BeanProperty creationDate: Option[Instant] = None,
+					  @BeanProperty var paymentDate: Option[Instant] = None,
 					  @BeanProperty var status: InvoiceStatus.Value = InvoiceStatus.NEW) {
 
 	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
@@ -29,6 +29,10 @@ case class Invoice(
 	override def toString: String = s"Invoice_{id=$id, user=$user, periodical=$periodical, " +
 		s"subscriptionPeriod=$subscriptionPeriod, totalSum=$totalSum, creationDate=$creationDate, " +
 		s"paymentDate=$paymentDate, status=$status}"
+
+	def getCreationDateAsInstant: Instant = creationDate.orNull // used by JSP tags;
+
+	def getPaymentDateAsInstant: Instant = paymentDate.orNull // used by JSP tags;
 }
 
 object InvoiceStatus extends Enumeration {

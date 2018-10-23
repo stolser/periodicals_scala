@@ -122,11 +122,11 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		User(
 			id = rs.getLong(DB_USERS_ID),
 			userName = rs.getString(MysqlCredentialDao.DB_CREDENTIALS_USER_NAME),
-			firstName = rs.getString(DB_USERS_FIRST_NAME),
-			lastName = rs.getString(DB_USERS_LAST_NAME),
-			birthday = getBirthdayFromRs(rs),
+			firstName = Option(rs.getString(DB_USERS_FIRST_NAME)),
+			lastName = Option(rs.getString(DB_USERS_LAST_NAME)),
+			birthday = Option(getBirthdayFromRs(rs)),
 			email = rs.getString(DB_USERS_EMAIL),
-			address = rs.getString(DB_USERS_ADDRESS),
+			address = Option(rs.getString(DB_USERS_ADDRESS)),
 			status = UserStatus.withName(rs.getString(DB_USERS_STATUS).toUpperCase)
 		)
 
@@ -150,11 +150,11 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		tryAndCatchSqlException(exceptionMessage) { () =>
 			withResources(conn.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
 				st: PreparedStatement => {
-					st.setString(1, user.getFirstName)
-					st.setString(2, user.getLastName)
+					st.setString(1, user.getFirstName.getOrElse(""))
+					st.setString(2, user.getLastName.getOrElse(""))
 					st.setDate(3, getBirthdayFromUser(user))
 					st.setString(4, user.getEmail)
-					st.setString(5, user.getAddress)
+					st.setString(5, user.getAddress.getOrElse(""))
 					st.setString(6, user.getStatus.toString.toLowerCase)
 
 					tryExecuteUpdate(st, exceptionMessage)
@@ -185,13 +185,11 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 			}
 		}
 
-	private def getBirthdayFromUser(user: User): sql.Date = {
-		val birthday: java.util.Date = user.getBirthday
-		if (nonNull(birthday))
-			new sql.Date(birthday.getTime)
-		else
-			null
-	}
+	private def getBirthdayFromUser(user: User): sql.Date =
+		user.getBirthday match {
+			case Some(date) => new sql.Date(date.getTime)
+			case None => null
+		}
 
 	override def update(entity: User) =
 		throw new UnsupportedOperationException

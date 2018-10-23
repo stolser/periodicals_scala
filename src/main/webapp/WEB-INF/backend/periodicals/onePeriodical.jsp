@@ -32,7 +32,7 @@
             <label class="col-sm-3 control-label">
                 <fmt:message key="description.label" bundle="${langPeriodical}"/></label>
             <div class="col-sm-9">
-                <p class="form-control-static">${periodical.description}</p>
+                <p class="form-control-static">${periodical.descriptionAsString}</p>
             </div>
         </div>
         <div class="row">

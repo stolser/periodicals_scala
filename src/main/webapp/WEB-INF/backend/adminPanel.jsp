@@ -33,7 +33,7 @@
 
                             <c:forEach items="${periodicalStatistics}" var="statItem" varStatus="loop">
                                 <tr>
-                                    <td><fmt:message key="${statItem.category.messageKey}"
+                                    <td><fmt:message key="${statItem.categoryAsPeriodicalCategory.messageKey}"
                                                      bundle="${langPeriodical}"/></td>
                                     <td>${statItem.active}</td>
                                     <td>${statItem.inActive}</td>

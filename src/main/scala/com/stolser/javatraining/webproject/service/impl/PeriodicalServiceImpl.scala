@@ -105,7 +105,7 @@ object PeriodicalServiceImpl extends PeriodicalService {
 			PeriodicalStatus.DISCARDED)
 
 		PeriodicalNumberByCategory(
-			category = category,
+			category = Some(category),
 			active = activeNumber,
 			inActive = inActiveNumber,
 			discarded = discardedNumber

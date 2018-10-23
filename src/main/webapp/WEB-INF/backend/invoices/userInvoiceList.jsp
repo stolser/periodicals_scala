@@ -56,8 +56,8 @@
                         </c:otherwise>
                     </c:choose>
                 </td>
-                <td><custom:format-datetime value="${invoice.creationDate}"/></td>
-                <td><custom:format-datetime value="${invoice.paymentDate}"/></td>
+                <td><custom:format-datetime value="${invoice.creationDateAsInstant}"/></td>
+                <td><custom:format-datetime value="${invoice.paymentDateAsInstant}"/></td>
                 <td class="text-center"><fmt:message key="${invoice.status}" bundle="${langInvoice}"/>
                     <c:if test="${invoice.status == 'NEW'}">
                         <form method="post"

@@ -12,26 +12,31 @@ case class Periodical(@BeanProperty id: Long = 0,
 					  @BeanProperty name: String = "",
 					  @BeanProperty category: PeriodicalCategory = PeriodicalCategory.NEWS,
 					  @BeanProperty publisher: String = "",
-					  @BeanProperty description: String = "",
+					  @BeanProperty description: Option[String] = None,
 					  @BeanProperty oneMonthCost: Long = 0,
 					  @BeanProperty status: PeriodicalStatus.Value = PeriodicalStatus.ACTIVE) {
 
 	checkNotNull(name)
 	checkNotNull(category)
 	checkNotNull(publisher)
-	checkNotNull(description)
 	checkNotNull(status)
 
 	override def toString: String = {
-		val description =
-			if (this.description.length <= 15)
-				this.description
-			else
-				this.description.substring(0, 15)
+		def getDescriptionWithLimitedLength(d: String) = {
+			if (d.length <= 15) d
+			else d.substring(0, 15)
+		}
+
+		val description = this.description match {
+			case Some(d) => getDescriptionWithLimitedLength(d)
+			case None => ""
+		}
 
 		s"Periodical{id=$id, name='$name', category='$category', publisher='$publisher', " +
 			s"description='$description', oneMonthCost='$oneMonthCost', status='$status'}"
 	}
+
+	def getDescriptionAsString: String = description.getOrElse("") // used by JSP tags;
 }
 
 object PeriodicalStatus extends Enumeration {

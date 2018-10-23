@@ -24,7 +24,7 @@ case class Subscription(@BeanProperty id: Long = 0,
 						@BeanProperty user: User = User(),
 						@BeanProperty periodical: Periodical = Periodical(),
 						@BeanProperty deliveryAddress: String = "",
-						@BeanProperty var endDate: Instant = null,
+						@BeanProperty var endDate: Option[Instant] = None,
 						@BeanProperty var status: SubscriptionStatus.Value = SubscriptionStatus.INACTIVE) {
 
 	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
@@ -34,6 +34,8 @@ case class Subscription(@BeanProperty id: Long = 0,
 
 	override def toString: String = s"Subscription{id=$id, user='$user', periodical='$periodical', " +
 		s"deliveryAddress='$deliveryAddress', endDate='$endDate', status='$status'}"
+
+	def getEndDateAsInstant: Instant = endDate.orNull // used by JSP tags;
 }
 
 object SubscriptionStatus extends Enumeration {

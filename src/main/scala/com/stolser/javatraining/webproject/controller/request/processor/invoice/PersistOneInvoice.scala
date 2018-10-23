@@ -95,11 +95,13 @@ object PersistOneInvoice extends RequestProcessor {
 		val userIdFromUri = HttpUtils.getFirstIdFromUri(request.getRequestURI)
 		val user = User(id = userIdFromUri)
 
-		Invoice(user = user,
+		Invoice(
+			user = user,
 			periodical = periodicalInDb,
 			subscriptionPeriod = subscriptionPeriod,
 			totalSum = totalSum,
-			creationDate = Instant.now(),
-			status = InvoiceStatus.NEW)
+			creationDate = Some(Instant.now()),
+			status = InvoiceStatus.NEW
+		)
 	}
 }

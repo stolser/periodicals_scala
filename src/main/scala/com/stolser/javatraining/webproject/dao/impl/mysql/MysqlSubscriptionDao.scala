@@ -98,7 +98,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 			user = user,
 			periodical = periodical,
 			deliveryAddress = rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS),
-			endDate = rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant,
+			endDate = Option(rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant),
 			status = SubscriptionStatus.withName(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase)
 		)
 	}
@@ -123,7 +123,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 									user = user,
 									periodical = DaoUtils.getPeriodicalFromResultSet(rs),
 									deliveryAddress = rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS),
-									endDate = rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant,
+									endDate = Option(rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant),
 									status = SubscriptionStatus.withName(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase)
 								))
 
@@ -156,9 +156,15 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 		st.setLong(1, subscription.getUser.getId)
 		st.setLong(2, subscription.getPeriodical.getId)
 		st.setString(3, subscription.getDeliveryAddress)
-		st.setTimestamp(4, new Timestamp(subscription.getEndDate.toEpochMilli))
+		st.setTimestamp(4, getEndDate(subscription))
 		st.setString(5, subscription.getStatus.toString.toLowerCase)
 	}
+
+	private def getEndDate(subscription: Subscription) =
+		subscription.getEndDate match {
+			case Some(date) => new Timestamp(date.toEpochMilli)
+			case None => null
+		}
 
 	override def update(subscription: Subscription): Int = {
 		val sqlStatement = "UPDATE subscriptions " +

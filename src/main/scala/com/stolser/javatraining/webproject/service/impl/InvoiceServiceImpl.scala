@@ -48,7 +48,7 @@ object InvoiceServiceImpl extends InvoiceService {
 		withAbstractConnectionResource { conn =>
 			val subscriptionDao = factory.getSubscriptionDao(conn)
 			invoiceToPay.status = InvoiceStatus.PAID
-			invoiceToPay.paymentDate = Instant.now
+			invoiceToPay.paymentDate = Some(Instant.now)
 
 			conn.beginTransaction()
 			val userFromDb = factory.getUserDao(conn).findOneById(invoiceToPay.user.getId)
@@ -75,7 +75,7 @@ object InvoiceServiceImpl extends InvoiceService {
 										   subscriptionDao: SubscriptionDao): Unit = {
 		val newEndDate =
 			if (SubscriptionStatus.INACTIVE == existingSubscription.getStatus)
-				getEndDate(Instant.now, subscriptionPeriod)
+				getEndDate(Some(Instant.now), subscriptionPeriod)
 			else
 				getEndDate(existingSubscription.getEndDate, subscriptionPeriod)
 
@@ -91,18 +91,21 @@ object InvoiceServiceImpl extends InvoiceService {
 		subscriptionDao.createNew(Subscription(
 			user = userFromDb,
 			periodical = periodical,
-			deliveryAddress = userFromDb.getAddress,
-			endDate = getEndDate(Instant.now, subscriptionPeriod),
+			deliveryAddress = userFromDb.getAddress.getOrElse(""),
+			endDate = getEndDate(Some(Instant.now), subscriptionPeriod),
 			status = SubscriptionStatus.ACTIVE
 		))
 
-	private def getEndDate(startInstant: Instant,
-						   subscriptionPeriod: Int) = {
-		val startDate = LocalDateTime.ofInstant(startInstant, ZoneId.systemDefault)
-		startDate
-			.plusMonths(subscriptionPeriod)
-			.toInstant(ZoneOffset.UTC)
-	}
+	private def getEndDate(startDate: Option[Instant],
+						   subscriptionPeriod: Int) =
+		startDate match {
+			case Some(date) =>
+				val endDate = LocalDateTime.ofInstant(date, ZoneId.systemDefault)
+				Some(endDate
+					.plusMonths(subscriptionPeriod)
+					.toInstant(ZoneOffset.UTC))
+			case None => None
+		}
 
 	override def getFinStatistics(since: Instant, until: Instant): FinancialStatistics =
 		withAbstractConnectionResource { conn =>
@@ -110,6 +113,6 @@ object InvoiceServiceImpl extends InvoiceService {
 			val totalInvoiceSum = dao.getCreatedInvoiceSumByCreationDate(since, until)
 			val paidInvoiceSum = dao.getPaidInvoiceSumByPaymentDate(since, until)
 
-			new FinancialStatistics(totalInvoiceSum, paidInvoiceSum)
+			FinancialStatistics(totalInvoiceSum, paidInvoiceSum)
 		}
 }

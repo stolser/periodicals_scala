@@ -14,14 +14,14 @@
                 <label class="col-xs-4 control-label">
                     <fmt:message key="user.firstName.label" bundle="${langUser}"/></label>
                 <div class="col-xs-8">
-                    <p class="form-control-static">${currentUser.firstName}</p>
+                    <p class="form-control-static">${currentUser.firstNameAsString}</p>
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-4 control-label">
                     <fmt:message key="user.lastName.label" bundle="${langUser}"/></label>
                 <div class="col-xs-8">
-                    <p class="form-control-static">${currentUser.lastName}</p>
+                    <p class="form-control-static">${currentUser.lastNameAsString}</p>
                 </div>
             </div>
             <div class="form-group">
@@ -35,7 +35,7 @@
                 <label class="col-xs-4 control-label">
                     <fmt:message key="user.address.label" bundle="${langUser}"/></label>
                 <div class="col-xs-8">
-                    <p class="form-control-static">${currentUser.address}</p>
+                    <p class="form-control-static">${currentUser.addressAsString}</p>
                 </div>
             </div>
             <div class="form-group">
@@ -43,7 +43,7 @@
                     <fmt:message key="user.birthday.label" bundle="${langUser}"/></label>
                 <div class="col-xs-8">
                     <p class="form-control-static">
-                        <fmt:formatDate type="date" value="${currentUser.birthday}"/></p>
+                        <fmt:formatDate type="date" value="${currentUser.birthdayAsDate}"/></p>
                 </div>
             </div>
             <div class="form-group">

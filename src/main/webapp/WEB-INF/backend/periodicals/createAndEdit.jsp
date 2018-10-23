@@ -72,7 +72,7 @@
                     <textarea id="periodicalDescription" class="form-control" rows="4"
                               name="periodicalDescription" maxlength="999"
                               placeholder="<fmt:message key="description.label" bundle="${langPeriodical}"/>">
-                        ${periodical.description}
+                        ${periodical.descriptionAsString}
                     </textarea>
                 </div>
             </div>

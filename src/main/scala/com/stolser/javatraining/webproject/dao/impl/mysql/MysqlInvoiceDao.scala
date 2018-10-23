@@ -192,29 +192,28 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 			id = rs.getLong(DB_INVOICES_PERIODICAL_ID)
 		)
 
-		Invoice(id = rs.getLong(DB_INVOICES_ID),
+		Invoice(
+			id = rs.getLong(DB_INVOICES_ID),
 			user = user,
 			periodical = periodical,
 			subscriptionPeriod = rs.getInt(DB_INVOICES_PERIOD),
 			totalSum = rs.getLong(DB_INVOICES_TOTAL_SUM),
 			creationDate = getCreationDateFromResults(rs),
 			paymentDate = getPaymentDateFromResults(rs),
-			status = InvoiceStatus.withName(rs.getString(DB_INVOICES_STATUS).toUpperCase))
+			status = InvoiceStatus.withName(rs.getString(DB_INVOICES_STATUS).toUpperCase)
+		)
 	}
 
 	@throws[SQLException]
-	private def getCreationDateFromResults(rs: ResultSet): Instant =
-		Instant.ofEpochMilli(rs.getTimestamp(DB_INVOICES_CREATION_DATE).getTime)
+	private def getCreationDateFromResults(rs: ResultSet): Option[Instant] =
+		Option(Instant.ofEpochMilli(rs.getTimestamp(DB_INVOICES_CREATION_DATE).getTime))
 
 	@throws[SQLException]
-	private def getPaymentDateFromResults(rs: ResultSet): Instant = {
-		val timestamp: Timestamp = rs.getTimestamp(DB_INVOICES_PAYMENT_DATE)
-
-		if (nonNull(timestamp))
-			Instant.ofEpochMilli(timestamp.getTime)
-		else
-			null
-	}
+	private def getPaymentDateFromResults(rs: ResultSet): Option[Instant] =
+		rs.getTimestamp(DB_INVOICES_PAYMENT_DATE) match {
+			case timestamp: Timestamp => Some(Instant.ofEpochMilli(timestamp.getTime))
+			case _ => None
+		}
 
 	@throws[SQLException]
 	private def setCreateUpdateStatementFromInvoice(st: PreparedStatement,
@@ -223,19 +222,22 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 		st.setLong(2, invoice.periodical.getId)
 		st.setInt(3, invoice.subscriptionPeriod)
 		st.setDouble(4, invoice.totalSum)
-		st.setTimestamp(5, new Timestamp(invoice.creationDate.toEpochMilli))
+		st.setTimestamp(5, getCreationDate(invoice))
 		st.setTimestamp(6, getPaymentDate(invoice))
 		st.setString(7, invoice.status.toString.toLowerCase)
 	}
 
-	private def getPaymentDate(invoice: Invoice): Timestamp = {
-		val paymentDate: Instant = invoice.paymentDate
+	def getCreationDate(invoice: Invoice): Timestamp =
+		invoice.creationDate match {
+			case Some(creationDate) => new Timestamp(creationDate.toEpochMilli)
+			case None => null
+		}
 
-		if (nonNull(paymentDate))
-			new Timestamp(paymentDate.toEpochMilli)
-		else
-			null
-	}
+	private def getPaymentDate(invoice: Invoice): Timestamp =
+		invoice.paymentDate match {
+			case Some(paymentDate) => new Timestamp(paymentDate.toEpochMilli)
+			case None => null
+		}
 
 	override def findAll: util.List[Invoice] =
 		throw new UnsupportedOperationException

@@ -173,7 +173,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 		st.setString(1, periodical.getName)
 		st.setString(2, periodical.getCategory.toString.toLowerCase)
 		st.setString(3, periodical.getPublisher)
-		st.setString(4, periodical.getDescription)
+		st.setString(4, periodical.getDescription.orNull)
 		st.setLong(5, periodical.getOneMonthCost)
 		st.setString(6, periodical.getStatus.toString.toLowerCase)
 	}

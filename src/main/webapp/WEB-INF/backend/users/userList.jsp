@@ -24,11 +24,11 @@
                 <tr class="${user.status == 'ACTIVE' ? 'success' : 'danger'}">
                     <td>${user.id}</td>
                     <td>${user.userName}</td>
-                    <td>${user.firstName}</td>
-                    <td>${user.lastName}</td>
+                    <td>${user.firstNameAsString}</td>
+                    <td>${user.lastNameAsString}</td>
                     <td>${user.email}</td>
-                    <td>${user.address}</td>
-                    <td><fmt:formatDate type="date" value="${user.birthday}"/></td>
+                    <td>${user.addressAsString}</td>
+                    <td><fmt:formatDate type="date" value="${user.birthdayAsDate}"/></td>
                     <td><fmt:message key="${user.status}" bundle="${langUser}"/></td>
                     <td>
                         <ul>

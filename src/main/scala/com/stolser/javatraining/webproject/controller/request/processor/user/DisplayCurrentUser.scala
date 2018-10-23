@@ -1,5 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.user
 
+import java.time.Instant
 import java.util
 import java.util.{Collections, List}
 
@@ -51,18 +52,42 @@ object DisplayCurrentUser extends RequestProcessor {
 	private def sortInvoices(invoices: util.List[Invoice]): Unit = {
 		invoices.sort((first, second) => {
 			if (first.status == second.status)
-				if (InvoiceStatus.NEW == first.status) second.creationDate.compareTo(first.creationDate)
-				else second.paymentDate.compareTo(first.paymentDate)
-			else if (first.status == InvoiceStatus.NEW) -1
-			else 1
+				if (InvoiceStatus.NEW == first.status)
+					compareInvoiceDates(first.creationDate, second.creationDate)
+				else
+					compareInvoiceDates(first.paymentDate, second.paymentDate)
+			else if (first.status == InvoiceStatus.NEW)
+				-1
+			else
+				1
 		})
+	}
+
+	private def compareInvoiceDates(first: Option[Instant], second: Option[Instant]) = {
+		(first, second) match {
+			case (Some(firstDate), Some(secondDate)) => secondDate.compareTo(firstDate)
+			case (Some(_), None) => -1
+			case (None, Some(_)) => 1
+			case (None, None) => 0
+		}
 	}
 
 	private def sortSubscriptions(subscriptions: util.List[Subscription]): Unit = {
 		subscriptions.sort((first, second) => {
-			if (first.getStatus == second.getStatus) first.getEndDate.compareTo(second.getEndDate)
-			else if (first.getStatus == SubscriptionStatus.ACTIVE) -1
+			if (first.getStatus == second.getStatus)
+				compareSubscriptionDates(first.getEndDate, second.getEndDate)
+			else if (first.getStatus == SubscriptionStatus.ACTIVE)
+				-1
 			else 1
 		})
+	}
+
+	private def compareSubscriptionDates(first: Option[Instant], second: Option[Instant]) = {
+		(first, second) match {
+			case (Some(firstDate), Some(secondDate)) => firstDate.compareTo(secondDate)
+			case (Some(_), None) => 1
+			case (None, Some(_)) => -1
+			case (None, None) => 0
+		}
 	}
 }

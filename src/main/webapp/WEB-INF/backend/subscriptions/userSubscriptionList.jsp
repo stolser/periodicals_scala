@@ -23,7 +23,7 @@
                     <c:otherwise>${subscription.periodical.name}</c:otherwise>
                 </c:choose></td>
                 <td>${subscription.deliveryAddress}</td>
-                <td><custom:format-datetime value="${subscription.endDate}"/></td>
+                <td><custom:format-datetime value="${subscription.endDateAsInstant}"/></td>
                 <td><fmt:message key="${subscription.status}" bundle="${langSubscription}"/></td>
             </tr>
 

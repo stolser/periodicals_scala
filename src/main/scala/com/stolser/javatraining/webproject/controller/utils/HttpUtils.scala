@@ -56,7 +56,7 @@ object HttpUtils {
 			name = request.getParameter(PERIODICAL_NAME_PARAM_NAME),
 			category = PeriodicalCategory.withName(request.getParameter(PERIODICAL_CATEGORY_PARAM_NAME).toUpperCase),
 			publisher = request.getParameter(PERIODICAL_PUBLISHER_PARAM_NAME),
-			description = request.getParameter(PERIODICAL_DESCRIPTION_PARAM_NAME).trim,
+			description = Option(request.getParameter(PERIODICAL_DESCRIPTION_PARAM_NAME).trim),
 			oneMonthCost = java.lang.Long.parseLong(request.getParameter(PERIODICAL_COST_PARAM_NAME)),
 			status = PeriodicalStatus.withName(request.getParameter(PERIODICAL_STATUS_PARAM_NAME).toUpperCase)
 		)
