@@ -5,8 +5,6 @@ import java.time.Instant
 import com.google.common.base.Preconditions.checkNotNull
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
-import org.apache.commons.lang3.Validate
-import org.apache.commons.lang3.Validate._
 
 import scala.beans.BeanProperty
 

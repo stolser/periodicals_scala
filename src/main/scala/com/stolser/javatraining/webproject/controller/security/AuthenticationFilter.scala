@@ -1,8 +1,6 @@
 package com.stolser.javatraining.webproject.controller.security
 
-import java.util
 import java.util.Objects.isNull
-import java.util.{Arrays, List}
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{LOGIN_PAGE, ORIGINAL_URI_ATTR_NAME, SIGN_OUT_URI}
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
@@ -16,7 +14,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Otherwise it redirects to the Log in page.
   */
 class AuthenticationFilter extends Filter {
-	private val unProtectedUris = util.Arrays.asList("/backend/signIn", "/backend/signUp", "/backend/validation")
+	private val unProtectedUris = Array("/backend/signIn", "/backend/signUp", "/backend/validation")
 
 	override def init(filterConfig: FilterConfig): Unit = {}
 
@@ -38,15 +36,17 @@ class AuthenticationFilter extends Filter {
 			request.getSession.setAttribute(ORIGINAL_URI_ATTR_NAME, requestUri)
 			response.sendRedirect(LOGIN_PAGE)
 		}
-		else if (isUserNotActive(currentUser)) response.sendRedirect(SIGN_OUT_URI)
-		else filterChain.doFilter(servletRequest, servletResponse)
+		else if (isUserNotActive(currentUser))
+			response.sendRedirect(SIGN_OUT_URI)
+		else
+			filterChain.doFilter(servletRequest, servletResponse)
 	}
 
 	private def requestNotRequiresAuthentication(request: HttpServletRequest) =
-		unProtectedUris.contains(request.getRequestURI)
+		unProtectedUris contains request.getRequestURI
 
 	private def isUserNotActive(currentUser: User) =
-		UserStatus.ACTIVE != currentUser.getStatus
+		UserStatus.ACTIVE != currentUser.status
 
 
 	override def destroy(): Unit = {}

@@ -1,17 +1,15 @@
 package com.stolser.javatraining.webproject.service.impl
 
 import java.util
-import java.util.List
 import java.util.Objects.nonNull
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
 import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory}
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole}
-import com.stolser.javatraining.webproject.service.ServiceUtils.withAbstractConnectionResource
-import com.stolser.javatraining.webproject.service.{ServiceUtils, UserService}
-import scala.collection.JavaConverters._
+import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
+import com.stolser.javatraining.webproject.service.UserService
 
-import scala.collection.mutable
+import scala.collection.JavaConverters._
 
 /**
   * Created by Oleg Stoliarov on 10/15/18.
@@ -21,7 +19,7 @@ object UserServiceImpl extends UserService {
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
 	override def findOneById(id: Long): User =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			val user = factory.getUserDao(conn)
 				.findOneById(id)
 			setUserRoles(user, conn)
@@ -30,23 +28,20 @@ object UserServiceImpl extends UserService {
 		}
 
 	private def setUserRoles(user: User,
-							 conn: AbstractConnection): Unit = {
+							 conn: AbstractConnection): Unit =
 		if (nonNull(user)) {
-			val roles: mutable.Set[UserRole.Value] = factory.getRoleDao(conn)
-				.findRolesByUserName(user.getUserName).asScala
-
-			user.roles = roles
+			user.roles = factory.getRoleDao(conn)
+				.findRolesByUserName(user.userName).asScala.toSet
 		}
-	}
 
 	override def findOneCredentialByUserName(userName: String): Credential =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getCredentialDao(conn)
 				.findCredentialByUserName(userName)
 		}
 
 	override def findOneUserByUserName(userName: String): User =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			val user = factory.getUserDao(conn)
 				.findOneByUserName(userName)
 			setUserRoles(user, conn)
@@ -54,14 +49,13 @@ object UserServiceImpl extends UserService {
 			user
 		}
 
-	override def findAll(): util.List[User] =
-		withAbstractConnectionResource { conn =>
+	override def findAll: util.List[User] =
+		withConnection { conn =>
 			val allUser = factory.getUserDao(conn).findAll
 
 			allUser.forEach(user => {
-				val roles: mutable.Set[UserRole.Value] = factory.getRoleDao(conn)
-					.findRolesByUserName(user.getUserName).asScala
-				user.roles = roles
+				user.roles = factory.getRoleDao(conn)
+					.findRolesByUserName(user.userName).asScala.toSet
 			})
 
 			allUser
@@ -70,7 +64,7 @@ object UserServiceImpl extends UserService {
 	override def createNewUser(user: User,
 							   credential: Credential,
 							   userRole: UserRole.Value): Boolean =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			conn.beginTransaction()
 
 			val userId = factory.getUserDao(conn).createNew(user)
@@ -90,7 +84,7 @@ object UserServiceImpl extends UserService {
 		}
 
 	override def emailExistsInDb(email: String): Boolean =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getUserDao(conn).emailExistsInDb(email)
 		}
 }

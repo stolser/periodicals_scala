@@ -1,12 +1,11 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
-import java.sql.{Connection, PreparedStatement, ResultSet, SQLException}
+import java.sql.{Connection, PreparedStatement, ResultSet}
 
+import com.stolser.javatraining.webproject.dao.CredentialDao
 import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
-import com.stolser.javatraining.webproject.dao.{CredentialDao, DaoUtils}
-import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.model.entity.user.Credential
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -59,9 +58,9 @@ class MysqlCredentialDao(conn: Connection) extends CredentialDao {
 		tryAndCatchSqlException(EXCEPTION_DURING_CREATING_CREDENTIAL) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
-					st.setString(1, credential.getUserName)
-					st.setString(2, credential.getPasswordHash)
-					st.setLong(3, credential.getUserId)
+					st.setString(1, credential.userName)
+					st.setString(2, credential.passwordHash)
+					st.setLong(3, credential.userId)
 
 					st.executeUpdate() > 0
 				}

@@ -1,7 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.user
 
 import java.time.Instant
-import java.util
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{ONE_USER_INFO_VIEW_NAME, USER_INVOICES_PARAM_NAME, USER_SUBSCRIPTIONS_PARAM_NAME}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
@@ -9,7 +8,6 @@ import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl, SubscriptionServiceImpl}
-import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService, SubscriptionService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.collection.JavaConverters._
@@ -29,20 +27,23 @@ object DisplayCurrentUser extends RequestProcessor {
 		val invoices: mutable.Buffer[Invoice] = invoiceService.findAllByUserId(currentUserId).asScala
 		val subscriptions: mutable.Buffer[Subscription] = subscriptionService.findAllByUserId(currentUserId).asScala
 
-		if (invoices.nonEmpty) {
-			invoices.foreach(invoice => {
-				val periodicalId: Long = invoice.periodical.getId
-				invoice.periodical = periodicalService.findOneById(periodicalId)
-			})
+		if (invoices nonEmpty) {
+			invoices.foreach(invoice =>
+				invoice.periodical = periodicalService.findOneById(id = invoice.periodical.id)
+			)
 
-			val sorted = sortInvoices(invoices)
-			request.setAttribute(USER_INVOICES_PARAM_NAME, sorted.asJava)
+			request.setAttribute(
+				USER_INVOICES_PARAM_NAME,
+				sortInvoices(invoices).asJava
+			)
 		}
 
-		if (subscriptions.nonEmpty) {
-			val sorted = sortSubscriptions(subscriptions)
-			request.setAttribute(USER_SUBSCRIPTIONS_PARAM_NAME, sorted.asJava)
-		}
+		if (subscriptions nonEmpty)
+			request.setAttribute(
+				USER_SUBSCRIPTIONS_PARAM_NAME,
+				sortSubscriptions(subscriptions).asJava
+			)
+
 
 		FORWARD + ONE_USER_INFO_VIEW_NAME
 	}
@@ -60,29 +61,29 @@ object DisplayCurrentUser extends RequestProcessor {
 				false
 		})
 
-	private def compareInvoiceDates(first: Option[Instant], second: Option[Instant]) =
+	private def compareInvoiceDates(first: Option[Instant],
+									second: Option[Instant]) =
 		(first, second) match {
 			case (Some(firstDate), Some(secondDate)) => firstDate.compareTo(secondDate)
-//			case (Some(_), None) => -1
-//			case (None, Some(_)) => 1
-//			case (None, None) => 0
+			case _ => throw new IllegalStateException(s"Something wrong with the date fields " +
+				s"of the invoices (first: $first; second: $second)")
 		}
 
 	private def sortSubscriptions(subscriptions: mutable.Buffer[Subscription]) =
 		subscriptions.sortWith((first, second) => {
-			if (first.getStatus == second.getStatus)
-				compareSubscriptionDates(first.getEndDate, second.getEndDate) < 0
-			else if (first.getStatus == SubscriptionStatus.ACTIVE)
+			if (first.status == second.status)
+				compareSubscriptionDates(first.endDate, second.endDate) < 0
+			else if (first.status == SubscriptionStatus.ACTIVE)
 				true
 			else
 				false
 		})
 
-	private def compareSubscriptionDates(first: Option[Instant], second: Option[Instant]) =
+	private def compareSubscriptionDates(first: Option[Instant],
+										 second: Option[Instant]) =
 		(first, second) match {
 			case (Some(firstDate), Some(secondDate)) => firstDate.compareTo(secondDate)
-//			case (Some(_), None) => -1
-//			case (None, Some(_)) => 1
-//			case (None, None) => 0
+			case _ => throw new IllegalStateException(s"Something wrong with the end date " +
+				s"of the subscriptions (first: $first; second: $second)")
 		}
 }

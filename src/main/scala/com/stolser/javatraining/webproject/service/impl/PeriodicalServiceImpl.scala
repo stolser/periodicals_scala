@@ -1,15 +1,15 @@
 package com.stolser.javatraining.webproject.service.impl
 
 import java.util
-import java.util.{ArrayList, List, NoSuchElementException}
+import java.util.NoSuchElementException
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
-import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory, PeriodicalDao}
+import com.stolser.javatraining.webproject.dao.{DaoFactory, PeriodicalDao}
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
-import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
-import com.stolser.javatraining.webproject.service.ServiceUtils.withAbstractConnectionResource
-import com.stolser.javatraining.webproject.service.{PeriodicalService, ServiceUtils}
+import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
+import com.stolser.javatraining.webproject.service.PeriodicalService
+import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 
 /**
   * Created by Oleg Stoliarov on 10/15/18.
@@ -20,71 +20,71 @@ object PeriodicalServiceImpl extends PeriodicalService {
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
 	override def findOneById(id: Long): Periodical =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findOneById(id)
 		}
 
 	override def findOneByName(name: String): Periodical =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findOneByName(name)
 		}
 
 	override def findAll: util.List[Periodical] =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findAll
 		}
 
 	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findAllByStatus(status)
 		}
 
 	override def save(periodical: Periodical): Periodical = {
-		if (periodical.getId == 0)
+		if (periodical.id == 0)
 			createNewPeriodical(periodical)
 		else
 			updatePeriodical(periodical)
 
-		getPeriodicalFromDbByName(periodical.getName)
+		getPeriodicalFromDbByName(periodical.name)
 	}
 
 	private def createNewPeriodical(periodical: Periodical): Unit =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).createNew(periodical)
 		}
 
 	private def getPeriodicalFromDbByName(name: String): Periodical =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findOneByName(name)
 		}
 
 	private def updatePeriodical(periodical: Periodical): Unit =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			val affectedRows = factory.getPeriodicalDao(conn).update(periodical)
 
 			if (affectedRows == 0)
-				throw new NoSuchElementException(NO_PERIODICAL_WITH_ID_MESSAGE.format(periodical.getId))
+				throw new NoSuchElementException(NO_PERIODICAL_WITH_ID_MESSAGE.format(periodical.id))
 		}
 
 	override def updateAndSetDiscarded(periodical: Periodical): Int =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).updateAndSetDiscarded(periodical)
 		}
 
 	override def deleteAllDiscarded(): Int =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			factory.getPeriodicalDao(conn).deleteAllDiscarded()
 		}
 
 	override def hasActiveSubscriptions(periodicalId: Long): Boolean =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			!factory.getSubscriptionDao(conn)
 				.findAllByPeriodicalIdAndStatus(periodicalId, SubscriptionStatus.ACTIVE)
 				.isEmpty
 		}
 
 	override def getQuantitativeStatistics: util.List[PeriodicalNumberByCategory] =
-		withAbstractConnectionResource { conn =>
+		withConnection { conn =>
 			val statistics = new util.ArrayList[PeriodicalNumberByCategory]
 			val dao = factory.getPeriodicalDao(conn)
 

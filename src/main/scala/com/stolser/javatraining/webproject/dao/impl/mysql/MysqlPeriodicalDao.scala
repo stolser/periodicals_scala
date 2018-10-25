@@ -2,15 +2,13 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet, SQLException}
 import java.util
-import java.util.{ArrayList, List}
 
 import com.stolser.javatraining.webproject.controller.utils.DaoUtils
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
-import com.stolser.javatraining.webproject.dao.PeriodicalDao
 import com.stolser.javatraining.webproject.dao.DaoUtils._
-import com.stolser.javatraining.webproject.dao.exception.DaoException
+import com.stolser.javatraining.webproject.dao.PeriodicalDao
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
-import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
+import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -170,12 +168,12 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 	@throws[SQLException]
 	private def setStatementFromPeriodical(st: PreparedStatement,
 										   periodical: Periodical): Unit = {
-		st.setString(1, periodical.getName)
-		st.setString(2, periodical.getCategory.toString.toLowerCase)
-		st.setString(3, periodical.getPublisher)
-		st.setString(4, periodical.getDescription.orNull)
-		st.setLong(5, periodical.getOneMonthCost)
-		st.setString(6, periodical.getStatus.toString.toLowerCase)
+		st.setString(1, periodical.name)
+		st.setString(2, periodical.category.toString.toLowerCase)
+		st.setString(3, periodical.publisher)
+		st.setString(4, periodical.description.orNull)
+		st.setLong(5, periodical.oneMonthCost)
+		st.setString(6, periodical.status.toString.toLowerCase)
 	}
 
 	override def update(periodical: Periodical): Int = {
@@ -187,7 +185,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
-					st.setLong(7, periodical.getId)
+					st.setLong(7, periodical.id)
 
 					st.executeUpdate()
 				}
@@ -205,7 +203,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
-					st.setLong(7, periodical.getId)
+					st.setLong(7, periodical.id)
 					st.setString(8, SubscriptionStatus.ACTIVE.toString.toLowerCase)
 
 					st.executeUpdate()

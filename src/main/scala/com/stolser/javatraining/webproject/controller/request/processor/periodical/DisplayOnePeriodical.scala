@@ -42,6 +42,6 @@ object DisplayOnePeriodical extends RequestProcessor {
 	}
 
 	private def hasUserNotEnoughPermissions(currentUser: User, periodicalInDb: Periodical) =
-		!(PeriodicalStatus.ACTIVE == periodicalInDb.getStatus) &&
+		!(PeriodicalStatus.ACTIVE == periodicalInDb.status) &&
 			!currentUser.hasRole(UserRole.ADMIN)
 }

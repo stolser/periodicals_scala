@@ -1,15 +1,15 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql._
-import java.{sql, util}
+import java.util.Date
 import java.util.Objects.nonNull
-import java.util.{ArrayList, Date, List}
+import java.{sql, util}
 
 import com.stolser.javatraining.webproject.dao.DaoUtils._
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
+import com.stolser.javatraining.webproject.dao.UserDao
 import com.stolser.javatraining.webproject.dao.exception.DaoException
-import com.stolser.javatraining.webproject.dao.{DaoUtils, UserDao}
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -150,12 +150,12 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		tryAndCatchSqlException(exceptionMessage) { () =>
 			withResources(conn.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
 				st: PreparedStatement => {
-					st.setString(1, user.getFirstName.getOrElse(""))
-					st.setString(2, user.getLastName.getOrElse(""))
+					st.setString(1, user.firstName.getOrElse(""))
+					st.setString(2, user.lastName.getOrElse(""))
 					st.setDate(3, getBirthdayFromUser(user))
-					st.setString(4, user.getEmail)
-					st.setString(5, user.getAddress.getOrElse(""))
-					st.setString(6, user.getStatus.toString.toLowerCase)
+					st.setString(4, user.email)
+					st.setString(5, user.address.getOrElse(""))
+					st.setString(6, user.status.toString.toLowerCase)
 
 					tryExecuteUpdate(st, exceptionMessage)
 
@@ -186,7 +186,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		}
 
 	private def getBirthdayFromUser(user: User): sql.Date =
-		user.getBirthday match {
+		user.birthday match {
 			case Some(date) => new sql.Date(date.getTime)
 			case None => null
 		}

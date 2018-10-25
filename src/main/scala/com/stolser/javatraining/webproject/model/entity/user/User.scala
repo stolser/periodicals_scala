@@ -5,7 +5,6 @@ import java.util.Date
 import com.google.common.base.Preconditions.checkNotNull
 
 import scala.beans.BeanProperty
-import scala.collection.mutable
 
 /**
   * Created by Oleg Stoliarov on 10/20/18.
@@ -21,7 +20,7 @@ case class User(@BeanProperty id: Long = 0,
 				@BeanProperty email: String = "",
 				@BeanProperty address: Option[String] = None,
 				@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
-				@BeanProperty var roles: mutable.Set[UserRole.Value] = mutable.Set()) {
+				@BeanProperty var roles: Set[UserRole.Value] = Set()) {
 
 	checkNotNull(userName)
 	checkNotNull(email)

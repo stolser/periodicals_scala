@@ -2,10 +2,10 @@ package com.stolser.javatraining.webproject.controller.security
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{ACCESS_DENIED_PAGE_VIEW_NAME, CURRENT_USER_ATTR_NAME}
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.view.{JspViewResolver, ViewResolver}
+import com.stolser.javatraining.webproject.view.JspViewResolver
 import javax.servlet._
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 /**
   * Created by Oleg Stoliarov on 10/12/18.
@@ -40,7 +40,7 @@ class AuthorizationFilter extends Filter {
 	}
 
 	private def getUserNameFromSession(request: HttpServletRequest) =
-		request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].getUserName
+		request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].userName
 
 	private def isRequestAuthorized(request: HttpServletRequest) =
 		Authorization.checkPermissions(request)

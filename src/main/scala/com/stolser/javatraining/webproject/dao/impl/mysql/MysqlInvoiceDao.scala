@@ -3,16 +3,13 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 import java.sql._
 import java.time.Instant
 import java.util
-import java.util.Objects.nonNull
-import java.util.{ArrayList, List}
 
 import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
-import com.stolser.javatraining.webproject.dao.{DaoUtils, InvoiceDao}
-import com.stolser.javatraining.webproject.dao.exception.DaoException
+import com.stolser.javatraining.webproject.dao.InvoiceDao
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -218,8 +215,8 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 	@throws[SQLException]
 	private def setCreateUpdateStatementFromInvoice(st: PreparedStatement,
 													invoice: Invoice): Unit = {
-		st.setLong(1, invoice.user.getId)
-		st.setLong(2, invoice.periodical.getId)
+		st.setLong(1, invoice.user.id)
+		st.setLong(2, invoice.periodical.id)
 		st.setInt(3, invoice.subscriptionPeriod)
 		st.setDouble(4, invoice.totalSum)
 		st.setTimestamp(5, getCreationDate(invoice))

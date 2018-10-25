@@ -2,15 +2,14 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql._
 import java.util
-import java.util.{ArrayList, List}
 
 import com.stolser.javatraining.webproject.controller.utils.DaoUtils
 import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
 import com.stolser.javatraining.webproject.dao.SubscriptionDao
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.
@@ -112,7 +111,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_RETRIEVING_SUBSCRIPTIONS_FOR_USER.format(user)) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
-					st.setLong(1, user.getId)
+					st.setLong(1, user.id)
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
@@ -153,15 +152,15 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 	@throws[SQLException]
 	private def setSubscriptionForInsertUpdateStatement(st: PreparedStatement,
 														subscription: Subscription): Unit = {
-		st.setLong(1, subscription.getUser.getId)
-		st.setLong(2, subscription.getPeriodical.getId)
-		st.setString(3, subscription.getDeliveryAddress)
+		st.setLong(1, subscription.user.id)
+		st.setLong(2, subscription.periodical.id)
+		st.setString(3, subscription.deliveryAddress)
 		st.setTimestamp(4, getEndDate(subscription))
-		st.setString(5, subscription.getStatus.toString.toLowerCase)
+		st.setString(5, subscription.status.toString.toLowerCase)
 	}
 
 	private def getEndDate(subscription: Subscription) =
-		subscription.getEndDate match {
+		subscription.endDate match {
 			case Some(date) => new Timestamp(date.toEpochMilli)
 			case None => null
 		}
@@ -175,7 +174,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setSubscriptionForInsertUpdateStatement(st, subscription)
-					st.setLong(6, subscription.getId)
+					st.setLong(6, subscription.id)
 
 					st.executeUpdate
 				}

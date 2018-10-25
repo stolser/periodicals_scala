@@ -33,7 +33,8 @@ object DisplayNewPeriodicalPage extends RequestProcessor {
 		request.setAttribute(PERIODICAL_ATTR_NAME, periodicalToForward)
 		request.setAttribute(PERIODICAL_STATUSES_ATTR_NAME, PeriodicalStatus.values.asJava)
 		request.setAttribute(PERIODICAL_CATEGORIES_ATTR_NAME, PeriodicalCategory.values.asJava)
-		request.setAttribute(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME, PeriodicalOperationType.CREATE.toString.toLowerCase)
+		request.setAttribute(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME,
+			PeriodicalOperationType.CREATE.toString.toLowerCase)
 	}
 
 	private def getPeriodicalFromSession(request: HttpServletRequest) =

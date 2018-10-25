@@ -1,10 +1,9 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
-import java.sql.Connection
 import java.util.Objects.isNull
 
-import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.dao._
+import com.stolser.javatraining.webproject.dao.exception.DaoException
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.

@@ -1,17 +1,11 @@
 package com.stolser.javatraining.webproject.view.jsp.tag
 
-import java.util
 import java.util.Objects.nonNull
-import java.util.stream.Collectors
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.jsp.JspException
 import javax.servlet.jsp.tagext.{Tag, TagSupport}
-
-import scala.beans.BeanProperty
-import scala.collection.JavaConverters._
-import scala.collection.mutable
 
 /**
   * Created by Oleg Stoliarov on 10/15/18.
@@ -38,34 +32,23 @@ class AuthorizationTag extends TagSupport {
 		.getAttribute(ApplicationResources.CURRENT_USER_ATTR_NAME).asInstanceOf[User]
 
 	private def hasUserLegitRoles: Boolean =
-		if ("*" == mustHaveRoles)
-			true
-		else {
-			val legitRoles = parseUserRoles(mustHaveRoles).asJava
-			val userRoles = new util.HashSet[UserRole.Value](user.getRoles.asJava)
-			userRoles.retainAll(legitRoles)
-
-			!userRoles.isEmpty
+		mustHaveRoles match {
+			case "*" => true
+			case _ => user.roles intersect parseUserRoles(mustHaveRoles) nonEmpty
 		}
 
-	private def parseUserRoles(userRoles: String) = {
-		if (nonNull(userRoles)) {
-			userRoles.split(" ")
+	private def parseUserRoles(userRoles: String): Set[UserRole.Value] =
+		userRoles match {
+			case roles: String => roles.split(" ")
 				.map((roleStr: String) => UserRole.withName(roleStr.toUpperCase()))
 				.toSet
-		} else
-			Set()
-	}
+			case _ => Set()
+		}
 
-	private def hasUserNoProhibitedRoles =
-		if ("*" == mustNotHaveRoles)
-			false
-		else {
-			val prohibitedRoles = parseUserRoles(mustNotHaveRoles).asJava
-			val userRoles = new util.HashSet[UserRole.Value](user.getRoles.asJava)
-			userRoles.retainAll(prohibitedRoles)
-
-			userRoles.isEmpty
+	private def hasUserNoProhibitedRoles: Boolean =
+		mustNotHaveRoles match {
+			case "*" => false
+			case _ => user.roles intersect parseUserRoles(mustNotHaveRoles) isEmpty
 		}
 
 	def getMustHaveRoles: String = mustHaveRoles

@@ -7,12 +7,11 @@ import com.stolser.javatraining.webproject.controller.message.{FrontMessageFacto
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
-import com.stolser.javatraining.webproject.service.UserService
 import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
+import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
-import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 /**
   * Created by Oleg Stoliarov on 10/11/18.
@@ -51,7 +50,7 @@ object SignIn extends RequestProcessor {
 
 	private def isPasswordCorrect(password: String, credential: Credential) =
 		nonNull(credential) &&
-			(HttpUtils.getPasswordHash(password) == credential.getPasswordHash)
+			(HttpUtils.getPasswordHash(password) == credential.passwordHash)
 
 	private def signInIfUserIsActive(request: HttpServletRequest,
 									 messages: mutable.Map[String, FrontendMessage]) = {
@@ -68,7 +67,7 @@ object SignIn extends RequestProcessor {
 	}
 
 	private def isUserActive(currentUser: User) =
-		currentUser.getStatus == UserStatus.ACTIVE
+		currentUser.status == UserStatus.ACTIVE
 
 	private def signInUserAndGetRedirectUri(request: HttpServletRequest, currentUser: User) = {
 		val session = request.getSession

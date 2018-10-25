@@ -3,7 +3,6 @@ package com.stolser.javatraining.webproject.model.entity.periodical
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import enumeratum.{Enum, EnumEntry}
 
-import scala.beans.BeanProperty
 import scala.collection.immutable
 
 /**

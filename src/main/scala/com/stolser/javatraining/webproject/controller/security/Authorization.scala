@@ -1,17 +1,13 @@
 package com.stolser.javatraining.webproject.controller.security
 
-import java.util
-import java.util.regex.{Matcher, Pattern}
+import java.util.regex.Pattern
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.CURRENT_USER_ATTR_NAME
-import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProviderImpl._
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils.{filterRequestByHttpMethod, filterRequestByUri}
+import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.http.{HttpServletRequest, HttpSession}
-
-import scala.collection.mutable
-import scala.collection.JavaConverters._
 
 /**
   * Created by Oleg Stoliarov on 10/12/18.
@@ -47,8 +43,6 @@ object Authorization {
 			case Some(accessRestriction) => isPermissionGranted(accessRestriction, request)
 			case None => true
 		}
-		//		if (accessRestriction.isPresent) return isPermissionGranted(accessRestriction.get, request)
-		//		true
 	}
 
 	private def isUserIdInUriValid(request: HttpServletRequest) = {
@@ -68,25 +62,17 @@ object Authorization {
 			.filterKeys(filterRequestByUri(request, _))
 			.headOption
 
-	//
-	//			permissionMapping.entrySet.stream
-	//				.filter((entry: util.Map.Entry[String, util.Set[UserRole.Value]]) => filterRequestByHttpMethod(request, entry.getKey))
-	//				.filter((entry: util.Map.Entry[String, util.Set[UserRole.Value]]) => filterRequestByUri(request, entry.getKey))
-	//				.findFirst
-
 	private def isPermissionGranted(permissionMapping: (String, Set[UserRole.Value]),
 									request: HttpServletRequest) =
 		hasUserLegitRole(
-			userRoles = getUserRolesFromSession(request.getSession).asJava,
-			legitRoles = permissionMapping._2.asJava
+			userRoles = getUserRolesFromSession(request.getSession),
+			legitRoles = permissionMapping._2
 		)
 
 	private def getUserRolesFromSession(session: HttpSession) =
-		session.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].getRoles
+		session.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].roles
 
-	private def hasUserLegitRole(userRoles: util.Set[UserRole.Value], legitRoles: util.Set[UserRole.Value]) = {
-		val userLegitRoles = new util.HashSet[UserRole.Value](legitRoles)
-		userLegitRoles.retainAll(userRoles)
-		!userLegitRoles.isEmpty
-	}
+	private def hasUserLegitRole(userRoles: Set[UserRole.Value],
+								 legitRoles: Set[UserRole.Value]) =
+		(userRoles intersect legitRoles) nonEmpty
 }

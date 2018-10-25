@@ -1,13 +1,13 @@
 package com.stolser.javatraining.webproject.connection.pool
 
-import java.sql.{Connection, SQLException}
+import java.sql.SQLException
 
+import com.stolser.javatraining.webproject.connection.pool.SqlConnectionPool._
 import com.stolser.javatraining.webproject.dao.AbstractConnection
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.dao.impl.mysql.AbstractConnectionImpl
 import javax.sql.DataSource
 import org.apache.commons.dbcp2.BasicDataSource
-import SqlConnectionPool._
 
 /**
   * Created by Oleg Stoliarov on 10/6/18.

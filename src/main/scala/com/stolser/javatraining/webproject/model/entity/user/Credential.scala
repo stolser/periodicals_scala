@@ -2,7 +2,6 @@ package com.stolser.javatraining.webproject.model.entity.user
 
 import com.google.common.base.Preconditions.checkNotNull
 
-import scala.Predef._
 import scala.beans.BeanProperty
 
 /**

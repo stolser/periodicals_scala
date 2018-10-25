@@ -2,15 +2,11 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
 import java.util
-import java.util.Set
 
-import com.stolser.javatraining.webproject.controller.utils.DaoUtils
 import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
 import com.stolser.javatraining.webproject.dao.RoleDao
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
-import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
-import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.model.entity.user.UserRole
+import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.

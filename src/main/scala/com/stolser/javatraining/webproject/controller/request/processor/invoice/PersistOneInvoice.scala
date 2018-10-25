@@ -1,13 +1,11 @@
 package com.stolser.javatraining.webproject.controller.request.processor.invoice
 
 import java.time.Instant
-import java.util
-import java.util.Objects.{isNull, nonNull}
+import java.util.Objects.isNull
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils._
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
@@ -15,10 +13,9 @@ import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 import scala.collection.mutable
-import scala.collection.JavaConverters._
 
 /**
   * Created by Oleg Stoliarov on 10/10/18.
@@ -66,7 +63,7 @@ object PersistOneInvoice extends RequestProcessor {
 
 	private def isPeriodicalVisible(periodicalInDb: Periodical,
 									generalMessages: mutable.ListBuffer[FrontendMessage]) =
-		if (PeriodicalStatus.ACTIVE != periodicalInDb.getStatus) {
+		if (PeriodicalStatus.ACTIVE != periodicalInDb.status) {
 			generalMessages += messageFactory.getError(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
 			false
 		} else
@@ -104,7 +101,7 @@ object PersistOneInvoice extends RequestProcessor {
 							  request: HttpServletRequest) = {
 		val subscriptionPeriod = request.getParameter(SUBSCRIPTION_PERIOD_PARAM_NAME).toInt
 
-		val totalSum = subscriptionPeriod * periodicalInDb.getOneMonthCost
+		val totalSum = subscriptionPeriod * periodicalInDb.oneMonthCost
 		val userIdFromUri = getFirstIdFromUri(request.getRequestURI)
 		val user = User(id = userIdFromUri)
 

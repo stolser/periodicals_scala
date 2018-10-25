@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.model.entity.statistics
 
-import com.google.common.base.Preconditions
-import com.google.common.base.Preconditions.checkNotNull
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalCategory
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory._
 

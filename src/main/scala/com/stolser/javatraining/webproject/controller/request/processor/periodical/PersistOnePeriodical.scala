@@ -1,25 +1,22 @@
 package com.stolser.javatraining.webproject.controller.request.processor.periodical
 
-import java.util
 import java.util.Objects.nonNull
-import java.util.{ArrayList, HashMap, List, Map}
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
-import com.stolser.javatraining.webproject.controller.form.validator.{ValidationResult, ValidatorFactory}
+import com.stolser.javatraining.webproject.controller.form.validator.ValidatorFactory
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils._
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalOperationType.{CREATE, UPDATE}
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE}
-import com.stolser.javatraining.webproject.service.PeriodicalService
+import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType, PeriodicalStatus}
 import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
-import scala.collection.mutable
 import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 /**
   * Created by Oleg Stoliarov on 10/11/18.
@@ -78,7 +75,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	}
 
 	private def periodicalToSaveHasActiveSubscriptions(periodicalToSave: Periodical) =
-		periodicalService.hasActiveSubscriptions(periodicalToSave.getId)
+		periodicalService.hasActiveSubscriptions(periodicalToSave.id)
 
 	private def getOperationTypeFromRequest(request: HttpServletRequest) =
 		PeriodicalOperationType.withName(
@@ -122,7 +119,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	private def getRedirectUriByOperationType(request: HttpServletRequest, periodicalToSave: Periodical) =
 		getOperationTypeFromRequest(request) match {
 			case CREATE => PERIODICAL_CREATE_NEW_URI
-			case UPDATE => PERIODICAL_LIST_URI + "/" + periodicalToSave.getId + "/update"
+			case UPDATE => PERIODICAL_LIST_URI + "/" + periodicalToSave.id + "/update"
 			case _ =>
 				throw new IllegalArgumentException(INCORRECT_OPERATION_DURING_PERSISTING_A_PERIODICAL)
 		}
@@ -143,7 +140,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	private def validateName(periodicalToSave: Periodical,
 							 request: HttpServletRequest,
 							 messages: mutable.Map[String, FrontendMessage]): Unit = {
-		val result = ValidatorFactory.getPeriodicalNameValidator.validate(periodicalToSave.getName, request)
+		val result = ValidatorFactory.getPeriodicalNameValidator.validate(periodicalToSave.name, request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.getError(result.messageKey))
 	}
@@ -151,7 +148,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	private def validateCategory(periodicalToSave: Periodical,
 								 request: HttpServletRequest,
 								 messages: mutable.Map[String, FrontendMessage]): Unit = {
-		val result = ValidatorFactory.getPeriodicalCategoryValidator.validate(periodicalToSave.getCategory.toString, request)
+		val result = ValidatorFactory.getPeriodicalCategoryValidator.validate(periodicalToSave.category.toString, request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.getError(result.messageKey))
 	}
@@ -159,7 +156,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	private def validatePublisher(periodicalToSave: Periodical,
 								  request: HttpServletRequest,
 								  messages: mutable.Map[String, FrontendMessage]): Unit = {
-		val result = ValidatorFactory.getPeriodicalPublisherValidator.validate(periodicalToSave.getPublisher, request)
+		val result = ValidatorFactory.getPeriodicalPublisherValidator.validate(periodicalToSave.publisher, request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_PUBLISHER_PARAM_NAME, messageFactory.getError(result.messageKey))
 	}
@@ -167,7 +164,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	private def validateCost(periodicalToSave: Periodical,
 							 request: HttpServletRequest,
 							 messages: mutable.Map[String, FrontendMessage]): Unit = {
-		val result = ValidatorFactory.getPeriodicalCostValidator.validate(String.valueOf(periodicalToSave.getOneMonthCost), request)
+		val result = ValidatorFactory.getPeriodicalCostValidator.validate(String.valueOf(periodicalToSave.oneMonthCost), request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_COST_PARAM_NAME, messageFactory.getError(result.messageKey))
 	}
@@ -176,12 +173,12 @@ object PersistOnePeriodical extends RequestProcessor {
 		private val cache = mutable.Map[String, PeriodicalStatusChange]()
 
 		private[periodical] def getInstance(periodicalToSave: Periodical) = {
-			val periodicalInDb = PeriodicalServiceImpl.findOneById(periodicalToSave.getId)
+			val periodicalInDb = PeriodicalServiceImpl.findOneById(periodicalToSave.id)
 			val oldStatus =
 				if (nonNull(periodicalInDb))
-					periodicalInDb.getStatus
+					periodicalInDb.status
 				else null
-			val newStatus = periodicalToSave.getStatus
+			val newStatus = periodicalToSave.status
 			val cacheKey = getCacheKey(oldStatus, newStatus)
 			if (!cache.contains(cacheKey))
 				cache.put(cacheKey, new PersistOnePeriodical.PeriodicalStatusChange(oldStatus, newStatus))
@@ -198,8 +195,6 @@ object PersistOnePeriodical extends RequestProcessor {
 	final private class PeriodicalStatusChange private(var oldStatus: PeriodicalStatus.Value,
 													   var newStatus: PeriodicalStatus.Value) {
 		private[periodical] def getOldStatus = oldStatus
-
 		private[periodical] def getNewStatus = newStatus
 	}
-
 }

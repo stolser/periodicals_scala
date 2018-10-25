@@ -1,10 +1,10 @@
 package com.stolser.javatraining.webproject.controller.utils
 
 import java.io.IOException
-import java.security.{MessageDigest, NoSuchAlgorithmException}
+import java.security.MessageDigest
 import java.util
-import java.util.Objects.nonNull
 import java.util.NoSuchElementException
+import java.util.Objects.nonNull
 import java.util.regex.{Matcher, Pattern}
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
@@ -13,10 +13,9 @@ import com.stolser.javatraining.webproject.controller.security.AccessDeniedExcep
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.service.UserService
 import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -40,7 +39,7 @@ object HttpUtils {
 	  */
 	def getUserIdFromSession(request: HttpServletRequest): Long = {
 		val user: User = request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User]
-		if (nonNull(user)) user.getId
+		if (nonNull(user)) user.id
 		else 0
 	}
 

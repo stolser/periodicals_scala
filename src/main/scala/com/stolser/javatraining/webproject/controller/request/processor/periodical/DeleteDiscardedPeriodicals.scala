@@ -1,18 +1,14 @@
 package com.stolser.javatraining.webproject.controller.request.processor.periodical
 
-import java.util
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{MSG_NO_PERIODICALS_TO_DELETE, MSG_PERIODICALS_DELETED_SUCCESS, PERIODICAL_LIST_URI}
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils._
 import com.stolser.javatraining.webproject.service.PeriodicalService
 import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.collection.mutable
-import scala.collection.JavaConverters._
 
 /**
   * Created by Oleg Stoliarov on 10/11/18.

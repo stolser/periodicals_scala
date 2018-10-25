@@ -1,6 +1,5 @@
 package com.stolser.javatraining.webproject.model.entity.periodical
 
-import com.google.common.base.Preconditions
 import com.google.common.base.Preconditions._
 
 import scala.beans.BeanProperty

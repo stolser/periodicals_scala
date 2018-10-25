@@ -2,12 +2,12 @@ package com.stolser.javatraining.webproject.controller
 
 import java.io.IOException
 
-import com.stolser.javatraining.webproject.controller.request.processor.{DispatchException, RequestProvider, RequestProviderImpl}
+import com.stolser.javatraining.webproject.controller.request.processor.{DispatchException, RequestProviderImpl}
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
-import com.stolser.javatraining.webproject.view.{JspViewResolver, ViewResolver}
-import javax.servlet.{RequestDispatcher, ServletException}
+import com.stolser.javatraining.webproject.view.JspViewResolver
+import javax.servlet.ServletException
 import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
-import org.slf4j.{Logger, LoggerFactory}
+import org.slf4j.LoggerFactory
 
 /**
   * Created by Oleg Stoliarov on 10/13/18.

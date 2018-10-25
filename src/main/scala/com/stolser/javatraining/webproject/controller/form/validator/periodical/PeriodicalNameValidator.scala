@@ -6,7 +6,7 @@ import java.util.regex.Pattern
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.form.validator.{AbstractValidator, ValidationProcessorException, ValidationResult}
-import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType}
+import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalOperationType
 import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.HttpServletRequest
 
@@ -52,6 +52,6 @@ object PeriodicalNameValidator extends AbstractValidator {
 		 */
 
 		nonNull(periodicalWithSuchNameInDb) && (isOperationCreate(operationType)
-			|| (isOperationUpdate(operationType) && (periodicalId != periodicalWithSuchNameInDb.getId)))
+			|| (isOperationUpdate(operationType) && (periodicalId != periodicalWithSuchNameInDb.id)))
 	}
 }

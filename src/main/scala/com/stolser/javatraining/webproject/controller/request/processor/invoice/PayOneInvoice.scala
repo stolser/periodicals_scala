@@ -14,7 +14,6 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable
-import scala.collection.JavaConverters._
 
 /**
   * Created by Oleg Stoliarov on 10/10/18.
@@ -73,11 +72,11 @@ object PayOneInvoice extends RequestProcessor {
 
 		def isPeriodicalActive(invoiceInDb: Invoice) = {
 			val periodicalInDb = periodicalService.findOneById(getPeriodicalIdFromInvoice(invoiceInDb))
-			PeriodicalStatus.ACTIVE == periodicalInDb.getStatus
+			PeriodicalStatus.ACTIVE == periodicalInDb.status
 		}
 
 		def getPeriodicalIdFromInvoice(invoiceInDb: Invoice) =
-			invoiceInDb.periodical.getId
+			invoiceInDb.periodical.id
 
 		invoiceExistsInDb(invoiceInDb, generalMessages) &&
 			isInvoiceNew(invoiceInDb, generalMessages) &&

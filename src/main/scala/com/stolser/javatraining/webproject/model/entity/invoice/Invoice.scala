@@ -2,7 +2,6 @@ package com.stolser.javatraining.webproject.model.entity.invoice
 
 import java.time.Instant
 
-import com.google.common.base.Preconditions
 import com.google.common.base.Preconditions._
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
