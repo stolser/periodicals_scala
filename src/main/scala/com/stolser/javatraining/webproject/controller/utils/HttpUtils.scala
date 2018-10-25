@@ -4,7 +4,7 @@ import java.io.IOException
 import java.security.{MessageDigest, NoSuchAlgorithmException}
 import java.util
 import java.util.Objects.nonNull
-import java.util.{Arrays, HashMap, List, Map, NoSuchElementException}
+import java.util.NoSuchElementException
 import java.util.regex.{Matcher, Pattern}
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
@@ -18,11 +18,14 @@ import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.collection.JavaConverters._
+import scala.collection.mutable
+
 /**
   * Created by Oleg Stoliarov on 10/13/18.
   */
 object HttpUtils {
-	private val LOGGER = LoggerFactory.getLogger(HttpUtils.getClass)
+	private val LOGGER = LoggerFactory.getLogger(getClass)
 	private val ALGORITHM_NAME = "MD5"
 	private val EXCEPTION_DURING_GETTING_MESSAGE_DIGEST_FOR_MD5 = "Exception during getting MessageDigest for 'MD5'"
 	private val REDIRECTION_FROM_TO_TEXT = "During redirection from \"%s\" to \"%s\""
@@ -76,32 +79,29 @@ object HttpUtils {
 	  * Sets a session scoped attribute 'messages'.
 	  */
 	def addMessagesToSession(request: HttpServletRequest,
-							 frontMessageMap: util.Map[String,
-								 util.List[FrontendMessage]]): Unit = {
-		request.getSession.setAttribute(MESSAGES_ATTR_NAME, frontMessageMap)
-	}
+							 frontMessageMap: Map[String, util.List[FrontendMessage]]): Unit =
+		request.getSession.setAttribute(MESSAGES_ATTR_NAME, frontMessageMap.asJava)
 
 	/**
 	  * Adds general messages to the session.
 	  */
 	def addGeneralMessagesToSession(request: HttpServletRequest,
-									generalMessages: util.List[FrontendMessage]): Unit = {
-		val frontMessageMap: util.Map[String, util.List[FrontendMessage]] = new util.HashMap[String, util.List[FrontendMessage]]
-		frontMessageMap.put(GENERAL_MESSAGES_FRONT_BLOCK_NAME, generalMessages)
-		HttpUtils.addMessagesToSession(request, frontMessageMap)
-	}
+									generalMessages: mutable.ListBuffer[FrontendMessage]): Unit =
+		addMessagesToSession(
+			request,
+			Map(GENERAL_MESSAGES_FRONT_BLOCK_NAME -> generalMessages.toList.asJava)
+		)
 
 	def sendRedirect(request: HttpServletRequest,
 					 response: HttpServletResponse,
-					 redirectUri: String): Unit = {
+					 redirectUri: String): Unit =
 		try
 			response.sendRedirect(redirectUri)
 		catch {
 			case e: IOException =>
-				val message: String = s"User id = ${HttpUtils.getUserIdFromSession(request)}. Exception during redirection to '$redirectUri'."
+				val message: String = s"User id = ${getUserIdFromSession(request)}. Exception during redirection to '$redirectUri'."
 				throw new RuntimeException(message, e)
 		}
-	}
 
 	/**
 	  * Returns an appropriate view name for this exception.

@@ -2,12 +2,13 @@ package com.stolser.javatraining.webproject.controller.request.processor.admin.p
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util
-import java.util.List
 
-import com.stolser.javatraining.webproject.controller.ApplicationResources.{ADMIN_PANEL_VIEW_NAME, FINANCIAL_STATISTICS_ATTR_NAME, PERIODICAL_STATISTICS_ATTR_NAME}
+import com.stolser.javatraining.webproject.controller.ApplicationResources.{
+	ADMIN_PANEL_VIEW_NAME,
+	FINANCIAL_STATISTICS_ATTR_NAME,
+	PERIODICAL_STATISTICS_ATTR_NAME
+}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.model.entity.statistics.{FinancialStatistics, PeriodicalNumberByCategory}
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -27,15 +28,18 @@ object DisplayAdminPanel extends RequestProcessor {
 		FORWARD + ADMIN_PANEL_VIEW_NAME
 	}
 
-	private def addPeriodicalStatsIntoRequest(request: HttpServletRequest): Unit = {
-		val periodicalStatistics: util.List[PeriodicalNumberByCategory] = periodicalService.getQuantitativeStatistics
-		request.setAttribute(PERIODICAL_STATISTICS_ATTR_NAME, periodicalStatistics)
-	}
+	private def addPeriodicalStatsIntoRequest(request: HttpServletRequest): Unit =
+		request.setAttribute(
+			PERIODICAL_STATISTICS_ATTR_NAME,
+			periodicalService.getQuantitativeStatistics
+		)
 
-	private def addFinStatsIntoRequest(request: HttpServletRequest): Unit = {
-		val until: Instant = Instant.now
-		val since: Instant = until.minus(30, ChronoUnit.DAYS)
-		val finStatistics: FinancialStatistics = invoiceService.getFinStatistics(since, until)
-		request.setAttribute(FINANCIAL_STATISTICS_ATTR_NAME, finStatistics)
-	}
+	private def addFinStatsIntoRequest(request: HttpServletRequest): Unit =
+		request.setAttribute(
+			FINANCIAL_STATISTICS_ATTR_NAME,
+			invoiceService.getFinStatistics(
+				since = Instant.now.minus(30, ChronoUnit.DAYS),
+				until = Instant.now
+			)
+		)
 }

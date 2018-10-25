@@ -49,19 +49,6 @@ object AjaxFormValidation extends RequestProcessor {
 		var frontEndMessages: Map[String, _] = session.getAttribute(MESSAGES_ATTR_NAME)
 			.asInstanceOf[Map[String, _]]
 		if (nonNull(frontEndMessages)) frontEndMessages -= paramName
-
-		//		-------- NOT working ------------
-		//		val frontEndMessages = session.getAttribute(MESSAGES_ATTR_NAME)
-		//		frontEndMessages match {
-		//			case _: Map[_, _] => frontEndMessages.asInstanceOf[java.util.Map].remove(paramName)
-		//		}
-
-		//		-------- original ------------
-		//		Map frontEndMessages = (Map)session.getAttribute(MESSAGES_ATTR_NAME);
-		//
-		//		if (nonNull(frontEndMessages)) {
-		//			frontEndMessages.remove(paramName);
-		//		}
 	}
 
 	private def customizeResponse(response: HttpServletResponse): Unit = {

@@ -1,7 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.periodical
 
 import java.util
-import java.util.Map
 import java.util.Objects.nonNull
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
