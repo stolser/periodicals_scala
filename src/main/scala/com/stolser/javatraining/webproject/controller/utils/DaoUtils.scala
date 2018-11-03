@@ -8,7 +8,7 @@ import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, 
 /**
   * Created by Oleg Stoliarov on 10/13/18.
   */
-object DaoUtils {
+object DaoUtils extends DaoUtilsTrait {
 	/**
 	  * Creates a new periodical using the data from the result set.
 	  */

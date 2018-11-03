@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory
 object ConnectionPoolProvider {
 	private val LOGGER = LoggerFactory.getLogger(ConnectionPoolProvider.getClass)
 	private val DB_CONFIG_FILENAME = "webproject/config/dbConfig.properties"
-	private val TEST_DB_CONFIG_FILENAME = "webproject/config/testDbConfig.properties"
 	private val DB_CONFIG_PARAM_URL = "database.url"
 	private val DB_CONFIG_PARAM_DB_NAME = "database.dbName"
 	private val DB_CONFIG_PARAM_USER_NAME = "database.userName"
@@ -21,7 +20,6 @@ object ConnectionPoolProvider {
 	private val EXCEPTION_DURING_LOADING_DB_CONFIG_PROPERTIES = "Exception during loading db-config properties from the file " + "(path = {})"
 
 	lazy val getPool: ConnectionPool = createPoolFromProperties(getProperties(DB_CONFIG_FILENAME))
-	lazy val getTestPool: ConnectionPool = createPoolFromProperties(getProperties(TEST_DB_CONFIG_FILENAME))
 
 	private def createPoolFromProperties(properties: Properties): SqlConnectionPool =
 		try {

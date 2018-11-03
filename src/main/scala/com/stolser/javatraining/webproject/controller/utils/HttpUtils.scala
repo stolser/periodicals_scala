@@ -23,7 +23,7 @@ import scala.collection.mutable
 /**
   * Created by Oleg Stoliarov on 10/13/18.
   */
-object HttpUtils {
+object HttpUtils extends HttpUtilsTrait {
 	private val LOGGER = LoggerFactory.getLogger(getClass)
 	private val ALGORITHM_NAME = "MD5"
 	private val EXCEPTION_DURING_GETTING_MESSAGE_DIGEST_FOR_MD5 = "Exception during getting MessageDigest for 'MD5'"
@@ -46,7 +46,7 @@ object HttpUtils {
 	/**
 	  * Retrieves a user object from the db for the current user from the request.
 	  */
-	def getCurrentUserFromFromDb(request: HttpServletRequest): User =
+	override def getCurrentUserFromFromDb(request: HttpServletRequest): User =
 		userService.findOneById(getUserIdFromSession(request))
 
 	/**
@@ -66,7 +66,7 @@ object HttpUtils {
 	/**
 	  * Tries to find the first number in the uri.
 	  */
-	def getFirstIdFromUri(uri: String): Int = {
+	override def getFirstIdFromUri(uri: String): Int = {
 		val numberInUriMatcher: Matcher = Pattern.compile(NUMBER_REGEX).matcher(uri)
 		if (!numberInUriMatcher.find)
 			throw new IllegalArgumentException(String.format(URI_MUST_CONTAIN_ID_TEXT, uri))

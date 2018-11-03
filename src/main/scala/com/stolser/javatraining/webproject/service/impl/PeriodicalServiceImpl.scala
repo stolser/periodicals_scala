@@ -4,7 +4,7 @@ import java.util
 import java.util.NoSuchElementException
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
-import com.stolser.javatraining.webproject.dao.{DaoFactory, PeriodicalDao}
+import com.stolser.javatraining.webproject.dao.{DaoFactory, DaoFactoryTrait, PeriodicalDao}
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
@@ -16,8 +16,18 @@ import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
   */
 object PeriodicalServiceImpl extends PeriodicalService {
 	private val NO_PERIODICAL_WITH_ID_MESSAGE = "There is no periodical in the DB with id = %d"
-	private lazy val factory = DaoFactory.getMysqlDaoFactory
-	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
+	private var factory = DaoFactory.getMysqlDaoFactory
+	private implicit var implicitConnectionPool: ConnectionPool = ConnectionPoolProvider.getPool
+
+	private[impl] def daoFactory_= (factory: DaoFactoryTrait): Unit = {
+		require(factory != null)
+		this.factory = factory
+	}
+
+	private[impl] def connectionPool_= (connectionPool: ConnectionPool): Unit = {
+		require(connectionPool != null)
+		implicitConnectionPool = connectionPool
+	}
 
 	override def findOneById(id: Long): Periodical =
 		withConnection { conn =>

@@ -3,24 +3,25 @@ package com.stolser.javatraining.webproject.controller.security
 import java.util.Objects.isNull
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{LOGIN_PAGE, ORIGINAL_URI_ATTR_NAME, SIGN_OUT_URI}
-import com.stolser.javatraining.webproject.controller.utils.HttpUtils
+import com.stolser.javatraining.webproject.controller.utils.{HttpUtils, HttpUtilsTrait}
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
 import javax.servlet._
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
-  * Created by Oleg Stoliarov on 10/12/18.
-  * Makes sure that this request comes from a signed in and active user and the session has not expired.
-  * Otherwise it redirects to the Log in page.
-  */
+	* Created by Oleg Stoliarov on 10/12/18.
+	* Makes sure that this request comes from a signed in and active user and the session has not expired.
+	* Otherwise it redirects to the Log in page.
+	*/
 class AuthenticationFilter extends Filter {
+	private[security] val httpUtils: HttpUtilsTrait = HttpUtils
 	private val unProtectedUris = Array("/backend/signIn", "/backend/signUp", "/backend/validation")
 
 	override def init(filterConfig: FilterConfig): Unit = {}
 
 	override def doFilter(servletRequest: ServletRequest,
-						  servletResponse: ServletResponse,
-						  filterChain: FilterChain): Unit = {
+												servletResponse: ServletResponse,
+												filterChain: FilterChain): Unit = {
 		val request = servletRequest.asInstanceOf[HttpServletRequest]
 		val response = servletResponse.asInstanceOf[HttpServletResponse]
 
@@ -30,7 +31,7 @@ class AuthenticationFilter extends Filter {
 		}
 
 		val requestUri = request.getRequestURI
-		val currentUser = HttpUtils.getCurrentUserFromFromDb(request)
+		val currentUser = httpUtils.getCurrentUserFromFromDb(request)
 
 		if (isNull(currentUser)) {
 			request.getSession.setAttribute(ORIGINAL_URI_ATTR_NAME, requestUri)

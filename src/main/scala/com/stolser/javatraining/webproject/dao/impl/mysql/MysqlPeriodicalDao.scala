@@ -3,15 +3,16 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 import java.sql.{Connection, PreparedStatement, ResultSet, SQLException}
 import java.util
 
-import com.stolser.javatraining.webproject.controller.utils.DaoUtils
+import com.stolser.javatraining.webproject.controller.utils.{DaoUtils, DaoUtilsTrait}
 import com.stolser.javatraining.webproject.dao.PeriodicalDao
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
+import MysqlPeriodicalDao._
 
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object MysqlPeriodicalDao {
 	val DB_PERIODICALS_ID = "periodicals.id"
@@ -23,8 +24,14 @@ object MysqlPeriodicalDao {
 	val DB_PERIODICALS_STATUS = "periodicals.status"
 	private val INCORRECT_FIELD_NAME = "There is no case for such a fieldName." + "Fix it!"
 	private val EXCEPTION_DURING_RETRIEVING_PERIODICAL = "Exception during retrieving a periodical with %s = %s. "
-	private val SELECT_ALL_BY_ID = "SELECT * FROM periodicals WHERE id = ?"
-	private val SELECT_ALL_BY_NAME = "SELECT * FROM periodicals WHERE name = ?"
+	private[mysql] val SELECT_ALL_PERIODICALS = "SELECT * FROM periodicals"
+	private[mysql] val SELECT_ALL_BY_ID = "SELECT * FROM periodicals WHERE id = ?"
+	private[mysql] val SELECT_ALL_BY_NAME = "SELECT * FROM periodicals WHERE name = ?"
+	private[mysql] val SELECT_ALL_BY_STATUS = "SELECT * FROM periodicals WHERE status = ?"
+	private[mysql] val INSERT_INTO_PERIODICALS_VALUES = "INSERT INTO periodicals " +
+		"(name, category, publisher, description, one_month_cost, status) " +
+		"VALUES (?, ?, ?, ?, ?, ?)"
+	private[mysql] val DELETE_FROM_PERIODICALS_BY_STATUS = "DELETE FROM periodicals WHERE status = ?"
 	private val EXCEPTION_DURING_RETRIEVING_ALL_PERIODICALS = "Exception during retrieving all periodicals."
 	private val RETRIEVING_ALL_BY_STATUS = "Exception during retrieving periodicals with " + "status '%s'."
 	private val EXCEPTION_DURING_INSERTING = "Exception during inserting %s into 'periodicals'."
@@ -35,8 +42,7 @@ object MysqlPeriodicalDao {
 }
 
 class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
-
-	import MysqlPeriodicalDao._
+	private[mysql] val daoUtils: DaoUtilsTrait = DaoUtils
 
 	override def findOneById(id: Long): Periodical = {
 		getPeriodicalFromDb(SELECT_ALL_BY_ID, id, DB_PERIODICALS_ID)
@@ -47,8 +53,8 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 	}
 
 	private def getPeriodicalFromDb(sqlStatement: String,
-									fieldValue: Any,
-									fieldName: String): Periodical = {
+																	fieldValue: Any,
+																	fieldName: String): Periodical =
 		tryAndCatchSqlException(EXCEPTION_DURING_RETRIEVING_PERIODICAL.format(fieldName, fieldValue)) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
@@ -57,34 +63,29 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next())
-								DaoUtils.getPeriodicalFromResultSet(rs)
+								daoUtils.getPeriodicalFromResultSet(rs)
 							else
 								null
 					}
 				}
 			}
 		}
-	}
 
 	@throws[SQLException]
 	private def setFieldValue(st: PreparedStatement,
-							  fieldName: String,
-							  fieldValue: Any): Unit = {
-		fieldName match {
-			case DB_PERIODICALS_ID =>
-				st.setLong(1, fieldValue.asInstanceOf[Long])
-			case DB_PERIODICALS_NAME =>
-				st.setString(1, fieldValue.asInstanceOf[String])
-			case _ =>
-				throw new IllegalArgumentException(INCORRECT_FIELD_NAME)
-		}
+														fieldName: String,
+														fieldValue: Any): Unit = fieldName match {
+		case DB_PERIODICALS_ID =>
+			st.setLong(1, fieldValue.asInstanceOf[Long])
+		case DB_PERIODICALS_NAME =>
+			st.setString(1, fieldValue.asInstanceOf[String])
+		case _ =>
+			throw new IllegalArgumentException(INCORRECT_FIELD_NAME)
 	}
 
-	override def findAll: util.List[Periodical] = {
-		val sqlStatement: String = "SELECT * FROM periodicals"
-
+	override def findAll: util.List[Periodical] =
 		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_RETRIEVING_ALL_PERIODICALS) { () =>
-			withResources(conn.prepareStatement(sqlStatement)) {
+			withResources(conn.prepareStatement(SELECT_ALL_PERIODICALS)) {
 				st: PreparedStatement => {
 
 					withResources(st.executeQuery()) {
@@ -92,22 +93,18 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 							val periodicals = new util.ArrayList[Periodical]()
 
 							while (rs.next())
-								periodicals.add(DaoUtils.getPeriodicalFromResultSet(rs))
+								periodicals.add(daoUtils.getPeriodicalFromResultSet(rs))
 
 							periodicals
 						}
-
 					}
 				}
 			}
 		}
-	}
 
-	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] = {
-		val sqlStatement: String = "SELECT * FROM periodicals WHERE status = ?"
-
+	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] =
 		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ALL_BY_STATUS.format(status)) { () =>
-			withResources(conn.prepareStatement(sqlStatement)) {
+			withResources(conn.prepareStatement(SELECT_ALL_BY_STATUS)) {
 				st: PreparedStatement => {
 					st.setString(1, status.toString.toLowerCase)
 
@@ -116,7 +113,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 							val periodicals = new util.ArrayList[Periodical]()
 
 							while (rs.next())
-								periodicals.add(DaoUtils.getPeriodicalFromResultSet(rs))
+								periodicals.add(daoUtils.getPeriodicalFromResultSet(rs))
 
 							periodicals
 						}
@@ -124,10 +121,9 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 				}
 			}
 		}
-	}
 
 	override def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory,
-															  status: PeriodicalStatus.Value): Int = {
+																														status: PeriodicalStatus.Value): Int = {
 		val sqlStatement: String = "SELECT COUNT(id) FROM periodicals " +
 			"WHERE category = ? AND status = ?"
 
@@ -148,13 +144,9 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 		}
 	}
 
-	override def createNew(periodical: Periodical): Long = {
-		val sqlStatement: String = "INSERT INTO periodicals " +
-			"(name, category, publisher, description, one_month_cost, status) " +
-			"VALUES (?, ?, ?, ?, ?, ?)"
-
+	override def createNew(periodical: Periodical): Long =
 		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_INSERTING.format(periodical)) { () =>
-			withResources(conn.prepareStatement(sqlStatement)) {
+			withResources(conn.prepareStatement(INSERT_INTO_PERIODICALS_VALUES)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
 
@@ -162,11 +154,10 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 				}
 			}
 		}
-	}
 
 	@throws[SQLException]
 	private def setStatementFromPeriodical(st: PreparedStatement,
-										   periodical: Periodical): Unit = {
+																				 periodical: Periodical): Unit = {
 		st.setString(1, periodical.name)
 		st.setString(2, periodical.category.toString.toLowerCase)
 		st.setString(3, periodical.publisher)
@@ -211,11 +202,9 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 		}
 	}
 
-	override def deleteAllDiscarded(): Int = {
-		val sqlStatement: String = "DELETE FROM periodicals WHERE status = ?"
-
+	override def deleteAllDiscarded(): Int =
 		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_DELETING_DISCARDED_PERIODICALS) { () =>
-			withResources(conn.prepareStatement(sqlStatement)) {
+			withResources(conn.prepareStatement(DELETE_FROM_PERIODICALS_BY_STATUS)) {
 				st: PreparedStatement => {
 					st.setString(1, PeriodicalStatus.DISCARDED.toString)
 
@@ -223,5 +212,4 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 				}
 			}
 		}
-	}
 }
