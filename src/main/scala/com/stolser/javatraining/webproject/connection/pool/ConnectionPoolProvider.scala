@@ -2,6 +2,7 @@ package com.stolser.javatraining.webproject.connection.pool
 
 import java.io.{FileNotFoundException, IOException, InputStream}
 import java.util.Properties
+
 import org.slf4j.LoggerFactory
 
 /**
@@ -22,7 +23,7 @@ object ConnectionPoolProvider {
 	lazy val getPool: ConnectionPool = createPoolFromProperties(getProperties(DB_CONFIG_FILENAME))
 	lazy val getTestPool: ConnectionPool = createPoolFromProperties(getProperties(TEST_DB_CONFIG_FILENAME))
 
-	private def createPoolFromProperties(properties: Properties): SqlConnectionPool = {
+	private def createPoolFromProperties(properties: Properties): SqlConnectionPool =
 		try {
 			val url = properties.getProperty(DB_CONFIG_PARAM_URL)
 			val dbName = properties.getProperty(DB_CONFIG_PARAM_DB_NAME)
@@ -40,14 +41,14 @@ object ConnectionPoolProvider {
 				throw new RuntimeException(e)
 			case e: IOException =>
 				LOGGER.error(EXCEPTION_DURING_LOADING_DB_CONFIG_PROPERTIES, DB_CONFIG_FILENAME)
-				throw new RuntimeException
+				throw new RuntimeException(e)
 		}
-	}
 
 	private def getProperties(dbConfigFileName: String) = {
 		val dbConfigFileInput: InputStream = ConnectionPoolProvider.getClass
 			.getClassLoader
 			.getResourceAsStream(dbConfigFileName)
+
 		val properties = new Properties
 		properties.load(dbConfigFileInput)
 		properties

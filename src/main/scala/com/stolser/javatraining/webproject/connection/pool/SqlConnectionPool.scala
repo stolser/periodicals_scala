@@ -1,11 +1,9 @@
 package com.stolser.javatraining.webproject.connection.pool
 
-import java.sql.SQLException
-
 import com.stolser.javatraining.webproject.connection.pool.SqlConnectionPool._
 import com.stolser.javatraining.webproject.dao.AbstractConnection
-import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.dao.impl.mysql.AbstractConnectionImpl
+import com.stolser.javatraining.webproject.utils.TryCatchUtils.tryAndCatchSqlException
 import javax.sql.DataSource
 import org.apache.commons.dbcp2.BasicDataSource
 
@@ -16,17 +14,14 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 	private val dataSource: DataSource = getBasicDataSource
 	private val description = builder.url + builder.dbName
 
-	override def getConnection: AbstractConnection = {
-		try
+	override def getConnection: AbstractConnection =
+		tryAndCatchSqlException(CONNECTION_EXCEPTION_TEXT) { () =>
 			AbstractConnectionImpl(dataSource.getConnection)
-		catch {
-			case e: SQLException => throw new DaoException(CONNECTION_EXCEPTION_TEXT, e)
 		}
-	}
 
 	override def toString: String = description
 
-	private def getBasicDataSource: BasicDataSource = {
+	private def getBasicDataSource = {
 		val dataSource = new BasicDataSource
 		dataSource.setDriverClassName(builder.driverClassName)
 		dataSource.setUrl(generateUrl(builder))
@@ -99,5 +94,4 @@ object SqlConnectionPool {
 
 		def build = new SqlConnectionPool(this)
 	}
-
 }

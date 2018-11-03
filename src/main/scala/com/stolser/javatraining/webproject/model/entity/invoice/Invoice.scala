@@ -9,17 +9,16 @@ import com.stolser.javatraining.webproject.model.entity.user.User
 import scala.beans.BeanProperty
 
 /**
-  * Created by Oleg Stoliarov on 10/15/18.
-  */
-case class Invoice(
-					  @BeanProperty id: Long = 0L,
-					  @BeanProperty user: User = User(),
-					  @BeanProperty var periodical: Periodical = Periodical(),
-					  @BeanProperty subscriptionPeriod: Int = 0,
-					  @BeanProperty totalSum: Long = 0,
-					  @BeanProperty creationDate: Option[Instant] = None,
-					  @BeanProperty var paymentDate: Option[Instant] = None,
-					  @BeanProperty var status: InvoiceStatus.Value = InvoiceStatus.NEW) {
+	* Created by Oleg Stoliarov on 10/15/18.
+	*/
+case class Invoice private(@BeanProperty id: Long = 0L,
+													 @BeanProperty user: User = User(),
+													 @BeanProperty var periodical: Periodical = Periodical(),
+													 @BeanProperty subscriptionPeriod: Int = 0,
+													 @BeanProperty totalSum: Long = 0,
+													 @BeanProperty creationDate: Option[Instant] = None,
+													 @BeanProperty var paymentDate: Option[Instant] = None,
+													 @BeanProperty var status: InvoiceStatus.Value = InvoiceStatus.NEW) {
 
 	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
 	checkNotNull(periodical, "The periodical cannot be null. Use Periodical() instead!": Any)

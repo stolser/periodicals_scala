@@ -4,12 +4,11 @@ import java.sql._
 import java.time.Instant
 import java.util
 
-import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
 import com.stolser.javatraining.webproject.dao.InvoiceDao
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
+import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.

@@ -34,7 +34,7 @@ class AuthorizationTag extends TagSupport {
 	private def hasUserLegitRoles: Boolean =
 		mustHaveRoles match {
 			case "*" => true
-			case _ => user.roles intersect parseUserRoles(mustHaveRoles) nonEmpty
+			case _ => (user.roles intersect parseUserRoles(mustHaveRoles)).nonEmpty
 		}
 
 	private def parseUserRoles(userRoles: String): Set[UserRole.Value] =
@@ -48,7 +48,7 @@ class AuthorizationTag extends TagSupport {
 	private def hasUserNoProhibitedRoles: Boolean =
 		mustNotHaveRoles match {
 			case "*" => false
-			case _ => user.roles intersect parseUserRoles(mustNotHaveRoles) isEmpty
+			case _ => (user.roles intersect parseUserRoles(mustNotHaveRoles)).isEmpty
 		}
 
 	def getMustHaveRoles: String = mustHaveRoles

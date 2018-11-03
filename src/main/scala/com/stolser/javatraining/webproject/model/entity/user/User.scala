@@ -7,28 +7,28 @@ import com.google.common.base.Preconditions.checkNotNull
 import scala.beans.BeanProperty
 
 /**
-  * Created by Oleg Stoliarov on 10/20/18.
-  *
-  * @param status Only { @code active} users can sign into the system.
-  * @param roles  Roles define specific system functionality available to a user.
-  */
-case class User(@BeanProperty id: Long = 0,
-				@BeanProperty userName: String = "",
-				@BeanProperty firstName: Option[String] = None,
-				@BeanProperty lastName: Option[String] = None,
-				@BeanProperty birthday: Option[Date] = None,
-				@BeanProperty email: String = "",
-				@BeanProperty address: Option[String] = None,
-				@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
-				@BeanProperty var roles: Set[UserRole.Value] = Set()) {
+	* Created by Oleg Stoliarov on 10/20/18.
+	*
+	* @param status Only { @code active} users can sign into the system.
+	* @param roles  Roles define specific system functionality available to a user.
+	*/
+case class User private(@BeanProperty id: Long = 0,
+												@BeanProperty userName: String = "",
+												@BeanProperty firstName: Option[String] = None,
+												@BeanProperty lastName: Option[String] = None,
+												@BeanProperty birthday: Option[Date] = None,
+												@BeanProperty email: String = "",
+												@BeanProperty address: Option[String] = None,
+												@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
+												@BeanProperty var roles: Set[UserRole.Value] = Set()) {
 
 	checkNotNull(userName)
 	checkNotNull(email)
 	checkNotNull(status)
 	checkNotNull(roles, "Use an empty set instead.": Any)
 
-	override def toString: String = s"User{id=$id, userName='%s', firstName='%s', lastName='%s', " +
-		"birthDate=%s, email='%s', address='%s', status=%s, roles=%s}"
+	override def toString: String = s"User{id=$id, userName='$userName', firstName='$firstName', lastName='$lastName', " +
+		s"birthday='$birthday', email='$email', address='$address', status='$status', roles='$roles'}"
 
 	def hasRole(role: UserRole.Value): Boolean =
 		roles contains role

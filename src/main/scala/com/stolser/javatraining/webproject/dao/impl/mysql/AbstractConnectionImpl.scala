@@ -1,10 +1,9 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
-import java.sql.{Connection, SQLException}
+import java.sql.Connection
 
-import com.stolser.javatraining.webproject.dao.DaoUtils.tryAndCatchSqlException
-import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoUtils}
-import com.stolser.javatraining.webproject.dao.exception.DaoException
+import com.stolser.javatraining.webproject.dao.AbstractConnection
+import com.stolser.javatraining.webproject.utils.TryCatchUtils.tryAndCatchSqlException
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.

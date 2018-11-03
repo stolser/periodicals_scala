@@ -9,21 +9,21 @@ import com.stolser.javatraining.webproject.model.entity.user.User
 import scala.beans.BeanProperty
 
 /**
-  * Created by Oleg Stoliarov on 10/20/18.
-  *
-  * @param user       The user this subscription belongs to.
-  * @param periodical The periodical this subscription is on.
-  * @param endDate    The expiration date of this subscription. It can be prolonged by creating and paying a new invoice
-  *                   for the same periodical.
-  * @param status     Is { @code active} when a subscription is created. Becomes { @code inactive} when
-  *                   this subscription is expired.
-  */
-case class Subscription(@BeanProperty id: Long = 0,
-						@BeanProperty user: User = User(),
-						@BeanProperty periodical: Periodical = Periodical(),
-						@BeanProperty deliveryAddress: String = "",
-						@BeanProperty var endDate: Option[Instant] = None,
-						@BeanProperty var status: SubscriptionStatus.Value = SubscriptionStatus.INACTIVE) {
+	* Created by Oleg Stoliarov on 10/20/18.
+	*
+	* @param user       The user this subscription belongs to.
+	* @param periodical The periodical this subscription is on.
+	* @param endDate    The expiration date of this subscription. It can be prolonged by creating and paying a new invoice
+	*                   for the same periodical.
+	* @param status     Is { @code active} when a subscription is created. Becomes { @code inactive} when
+	*                   this subscription is expired.
+	*/
+case class Subscription private(@BeanProperty id: Long = 0,
+																@BeanProperty user: User = User(),
+																@BeanProperty periodical: Periodical = Periodical(),
+																@BeanProperty deliveryAddress: String = "",
+																@BeanProperty var endDate: Option[Instant] = None,
+																@BeanProperty var status: SubscriptionStatus.Value = SubscriptionStatus.INACTIVE) {
 
 	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
 	checkNotNull(periodical, "The periodical cannot be null. Use Periodical() instead!": Any)

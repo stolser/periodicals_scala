@@ -5,11 +5,10 @@ import java.util.Date
 import java.util.Objects.nonNull
 import java.{sql, util}
 
-import com.stolser.javatraining.webproject.dao.DaoUtils._
 import com.stolser.javatraining.webproject.dao.UserDao
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
-import com.stolser.javatraining.webproject.utils.TryWithResources.withResources
+import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 /**
   * Created by Oleg Stoliarov on 10/14/18.

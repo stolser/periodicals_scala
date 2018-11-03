@@ -10,9 +10,9 @@ import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.http.{HttpServletRequest, HttpSession}
 
 /**
-  * Created by Oleg Stoliarov on 10/12/18.
-  * Encapsulates information about resource access permissions of each type of roles.
-  */
+	* Created by Oleg Stoliarov on 10/12/18.
+	* Encapsulates information about resource access permissions of each type of roles.
+	*/
 object Authorization {
 	private val USERS_URI_WITH_ID = "/backend/users/\\d+"
 	private val admin = Set[UserRole.Value](
@@ -28,13 +28,13 @@ object Authorization {
 	)
 
 	/**
-	  * Checks whether a current user has enough permissions to access a requested uri
-	  * using a current http method.
-	  *
-	  * @param request a current http request
-	  * @return { @code true} - if a current user has enough permissions to perform such a kind of requests,
-	  *         and { @code false} otherwise
-	  */
+		* Checks whether a current user has enough permissions to access a requested uri
+		* using a current http method.
+		*
+		* @param request a current http request
+		* @return { @code true} - if a current user has enough permissions to perform such a kind of requests,
+		*         and { @code false} otherwise
+		*/
 	private[security] def checkPermissions(request: HttpServletRequest): Boolean = {
 		if (!isUserIdInUriValid(request))
 			return false
@@ -63,7 +63,7 @@ object Authorization {
 			.headOption
 
 	private def isPermissionGranted(permissionMapping: (String, Set[UserRole.Value]),
-									request: HttpServletRequest) =
+																	request: HttpServletRequest) =
 		hasUserLegitRole(
 			userRoles = getUserRolesFromSession(request.getSession),
 			legitRoles = permissionMapping._2
@@ -73,6 +73,6 @@ object Authorization {
 		session.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].roles
 
 	private def hasUserLegitRole(userRoles: Set[UserRole.Value],
-								 legitRoles: Set[UserRole.Value]) =
-		(userRoles intersect legitRoles) nonEmpty
+															 legitRoles: Set[UserRole.Value]) =
+		(userRoles intersect legitRoles).nonEmpty
 }
