@@ -10,5 +10,5 @@ trait RequestProvider {
 	/**
 	  * Returns a specific request processing implementation of the { @code RequestProcessor} interface.
 	  */
-	def getRequestProcessor(request: HttpServletRequest): RequestProcessor
+	def requestProcessor(request: HttpServletRequest): RequestProcessor
 }

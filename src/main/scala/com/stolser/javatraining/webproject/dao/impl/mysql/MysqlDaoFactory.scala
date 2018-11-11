@@ -13,32 +13,32 @@ object MysqlDaoFactory extends DaoFactoryTrait {
 	private val CONNECTION_IS_NOT_AN_ABSTRACT_CONNECTION_IMPL_FOR_JDBC =
 		"Connection is not an AbstractConnectionImpl for JDBC."
 
-	override def getPeriodicalDao(conn: AbstractConnection): PeriodicalDao = {
+	override def periodicalDao(conn: AbstractConnection): PeriodicalDao = {
 		checkConnection(conn)
 		new MysqlPeriodicalDao(getSqlConnection(conn))
 	}
 
-	override def getCredentialDao(conn: AbstractConnection): CredentialDao = {
+	override def credentialDao(conn: AbstractConnection): CredentialDao = {
 		checkConnection(conn)
 		new MysqlCredentialDao(getSqlConnection(conn))
 	}
 
-	override def getUserDao(conn: AbstractConnection): UserDao = {
+	override def userDao(conn: AbstractConnection): UserDao = {
 		checkConnection(conn)
 		new MysqlUserDao(getSqlConnection(conn))
 	}
 
-	override def getRoleDao(conn: AbstractConnection): RoleDao = {
+	override def roleDao(conn: AbstractConnection): RoleDao = {
 		checkConnection(conn)
 		new MysqlRoleDao(getSqlConnection(conn))
 	}
 
-	override def getSubscriptionDao(conn: AbstractConnection): SubscriptionDao = {
+	override def subscriptionDao(conn: AbstractConnection): SubscriptionDao = {
 		checkConnection(conn)
 		new MysqlSubscriptionDao(getSqlConnection(conn))
 	}
 
-	override def getInvoiceDao(conn: AbstractConnection): InvoiceDao = {
+	override def invoiceDao(conn: AbstractConnection): InvoiceDao = {
 		checkConnection(conn)
 		new MysqlInvoiceDao(getSqlConnection(conn))
 	}

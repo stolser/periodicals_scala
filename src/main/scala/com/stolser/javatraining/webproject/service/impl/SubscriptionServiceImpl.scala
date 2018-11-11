@@ -10,12 +10,12 @@ import com.stolser.javatraining.webproject.service.SubscriptionService
   * Created by Oleg Stoliarov on 10/15/18.
   */
 object SubscriptionServiceImpl extends SubscriptionService {
-	private lazy val factory = DaoFactory.getMysqlDaoFactory
+	private lazy val factory = DaoFactory.mysqlDaoFactory
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
 	override def findAllByUserId(id: Long): List[Subscription] =
 		withConnection { conn =>
-			factory.getSubscriptionDao(conn)
-							.findAllByUser(factory.getUserDao(conn).findOneById(id))
+			factory.subscriptionDao(conn)
+							.findAllByUser(factory.userDao(conn).findOneById(id))
 		}
 }

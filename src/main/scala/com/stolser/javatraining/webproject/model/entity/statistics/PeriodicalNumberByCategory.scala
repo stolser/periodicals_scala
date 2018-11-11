@@ -17,7 +17,7 @@ case class PeriodicalNumberByCategory(@BeanProperty category: Option[PeriodicalC
 	require(inActive >= 0, negativeQuantityErrorMessage)
 	require(discarded >= 0, negativeQuantityErrorMessage)
 
-	def getCategoryAsPeriodicalCategory: PeriodicalCategory = category.orNull // used by JSP tags;
+	@BeanProperty val categoryAsPeriodicalCategory: PeriodicalCategory = category.orNull // used by JSP tags;
 }
 
 object PeriodicalNumberByCategory {

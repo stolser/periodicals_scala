@@ -9,5 +9,5 @@ import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 	*/
 trait DaoUtilsTrait {
 	@throws[SQLException]
-	def getPeriodicalFromResultSet(rs: ResultSet): Periodical
+	def periodicalFromResultSet(rs: ResultSet): Periodical
 }

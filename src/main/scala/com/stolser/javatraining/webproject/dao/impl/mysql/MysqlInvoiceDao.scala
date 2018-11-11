@@ -99,8 +99,8 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 			}
 		}
 
-	override def getCreatedInvoiceSumByCreationDate(since: Instant,
-																									until: Instant): Long = {
+	override def createdInvoiceSumByCreationDate(since: Instant,
+																							 until: Instant): Long = {
 		val sqlStatement = "SELECT SUM(total_sum) FROM invoices " +
 			"WHERE creation_date >= ? AND creation_date <= ?"
 		val exceptionMessage = EXCEPTION_DURING_GETTING_INVOICE_SUM.format(sqlStatement, since, until)
@@ -122,7 +122,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 		}
 	}
 
-	override def getPaidInvoiceSumByPaymentDate(since: Instant, until: Instant): Long = {
+	override def paidInvoiceSumByPaymentDate(since: Instant, until: Instant): Long = {
 		val sqlStatement: String = "SELECT SUM(total_sum) FROM invoices " +
 			"WHERE payment_date >= ? AND payment_date <= ? AND status = ?"
 		val exceptionMessage = EXCEPTION_DURING_GETTING_INVOICE_SUM.format(sqlStatement, since, until)
@@ -224,7 +224,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 		st.setString(7, invoice.status.toString.toLowerCase)
 	}
 
-	def getCreationDate(invoice: Invoice): Timestamp =
+	private def getCreationDate(invoice: Invoice): Timestamp =
 		invoice.creationDate match {
 			case Some(creationDate) => new Timestamp(creationDate.toEpochMilli)
 			case None => null

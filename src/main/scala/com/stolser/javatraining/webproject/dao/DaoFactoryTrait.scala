@@ -4,15 +4,15 @@ package com.stolser.javatraining.webproject.dao
 	* Created by Oleg Stoliarov on 11/8/18.
 	*/
 trait DaoFactoryTrait {
-	def getPeriodicalDao(conn: AbstractConnection): PeriodicalDao
+	def periodicalDao(conn: AbstractConnection): PeriodicalDao
 
-	def getCredentialDao(conn: AbstractConnection): CredentialDao
+	def credentialDao(conn: AbstractConnection): CredentialDao
 
-	def getUserDao(conn: AbstractConnection): UserDao
+	def userDao(conn: AbstractConnection): UserDao
 
-	def getRoleDao(conn: AbstractConnection): RoleDao
+	def roleDao(conn: AbstractConnection): RoleDao
 
-	def getSubscriptionDao(conn: AbstractConnection): SubscriptionDao
+	def subscriptionDao(conn: AbstractConnection): SubscriptionDao
 
-	def getInvoiceDao(conn: AbstractConnection): InvoiceDao
+	def invoiceDao(conn: AbstractConnection): InvoiceDao
 }

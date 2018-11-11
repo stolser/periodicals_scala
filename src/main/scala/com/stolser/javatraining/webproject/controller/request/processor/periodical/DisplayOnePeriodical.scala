@@ -23,8 +23,8 @@ object DisplayOnePeriodical extends RequestProcessor {
 	private val ACCESS_DENIED_TO = "Access denied to '%s'"
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
-		val currentUser = httpUtils.getCurrentUserFromFromDb(request)
-		val periodicalId = httpUtils.getFirstIdFromUri(request.getRequestURI)
+		val currentUser = httpUtils.currentUserFromFromDb(request)
+		val periodicalId = httpUtils.firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
 		checkPeriodicalExists(periodicalId, periodicalInDb)

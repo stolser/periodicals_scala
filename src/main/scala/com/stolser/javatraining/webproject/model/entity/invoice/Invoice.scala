@@ -28,9 +28,8 @@ case class Invoice private(@BeanProperty id: Long = 0L,
 		s"subscriptionPeriod=$subscriptionPeriod, totalSum=$totalSum, creationDate=$creationDate, " +
 		s"paymentDate=$paymentDate, status=$status}"
 
-	def getCreationDateAsInstant: Instant = creationDate.orNull // used by JSP tags;
-
-	def getPaymentDateAsInstant: Instant = paymentDate.orNull // used by JSP tags;
+	@BeanProperty val creationDateAsInstant: Instant = creationDate.orNull // used by JSP tags;
+	@BeanProperty val paymentDateAsInstant: Instant = paymentDate.orNull // used by JSP tags;
 }
 
 object InvoiceStatus extends Enumeration {

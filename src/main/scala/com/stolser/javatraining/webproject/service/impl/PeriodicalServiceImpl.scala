@@ -17,7 +17,7 @@ import scala.collection.mutable
 	*/
 object PeriodicalServiceImpl extends PeriodicalService {
 	private val NO_PERIODICAL_WITH_ID_MESSAGE = "There is no periodical in the DB with id = %d"
-	private var factory = DaoFactory.getMysqlDaoFactory
+	private var factory = DaoFactory.mysqlDaoFactory
 	private implicit var implicitConnectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
 	private[impl] def daoFactory_=(factory: DaoFactoryTrait): Unit = {
@@ -32,22 +32,22 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	override def findOneById(id: Long): Periodical =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).findOneById(id)
+			factory.periodicalDao(conn).findOneById(id)
 		}
 
 	override def findOneByName(name: String): Periodical =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).findOneByName(name)
+			factory.periodicalDao(conn).findOneByName(name)
 		}
 
 	override def findAll: List[Periodical] =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).findAll
+			factory.periodicalDao(conn).findAll
 		}
 
 	override def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical] =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).findAllByStatus(status)
+			factory.periodicalDao(conn).findAllByStatus(status)
 		}
 
 	override def save(periodical: Periodical): Periodical = {
@@ -61,17 +61,17 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	private def createNewPeriodical(periodical: Periodical): Unit =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).createNew(periodical)
+			factory.periodicalDao(conn).createNew(periodical)
 		}
 
 	private def getPeriodicalFromDbByName(name: String): Periodical =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).findOneByName(name)
+			factory.periodicalDao(conn).findOneByName(name)
 		}
 
 	private def updatePeriodical(periodical: Periodical): Unit =
 		withConnection { conn =>
-			val affectedRows = factory.getPeriodicalDao(conn).update(periodical)
+			val affectedRows = factory.periodicalDao(conn).update(periodical)
 
 			if (affectedRows == 0)
 				throw new NoSuchElementException(NO_PERIODICAL_WITH_ID_MESSAGE.format(periodical.id))
@@ -79,25 +79,25 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	override def updateAndSetDiscarded(periodical: Periodical): Int =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).updateAndSetDiscarded(periodical)
+			factory.periodicalDao(conn).updateAndSetDiscarded(periodical)
 		}
 
 	override def deleteAllDiscarded(): Int =
 		withConnection { conn =>
-			factory.getPeriodicalDao(conn).deleteAllDiscarded()
+			factory.periodicalDao(conn).deleteAllDiscarded()
 		}
 
 	override def hasActiveSubscriptions(periodicalId: Long): Boolean =
 		withConnection { conn =>
-			factory.getSubscriptionDao(conn)
+			factory.subscriptionDao(conn)
 				.findAllByPeriodicalIdAndStatus(periodicalId, SubscriptionStatus.ACTIVE)
 				.nonEmpty
 		}
 
-	override def getQuantitativeStatistics: List[PeriodicalNumberByCategory] =
+	override def quantitativeStatistics: List[PeriodicalNumberByCategory] =
 		withConnection { conn =>
 			val statistics = mutable.Buffer[PeriodicalNumberByCategory]()
-			val dao = factory.getPeriodicalDao(conn)
+			val dao = factory.periodicalDao(conn)
 
 			for (category <- PeriodicalCategory.values) {
 				statistics += getPeriodicalNumberByCategory(dao, category)

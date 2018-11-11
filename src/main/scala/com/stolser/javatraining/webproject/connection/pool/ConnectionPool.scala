@@ -6,5 +6,5 @@ import com.stolser.javatraining.webproject.dao.AbstractConnection
   * Represents an abstraction for reusable connection pool.
   */
 trait ConnectionPool {
-	def getConnection: AbstractConnection
+	def connection: AbstractConnection
 }

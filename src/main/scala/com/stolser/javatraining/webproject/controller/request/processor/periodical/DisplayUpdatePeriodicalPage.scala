@@ -19,7 +19,7 @@ object DisplayUpdatePeriodicalPage extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
-		val periodicalId = HttpUtils.getFirstIdFromUri(request.getRequestURI)
+		val periodicalId = HttpUtils.firstIdFromUri(request.getRequestURI)
 		val periodical = periodicalService.findOneById(periodicalId)
 
 		if (isNull(periodical))

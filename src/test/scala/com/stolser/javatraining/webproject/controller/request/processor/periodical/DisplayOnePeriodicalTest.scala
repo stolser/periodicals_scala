@@ -31,7 +31,7 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 
 	test("process() Should throw NoSuchElementException if a periodical does not exist") {
 		val periodicalId = 1
-		when(httpUtils.getFirstIdFromUri(anyString())) thenReturn periodicalId
+		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn null
 
 		assertThrows[NoSuchElementException] {
@@ -43,8 +43,8 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 		val subscriber = User(roles = Set(UserRole.SUBSCRIBER))
 		val periodicalId = 1
 		val activePeriodical = Periodical(status = PeriodicalStatus.ACTIVE)
-		when(httpUtils.getCurrentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
-		when(httpUtils.getFirstIdFromUri(anyString())) thenReturn periodicalId
+		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
+		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn activePeriodical
 
 		val actualUri = DisplayOnePeriodical.process(request, response)
@@ -58,8 +58,8 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 		val admin = User(roles = Set(UserRole.ADMIN))
 		val periodicalId = 1
 		val discardedPeriodical = Periodical(status = PeriodicalStatus.DISCARDED)
-		when(httpUtils.getCurrentUserFromFromDb(any[HttpServletRequest])) thenReturn admin
-		when(httpUtils.getFirstIdFromUri(anyString())) thenReturn periodicalId
+		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn admin
+		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn discardedPeriodical
 
 		val actualUri = DisplayOnePeriodical.process(request, response)
@@ -73,8 +73,8 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 		val subscriber = User(roles = Set(UserRole.SUBSCRIBER))
 		val periodicalId = 1
 		val inactivePeriodical = Periodical(status = PeriodicalStatus.INACTIVE)
-		when(httpUtils.getCurrentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
-		when(httpUtils.getFirstIdFromUri(anyString())) thenReturn periodicalId
+		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
+		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn inactivePeriodical
 
 		assertThrows[AccessDeniedException] {
@@ -86,8 +86,8 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 		val subscriber = User(roles = Set(UserRole.SUBSCRIBER))
 		val periodicalId = 1
 		val discardedPeriodical = Periodical(status = PeriodicalStatus.DISCARDED)
-		when(httpUtils.getCurrentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
-		when(httpUtils.getFirstIdFromUri(anyString())) thenReturn periodicalId
+		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
+		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn discardedPeriodical
 
 		assertThrows[AccessDeniedException] {

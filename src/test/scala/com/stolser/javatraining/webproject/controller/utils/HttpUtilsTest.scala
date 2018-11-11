@@ -22,28 +22,28 @@ class HttpUtilsTest extends FunSuiteBase {
 		when(request.getSession) thenReturn session
 	}
 
-	test("getFirstIdFromUri() Should return a correct id") {
+	test("firstIdFromUri() Should return a correct id") {
 		val uri = TestResources.USER_2_INVOICE_10_PAYMENT_URI
 		val expected = 2
-		val actual = HttpUtils.getFirstIdFromUri(uri)
+		val actual = HttpUtils.firstIdFromUri(uri)
 
 		assert(expected === actual)
 	}
 
-	test("getFirstIdFromUri() Should throw IllegalArgumentException") {
+	test("firstIdFromUri() Should throw IllegalArgumentException") {
 		assertThrows[IllegalArgumentException] {
-			HttpUtils.getFirstIdFromUri(TestResources.ALL_USERS_URI)
+			HttpUtils.firstIdFromUri(TestResources.ALL_USERS_URI)
 		}
 	}
 
-	test("getUserIdFromSession() Should return a correct id") {
+	test("userIdFromSession() Should return a correct id") {
 		val expected = 2
-		val actual = HttpUtils.getUserIdFromSession(request)
+		val actual = HttpUtils.userIdFromSession(request)
 
 		assert(expected === actual)
 	}
 
-	test("getPeriodicalFromRequest() Should return the correct periodical") {
+	test("periodicalFromRequest() Should return the correct periodical") {
 		when(request.getSession) thenReturn session
 		when(request.getParameter(ENTITY_ID_PARAM_NAME)) thenReturn "10"
 		when(request.getParameter(PERIODICAL_NAME_PARAM_NAME)) thenReturn "Test Name"
@@ -53,7 +53,7 @@ class HttpUtilsTest extends FunSuiteBase {
 		when(request.getParameter(PERIODICAL_COST_PARAM_NAME)) thenReturn "99"
 		when(request.getParameter(PERIODICAL_STATUS_PARAM_NAME)) thenReturn "active"
 
-		val periodical = HttpUtils.getPeriodicalFromRequest(request)
+		val periodical = HttpUtils.periodicalFromRequest(request)
 
 		assert(periodical.getId == 10)
 		assert(periodical.getName == "Test Name")

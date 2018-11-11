@@ -35,7 +35,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteBase {
 		when(conn.prepareStatement(SELECT_ALL_BY_ID)) thenReturn statement
 		when(statement.executeQuery()) thenReturn resultSet
 		when(resultSet.next()) thenReturn true
-		when(daoUtilsMock.getPeriodicalFromResultSet(resultSet)) thenReturn expectedPeriodical
+		when(daoUtilsMock.periodicalFromResultSet(resultSet)) thenReturn expectedPeriodical
 
 		val actualPeriodical = periodicalDao.findOneById(periodicalId)
 
@@ -54,7 +54,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteBase {
 		when(conn.prepareStatement(SELECT_ALL_PERIODICALS)) thenReturn statement
 		when(statement.executeQuery()) thenReturn resultSet
 		when(resultSet.next()) thenReturn(true, true, false)
-		when(daoUtilsMock.getPeriodicalFromResultSet(resultSet))
+		when(daoUtilsMock.periodicalFromResultSet(resultSet))
 			.thenReturn(expectedPeriodical1, expectedPeriodical2)
 
 		val actualPeriodicals = periodicalDao.findAll
@@ -74,7 +74,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteBase {
 		when(conn.prepareStatement(SELECT_ALL_BY_STATUS)) thenReturn statement
 		when(statement.executeQuery()) thenReturn resultSet
 		when(resultSet.next()) thenReturn(true, true, true, false)
-		when(daoUtilsMock.getPeriodicalFromResultSet(resultSet))
+		when(daoUtilsMock.periodicalFromResultSet(resultSet))
 			.thenReturn(expectedPeriodical1, expectedPeriodical2, expectedPeriodical3)
 
 		val periodicalStatus = ACTIVE

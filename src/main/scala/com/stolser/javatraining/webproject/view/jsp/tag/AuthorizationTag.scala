@@ -7,14 +7,19 @@ import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.jsp.JspException
 import javax.servlet.jsp.tagext.{Tag, TagSupport}
 
+import scala.beans.BeanProperty
+
 /**
   * Created by Oleg Stoliarov on 10/15/18.
   * Allows specifying two sets of roles that a user must have and must not have in order to
   * see the content of this tag.
   */
 class AuthorizationTag extends TagSupport {
-	private var mustHaveRoles: String = _
-	private var mustNotHaveRoles: String = _
+	@BeanProperty
+	var mustHaveRoles: String = _
+
+	@BeanProperty
+	var mustNotHaveRoles: String = _
 	private var user: User = _
 
 	@throws[JspException]
@@ -50,14 +55,4 @@ class AuthorizationTag extends TagSupport {
 			case "*" => false
 			case _ => (user.roles intersect parseUserRoles(mustNotHaveRoles)).isEmpty
 		}
-
-	def getMustHaveRoles: String = mustHaveRoles
-
-	def setMustHaveRoles(mustHaveRoles: String): Unit =
-		this.mustHaveRoles = mustHaveRoles
-
-	def getMustNotHaveRoles: String = mustNotHaveRoles
-
-	def setMustNotHaveRoles(mustNotHaveRoles: String): Unit =
-		this.mustNotHaveRoles = mustNotHaveRoles
 }

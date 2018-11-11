@@ -34,7 +34,7 @@ class FrontController extends HttpServlet {
 	@throws[IOException]
 	private def processRequest(request: HttpServletRequest, response: HttpServletResponse): Unit = {
 		try {
-			val abstractViewName = requestProvider.getRequestProcessor(request).process(request, response)
+			val abstractViewName = requestProvider.requestProcessor(request).process(request, response)
 			dispatch(abstractViewName, request, response)
 		} catch {
 			case e: RuntimeException =>
@@ -70,7 +70,7 @@ class FrontController extends HttpServlet {
 	private def logExceptionAndRedirectToErrorPage(request: HttpServletRequest,
 												   response: HttpServletResponse,
 												   e: RuntimeException): Unit = {
-		LOGGER.error(s"User id = ${HttpUtils.getUserIdFromSession(request)}. requestURI = ${request.getRequestURI}", e)
-		HttpUtils.sendRedirect(request, response, viewResolver.resolvePublicViewName(HttpUtils.getErrorViewName(e)))
+		LOGGER.error(s"User id = ${HttpUtils.userIdFromSession(request)}. requestURI = ${request.getRequestURI}", e)
+		HttpUtils.sendRedirect(request, response, viewResolver.resolvePublicViewName(HttpUtils.errorViewName(e)))
 	}
 }

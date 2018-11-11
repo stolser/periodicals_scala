@@ -28,10 +28,10 @@ object ConnectionPoolProvider {
 			val userName = properties.getProperty(DB_CONFIG_PARAM_USER_NAME)
 			val userPassword = properties.getProperty(DB_CONFIG_PARAM_USER_PASSWORD)
 			val maxConnNumber = properties.getProperty(DB_CONFIG_PARAM_MAX_CONN_NUMBER).toInt
-			SqlConnectionPool.getBuilder(url, dbName)
-				.setUserName(userName)
-				.setPassword(userPassword)
-				.setMaxConnections(maxConnNumber)
+			SqlConnectionPool.builder(url, dbName)
+				.withUserName(userName)
+				.withPassword(userPassword)
+				.withMaxConnections(maxConnNumber)
 				.build
 		} catch {
 			case e: FileNotFoundException =>

@@ -34,13 +34,13 @@ object CreateUser extends RequestProcessor {
 		val userRole: UserRole.Value = UserRole.withName(request.getParameter(USER_ROLE_PARAM_NAME).toUpperCase)
 
 		if (!arePasswordsValidAndEqual(password, repeatPassword))
-			formMessages.put(USER_PASSWORD_PARAM_NAME, messageFactory.getError(MSG_VALIDATION_PASSWORDS_ARE_NOT_EQUAL))
+			formMessages.put(USER_PASSWORD_PARAM_NAME, messageFactory.error(MSG_VALIDATION_PASSWORDS_ARE_NOT_EQUAL))
 		else if (usernameExistsInDb(username))
-			formMessages.put(SIGN_UP_USERNAME_PARAM_NAME, messageFactory.getError(USERNAME_IS_NOT_UNIQUE_TRY_ANOTHER_ONE))
+			formMessages.put(SIGN_UP_USERNAME_PARAM_NAME, messageFactory.error(USERNAME_IS_NOT_UNIQUE_TRY_ANOTHER_ONE))
 		else {
 			val isNewUserCreated: Boolean = createUser(username, userEmail, password, userRole)
 			if (isNewUserCreated) redirectUri = LOGIN_PAGE
-			else generalMessages += messageFactory.getError(MSG_NEW_USER_WAS_NOT_CREATED_ERROR)
+			else generalMessages += messageFactory.error(MSG_NEW_USER_WAS_NOT_CREATED_ERROR)
 		}
 
 		if (SIGN_UP_URI == redirectUri) {
@@ -61,11 +61,11 @@ object CreateUser extends RequestProcessor {
 				email = userEmail),
 			Credential(
 				userName = username,
-				passwordHash = HttpUtils.getPasswordHash(password)),
+				passwordHash = HttpUtils.passwordHash(password)),
 			userRole)
 
 	private def arePasswordsValidAndEqual(password: String, repeatPassword: String) = {
-		val validationResult = ValidatorFactory.getUserPasswordValidator.validate(password, null).statusCode
+		val validationResult = ValidatorFactory.userPasswordValidator.validate(password, null).statusCode
 		(validationResult == STATUS_CODE_SUCCESS) &&
 			(password == repeatPassword)
 	}

@@ -6,7 +6,7 @@ import java.util.Objects.isNull
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.controller.utils.HttpUtils._
+import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
@@ -36,7 +36,7 @@ object PersistOneInvoice extends RequestProcessor {
 		if (isPeriodicalValid(periodicalInDb, request, generalMessages))
 			tryToPersistNewInvoice(getNewInvoice(periodicalInDb, request), generalMessages)
 
-		addGeneralMessagesToSession(request, generalMessages)
+		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
 
 		REDIRECT + getRedirectUri(periodicalId)
 	}
@@ -56,7 +56,7 @@ object PersistOneInvoice extends RequestProcessor {
 	private def periodicalExistsInDb(periodicalInDb: Periodical,
 									 generalMessages: mutable.ListBuffer[FrontendMessage]) =
 		if (isNull(periodicalInDb)) {
-			generalMessages += messageFactory.getError(MSG_VALIDATION_PERIODICAL_IS_NULL)
+			generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NULL)
 			false
 		} else
 			true
@@ -64,14 +64,14 @@ object PersistOneInvoice extends RequestProcessor {
 	private def isPeriodicalVisible(periodicalInDb: Periodical,
 									generalMessages: mutable.ListBuffer[FrontendMessage]) =
 		if (PeriodicalStatus.ACTIVE != periodicalInDb.status) {
-			generalMessages += messageFactory.getError(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
+			generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
 			false
 		} else
 			true
 
 	private def isSubscriptionPeriodValid(request: HttpServletRequest,
 										  generalMessages: mutable.ListBuffer[FrontendMessage]) = {
-		val message = messageFactory.getError(MSG_VALIDATION_SUBSCRIPTION_PERIOD_IS_NOT_VALID)
+		val message = messageFactory.error(MSG_VALIDATION_SUBSCRIPTION_PERIOD_IS_NOT_VALID)
 		try {
 			val subscriptionPeriod = request.getParameter(SUBSCRIPTION_PERIOD_PARAM_NAME).toInt
 			if (!isPeriodValid(subscriptionPeriod))
@@ -86,14 +86,14 @@ object PersistOneInvoice extends RequestProcessor {
 
 	private def tryToPersistNewInvoice(invoiceToPersist: Invoice,
 									   generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
-		generalMessages += messageFactory.getInfo(MSG_VALIDATION_PASSED_SUCCESS)
+		generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 		try {
 			invoiceService.createNew(invoiceToPersist)
-			generalMessages += messageFactory.getSuccess(MSG_INVOICE_CREATION_SUCCESS)
+			generalMessages += messageFactory.success(MSG_INVOICE_CREATION_SUCCESS)
 		} catch {
 			case e: RuntimeException =>
 				LOGGER.error(String.format(EXCEPTION_DURING_PERSISTING_INVOICE, invoiceToPersist), e)
-				generalMessages += messageFactory.getError(MSG_INVOICE_PERSISTING_FAILED)
+				generalMessages += messageFactory.error(MSG_INVOICE_PERSISTING_FAILED)
 		}
 	}
 
@@ -102,7 +102,7 @@ object PersistOneInvoice extends RequestProcessor {
 		val subscriptionPeriod = request.getParameter(SUBSCRIPTION_PERIOD_PARAM_NAME).toInt
 
 		val totalSum = subscriptionPeriod * periodicalInDb.oneMonthCost
-		val userIdFromUri = getFirstIdFromUri(request.getRequestURI)
+		val userIdFromUri = HttpUtils.firstIdFromUri(request.getRequestURI)
 		val user = User(id = userIdFromUri)
 
 		Invoice(

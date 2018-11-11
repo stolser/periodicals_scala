@@ -14,7 +14,7 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 	private val dataSource: DataSource = getBasicDataSource
 	private val description = builder.url + builder.dbName
 
-	override def getConnection: AbstractConnection =
+	override def connection: AbstractConnection =
 		tryAndCatchSqlException(CONNECTION_EXCEPTION_TEXT) { () =>
 			AbstractConnectionImpl(dataSource.getConnection)
 		}
@@ -52,7 +52,7 @@ object SqlConnectionPool {
 	private val PASSWORD_SHOULD_NOT_BE_NULL = "password should not be null."
 	private val MAX_CONNECTIONS_SHOULD_BE_A_POSITIVE_NUMBER = "maxConnections should be a positive number."
 
-	def getBuilder(url: String, dbName: String) = new this.Builder(url, dbName)
+	def builder(url: String, dbName: String) = new this.Builder(url, dbName)
 
 	class Builder(val url: String, val dbName: String) {
 		require(url != null, URL_SHOULD_NOT_BE_NULL)
@@ -63,30 +63,30 @@ object SqlConnectionPool {
 		private[SqlConnectionPool] var maxConnections = MAX_TOTAL_CONNECTIONS
 		private[SqlConnectionPool] var useSsl = false
 
-		def setDriverClassName(driverClassName: String): Builder = {
+		def withDriverClassName(driverClassName: String): Builder = {
 			require(driverClassName != null, DRIVER_CLASS_NAME_SHOULD_NOT_BE_NULL)
 			this.driverClassName = driverClassName
 			this
 		}
 
-		def setUserName(userName: String): Builder = {
+		def withUserName(userName: String): Builder = {
 			require(userName != null, USER_NAME_SHOULD_NOT_BE_NULL)
 			this.userName = userName
 			this
 		}
 
-		def setPassword(password: String): Builder = {
+		def withPassword(password: String): Builder = {
 			require(password != null, PASSWORD_SHOULD_NOT_BE_NULL)
 			this.password = password
 			this
 		}
 
-		def setUseSsl(useSsl: Boolean): Builder = {
+		def withSslUsage(useSsl: Boolean): Builder = {
 			this.useSsl = useSsl
 			this
 		}
 
-		def setMaxConnections(maxConnections: Int): Builder = {
+		def withMaxConnections(maxConnections: Int): Builder = {
 			require(maxConnections > 0, MAX_CONNECTIONS_SHOULD_BE_A_POSITIVE_NUMBER)
 			this.maxConnections = maxConnections
 			this

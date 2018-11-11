@@ -42,7 +42,7 @@ object RequestProviderImpl extends RequestProvider {
 
 	initializeRequestMapping
 
-	override def getRequestProcessor(request: HttpServletRequest): RequestProcessor = {
+	override def requestProcessor(request: HttpServletRequest): RequestProcessor = {
 		val currentMapping = requestMapping.filterKeys((key: String) => filterRequestByHttpMethod(request, key))
 			.filterKeys(filterRequestByUri(request, _))
 			.headOption

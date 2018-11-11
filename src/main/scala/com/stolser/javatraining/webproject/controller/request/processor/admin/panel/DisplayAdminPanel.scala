@@ -12,9 +12,9 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import scala.collection.JavaConverters._
 
 /**
-  * Created by Oleg Stoliarov on 10/10/18.
-  * Processes a GET request to the Admin Panel page.
-  */
+	* Created by Oleg Stoliarov on 10/10/18.
+	* Processes a GET request to the Admin Panel page.
+	*/
 object DisplayAdminPanel extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 	private val invoiceService: InvoiceService = InvoiceServiceImpl
@@ -29,13 +29,13 @@ object DisplayAdminPanel extends RequestProcessor {
 	private def addPeriodicalStatsIntoRequest(request: HttpServletRequest): Unit =
 		request.setAttribute(
 			PERIODICAL_STATISTICS_ATTR_NAME,
-			periodicalService.getQuantitativeStatistics.asJava
+			periodicalService.quantitativeStatistics.asJava
 		)
 
 	private def addFinStatsIntoRequest(request: HttpServletRequest): Unit =
 		request.setAttribute(
 			FINANCIAL_STATISTICS_ATTR_NAME,
-			invoiceService.getFinStatistics(
+			invoiceService.finStatistics(
 				since = Instant.now.minus(30, ChronoUnit.DAYS),
 				until = Instant.now
 			)

@@ -13,7 +13,7 @@ object DaoUtils extends DaoUtilsTrait {
 	  * Creates a new periodical using the data from the result set.
 	  */
 	@throws[SQLException]
-	def getPeriodicalFromResultSet(rs: ResultSet): Periodical =
+	def periodicalFromResultSet(rs: ResultSet): Periodical =
 		Periodical(
 			id = rs.getLong(DB_PERIODICALS_ID),
 			name = rs.getString(DB_PERIODICALS_NAME),

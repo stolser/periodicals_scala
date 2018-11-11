@@ -34,8 +34,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
 
-		when(connectionPool.getConnection) thenReturn conn
-		when(daoFactory.getPeriodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPool.connection) thenReturn conn
+		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn expectedPeriodical
 
 		val actualPeriodical = periodicalServiceImpl.findOneByName(periodicalName)
@@ -54,8 +54,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
 
-		when(connectionPool.getConnection) thenReturn conn
-		when(daoFactory.getPeriodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPool.connection) thenReturn conn
+		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn savedPeriodical
 
 		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)
@@ -74,8 +74,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
 
-		when(connectionPool.getConnection) thenReturn conn
-		when(daoFactory.getPeriodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPool.connection) thenReturn conn
+		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn periodicalToSave
 		when(periodicalDao.update(periodicalToSave)) thenReturn updatedRowsNumber
 
@@ -92,8 +92,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
 
-		when(connectionPool.getConnection) thenReturn conn
-		when(daoFactory.getPeriodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPool.connection) thenReturn conn
+		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.update(any[Periodical])) thenReturn 0
 
 		assertThrows[NoSuchElementException] {
@@ -107,8 +107,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
 
-		when(connectionPool.getConnection) thenReturn conn
-		when(daoFactory.getSubscriptionDao(any[AbstractConnection])) thenReturn subscriptionDao
+		when(connectionPool.connection) thenReturn conn
+		when(daoFactory.subscriptionDao(any[AbstractConnection])) thenReturn subscriptionDao
 		when(subscriptionDao.findAllByPeriodicalIdAndStatus(periodicalId, ACTIVE))
 			.thenReturn(List.empty[Subscription])
 

@@ -64,7 +64,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next())
-								daoUtils.getPeriodicalFromResultSet(rs)
+								daoUtils.periodicalFromResultSet(rs)
 							else
 								null
 					}
@@ -94,7 +94,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 							val periodicals = mutable.Buffer[Periodical]()
 
 							while (rs.next())
-								periodicals += daoUtils.getPeriodicalFromResultSet(rs)
+								periodicals += daoUtils.periodicalFromResultSet(rs)
 
 							periodicals.toList
 						}
@@ -114,7 +114,7 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 							val periodicals = mutable.Buffer[Periodical]()
 
 							while (rs.next())
-								periodicals += daoUtils.getPeriodicalFromResultSet(rs)
+								periodicals += daoUtils.periodicalFromResultSet(rs)
 
 							periodicals.toList
 						}

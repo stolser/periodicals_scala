@@ -50,7 +50,7 @@ object SignIn extends RequestProcessor {
 
 	private def isPasswordCorrect(password: String, credential: Credential) =
 		nonNull(credential) &&
-			(HttpUtils.getPasswordHash(password) == credential.passwordHash)
+			(HttpUtils.passwordHash(password) == credential.passwordHash)
 
 	private def signInIfUserIsActive(request: HttpServletRequest,
 									 messages: mutable.Map[String, FrontendMessage]) = {
@@ -61,7 +61,7 @@ object SignIn extends RequestProcessor {
 		if (isUserActive(currentUser))
 			signInUserAndGetRedirectUri(request, currentUser)
 		else {
-			messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.getError(MSG_ERROR_USER_IS_BLOCKED))
+			messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.error(MSG_ERROR_USER_IS_BLOCKED))
 			LOGIN_PAGE
 		}
 	}
@@ -79,8 +79,8 @@ object SignIn extends RequestProcessor {
 	}
 
 	private def addSignInErrorMessages(messages: mutable.Map[String, FrontendMessage]): Unit = {
-		messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.getError(MSG_CREDENTIALS_ARE_NOT_CORRECT))
-		messages.put(USER_PASSWORD_PARAM_NAME, messageFactory.getError(MSG_CREDENTIALS_ARE_NOT_CORRECT))
+		messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.error(MSG_CREDENTIALS_ARE_NOT_CORRECT))
+		messages.put(USER_PASSWORD_PARAM_NAME, messageFactory.error(MSG_CREDENTIALS_ARE_NOT_CORRECT))
 	}
 
 	private def getRedirectUri(request: HttpServletRequest, currentUser: User) = {

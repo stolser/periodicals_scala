@@ -43,7 +43,7 @@ class MysqlCredentialDao(conn: Connection) extends CredentialDao {
 		}
 	}
 
-	def getCredentialFromResultSet(rs: ResultSet): Credential =
+	private def getCredentialFromResultSet(rs: ResultSet): Credential =
 		Credential(
 			id = rs.getLong(DB_CREDENTIALS_ID),
 			userName = rs.getString(DB_CREDENTIALS_USER_NAME),

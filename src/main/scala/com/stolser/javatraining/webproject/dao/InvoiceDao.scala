@@ -21,7 +21,7 @@ trait InvoiceDao extends GenericDao[Invoice] {
 		* @param since the beginning of the time period
 		* @param until the end of the time period
 		*/
-	def getCreatedInvoiceSumByCreationDate(since: Instant, until: Instant): Long
+	def createdInvoiceSumByCreationDate(since: Instant, until: Instant): Long
 
 	/**
 		* Returns the sum of all invoices that were paid during the specified time period
@@ -30,5 +30,5 @@ trait InvoiceDao extends GenericDao[Invoice] {
 		* @param since the beginning of the time period
 		* @param until the end of the time period
 		*/
-	def getPaidInvoiceSumByPaymentDate(since: Instant, until: Instant): Long
+	def paidInvoiceSumByPaymentDate(since: Instant, until: Instant): Long
 }

@@ -37,15 +37,11 @@ case class User private(@BeanProperty id: Long = 0,
 	def hasRole(role: String): Boolean =
 		hasRole(UserRole.withName(role.toUpperCase))
 
-	def getFirstNameAsString: String = firstName.getOrElse("") // used by JSP tags;
-
-	def getLastNameAsString: String = lastName.getOrElse("") // used by JSP tags;
-
-	def getBirthdayAsDate: Date = birthday.orNull // used by JSP tags;
-
-	def getAddressAsString: String = address.getOrElse("") // used by JSP tags;
-
-	def getRolesAsJavaCollection: java.util.Set[UserRole.Value] = roles.asJava // used by JSP tags;
+	@BeanProperty val firstNameAsString: String = firstName.getOrElse("") // used by JSP tags;
+	@BeanProperty val lastNameAsString: String = lastName.getOrElse("") // used by JSP tags;
+	@BeanProperty val birthdayAsDate: Date = birthday.orNull // used by JSP tags;
+	@BeanProperty val addressAsString: String = address.getOrElse("") // used by JSP tags;
+	@BeanProperty val rolesAsJavaCollection: java.util.Set[UserRole.Value] = roles.asJava // used by JSP tags;
 }
 
 object UserStatus extends Enumeration {

@@ -50,8 +50,8 @@ object Authorization {
 		val matcher = Pattern.compile(USERS_URI_WITH_ID).matcher(requestUri)
 
 		if (matcher.find) {
-			val userIdFromUri = HttpUtils.getFirstIdFromUri(requestUri)
-			val userIdFromSession = HttpUtils.getUserIdFromSession(request)
+			val userIdFromUri = HttpUtils.firstIdFromUri(requestUri)
+			val userIdFromSession = HttpUtils.userIdFromSession(request)
 			userIdFromUri == userIdFromSession
 		} else true
 	}

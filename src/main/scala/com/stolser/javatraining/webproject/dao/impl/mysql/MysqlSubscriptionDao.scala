@@ -120,7 +120,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 								subscriptions += Subscription(
 									id = rs.getLong(DB_SUBSCRIPTIONS_ID),
 									user = user,
-									periodical = DaoUtils.getPeriodicalFromResultSet(rs),
+									periodical = DaoUtils.periodicalFromResultSet(rs),
 									deliveryAddress = rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS),
 									endDate = Option(rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant),
 									status = SubscriptionStatus.withName(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase)

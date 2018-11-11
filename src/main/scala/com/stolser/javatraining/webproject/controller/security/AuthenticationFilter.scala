@@ -31,7 +31,7 @@ class AuthenticationFilter extends Filter {
 		}
 
 		val requestUri = request.getRequestURI
-		val currentUser = httpUtils.getCurrentUserFromFromDb(request)
+		val currentUser = httpUtils.currentUserFromFromDb(request)
 
 		if (isNull(currentUser)) {
 			request.getSession.setAttribute(ORIGINAL_URI_ATTR_NAME, requestUri)

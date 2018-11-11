@@ -17,43 +17,43 @@ import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
   * Created by Oleg Stoliarov on 10/15/18.
   */
 object InvoiceServiceImpl extends InvoiceService {
-	private lazy val factory = DaoFactory.getMysqlDaoFactory
+	private lazy val factory = DaoFactory.mysqlDaoFactory
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
 	override def findOneById(invoiceId: Long): Invoice =
 		withConnection { conn =>
-			factory.getInvoiceDao(conn).findOneById(invoiceId)
+			factory.invoiceDao(conn).findOneById(invoiceId)
 		}
 
 	override def findAllByUserId(userId: Long): List[Invoice] =
 		withConnection { conn =>
-			factory.getInvoiceDao(conn).findAllByUserId(userId)
+			factory.invoiceDao(conn).findAllByUserId(userId)
 		}
 
 	override def findAllByPeriodicalId(periodicalId: Long): List[Invoice] =
 		withConnection { conn =>
-			factory.getInvoiceDao(conn).findAllByPeriodicalId(periodicalId)
+			factory.invoiceDao(conn).findAllByPeriodicalId(periodicalId)
 		}
 
 	override def createNew(invoice: Invoice): Unit =
 		withConnection { conn =>
-			factory.getInvoiceDao(conn).createNew(invoice)
+			factory.invoiceDao(conn).createNew(invoice)
 		}
 
 	override def payInvoice(invoiceToPay: Invoice): Boolean =
 		withConnection { conn =>
-			val subscriptionDao = factory.getSubscriptionDao(conn)
+			val subscriptionDao = factory.subscriptionDao(conn)
 			invoiceToPay.status = InvoiceStatus.PAID
 			invoiceToPay.paymentDate = Some(Instant.now)
 
 			conn.beginTransaction()
-			val userFromDb = factory.getUserDao(conn).findOneById(invoiceToPay.user.id)
+			val userFromDb = factory.userDao(conn).findOneById(invoiceToPay.user.id)
 			val periodical = invoiceToPay.periodical
 
 			val existingSubscription = subscriptionDao
 				.findOneByUserIdAndPeriodicalId(userFromDb.id, periodical.id)
 
-			factory.getInvoiceDao(conn).update(invoiceToPay)
+			factory.invoiceDao(conn).update(invoiceToPay)
 
 			val subscriptionPeriod = invoiceToPay.subscriptionPeriod
 
@@ -103,11 +103,11 @@ object InvoiceServiceImpl extends InvoiceService {
 			case None => None
 		}
 
-	override def getFinStatistics(since: Instant, until: Instant): FinancialStatistics =
+	override def finStatistics(since: Instant, until: Instant): FinancialStatistics =
 		withConnection { conn =>
-			val dao = factory.getInvoiceDao(conn)
-			val totalInvoiceSum = dao.getCreatedInvoiceSumByCreationDate(since, until)
-			val paidInvoiceSum = dao.getPaidInvoiceSumByPaymentDate(since, until)
+			val dao = factory.invoiceDao(conn)
+			val totalInvoiceSum = dao.createdInvoiceSumByCreationDate(since, until)
+			val paidInvoiceSum = dao.paidInvoiceSumByPaymentDate(since, until)
 
 			FinancialStatistics(totalInvoiceSum, paidInvoiceSum)
 		}

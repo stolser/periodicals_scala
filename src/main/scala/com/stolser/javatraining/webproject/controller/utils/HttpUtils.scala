@@ -37,7 +37,7 @@ object HttpUtils extends HttpUtilsTrait {
 		*
 		* @return id of the current signed in user or 0 if a user has not been authenticated yet
 		*/
-	def getUserIdFromSession(request: HttpServletRequest): Long = {
+	def userIdFromSession(request: HttpServletRequest): Long = {
 		val user: User = request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User]
 		if (nonNull(user)) user.id
 		else 0
@@ -46,13 +46,13 @@ object HttpUtils extends HttpUtilsTrait {
 	/**
 		* Retrieves a user object from the db for the current user from the request.
 		*/
-	override def getCurrentUserFromFromDb(request: HttpServletRequest): User =
-		userService.findOneById(getUserIdFromSession(request))
+	override def currentUserFromFromDb(request: HttpServletRequest): User =
+		userService.findOneById(userIdFromSession(request))
 
 	/**
 		* Creates a new periodical using the data from the request.
 		*/
-	def getPeriodicalFromRequest(request: HttpServletRequest): Periodical =
+	def periodicalFromRequest(request: HttpServletRequest): Periodical =
 		Periodical(
 			id = java.lang.Long.parseLong(request.getParameter(ENTITY_ID_PARAM_NAME)),
 			name = request.getParameter(PERIODICAL_NAME_PARAM_NAME),
@@ -66,7 +66,7 @@ object HttpUtils extends HttpUtilsTrait {
 	/**
 		* Tries to find the first number in the uri.
 		*/
-	override def getFirstIdFromUri(uri: String): Int = {
+	override def firstIdFromUri(uri: String): Int = {
 		val numberInUriMatcher: Matcher = Pattern.compile(NUMBER_REGEX).matcher(uri)
 		if (!numberInUriMatcher.find)
 			throw new IllegalArgumentException(String.format(URI_MUST_CONTAIN_ID_TEXT, uri))
@@ -98,26 +98,25 @@ object HttpUtils extends HttpUtilsTrait {
 			response.sendRedirect(redirectUri)
 		catch {
 			case e: IOException =>
-				val message: String = s"User id = ${getUserIdFromSession(request)}. Exception during redirection to '$redirectUri'."
+				val message: String = s"User id = ${userIdFromSession(request)}. Exception during redirection to '$redirectUri'."
 				throw new RuntimeException(message, e)
 		}
 
 	/**
 		* Returns an appropriate view name for this exception.
 		*/
-	def getErrorViewName(exception: Throwable): String = {
+	def errorViewName(exception: Throwable): String =
 		exception match {
 			case _: DaoException => STORAGE_EXCEPTION_PAGE_VIEW_NAME
 			case _: NoSuchElementException => PAGE_404_VIEW_NAME
 			case _: AccessDeniedException => ACCESS_DENIED_PAGE_VIEW_NAME
 			case _ => GENERAL_ERROR_PAGE_VIEW_NAME
 		}
-	}
 
 	/**
 		* Returns a hash for this password.
 		*/
-	def getPasswordHash(password: String): String = {
+	def passwordHash(password: String): String = {
 		val md: MessageDigest = MessageDigest.getInstance(ALGORITHM_NAME)
 		md.update(password.getBytes)
 		val builder: StringBuilder = new StringBuilder

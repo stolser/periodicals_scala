@@ -10,7 +10,7 @@ import com.stolser.javatraining.webproject.utils.TryCatchUtils.withResources
 object ServiceUtils {
 	private[service] def withConnection[A](block: (AbstractConnection) => A)
 																				(implicit connectionPool: ConnectionPool) = {
-		withResources(connectionPool.getConnection) {
+		withResources(connectionPool.connection) {
 			conn: AbstractConnection =>
 				block(conn)
 		}

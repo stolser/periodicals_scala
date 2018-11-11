@@ -49,5 +49,5 @@ trait PeriodicalService {
 		*/
 	def hasActiveSubscriptions(periodicalId: Long): Boolean
 
-	def getQuantitativeStatistics: List[PeriodicalNumberByCategory]
+	def quantitativeStatistics: List[PeriodicalNumberByCategory]
 }

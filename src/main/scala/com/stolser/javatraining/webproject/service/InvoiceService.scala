@@ -27,5 +27,5 @@ trait InvoiceService {
 		*/
 	def payInvoice(invoiceToPay: Invoice): Boolean
 
-	def getFinStatistics(since: Instant, until: Instant): FinancialStatistics
+	def finStatistics(since: Instant, until: Instant): FinancialStatistics
 }

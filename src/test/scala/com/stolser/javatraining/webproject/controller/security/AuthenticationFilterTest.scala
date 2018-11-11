@@ -67,7 +67,7 @@ class AuthenticationFilterTest extends FunSuiteBase {
 		val requestURI = TestResources.USER_2_INVOICE_10_PAYMENT_URI
 
 		when(request.getRequestURI) thenReturn requestURI
-		when(httpUtilsMock.getCurrentUserFromFromDb(request)) thenReturn User(id = 2, status = BLOCKED)
+		when(httpUtilsMock.currentUserFromFromDb(request)) thenReturn User(id = 2, status = BLOCKED)
 
 		getAuthenticationFilterWithMocks.doFilter(request, response, chain)
 
@@ -80,7 +80,7 @@ class AuthenticationFilterTest extends FunSuiteBase {
 		val requestURI = TestResources.USER_2_INVOICE_10_PAYMENT_URI
 
 		when(request.getRequestURI) thenReturn requestURI
-		when(httpUtilsMock.getCurrentUserFromFromDb(ArgumentMatchers.any[HttpServletRequest]))
+		when(httpUtilsMock.currentUserFromFromDb(ArgumentMatchers.any[HttpServletRequest]))
 			.thenReturn(User(id = 2, status = ACTIVE))
 
 		getAuthenticationFilterWithMocks.doFilter(request, response, chain)

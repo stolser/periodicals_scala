@@ -34,7 +34,7 @@ case class Periodical private(@BeanProperty id: Long = 0,
 			s"description='$description', oneMonthCost='$oneMonthCost', status='$status'}"
 	}
 
-	def getDescriptionAsString: String = description.getOrElse("") // used by JSP tags;
+	@BeanProperty val descriptionAsString: String = description.getOrElse("") // used by JSP tags;
 }
 
 object PeriodicalStatus extends Enumeration {

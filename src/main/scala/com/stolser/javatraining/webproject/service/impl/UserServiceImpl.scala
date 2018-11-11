@@ -12,12 +12,12 @@ import com.stolser.javatraining.webproject.service.UserService
 	* Created by Oleg Stoliarov on 10/15/18.
 	*/
 object UserServiceImpl extends UserService {
-	private lazy val factory = DaoFactory.getMysqlDaoFactory
+	private lazy val factory = DaoFactory.mysqlDaoFactory
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
 	override def findOneById(id: Long): User =
 		withConnection { conn =>
-			val user = factory.getUserDao(conn)
+			val user = factory.userDao(conn)
 				.findOneById(id)
 			setUserRoles(user, conn)
 
@@ -27,19 +27,19 @@ object UserServiceImpl extends UserService {
 	private def setUserRoles(user: User,
 													 conn: AbstractConnection): Unit =
 		if (nonNull(user)) {
-			user.roles = factory.getRoleDao(conn)
+			user.roles = factory.roleDao(conn)
 				.findRolesByUserName(user.userName)
 		}
 
 	override def findOneCredentialByUserName(userName: String): Credential =
 		withConnection { conn =>
-			factory.getCredentialDao(conn)
+			factory.credentialDao(conn)
 				.findCredentialByUserName(userName)
 		}
 
 	override def findOneUserByUserName(userName: String): User =
 		withConnection { conn =>
-			val user = factory.getUserDao(conn)
+			val user = factory.userDao(conn)
 				.findOneByUserName(userName)
 			setUserRoles(user, conn)
 
@@ -48,10 +48,10 @@ object UserServiceImpl extends UserService {
 
 	override def findAll: List[User] =
 		withConnection { conn =>
-			val allUser = factory.getUserDao(conn).findAll
+			val allUser = factory.userDao(conn).findAll
 
 			allUser.foreach(user => {
-				user.roles = factory.getRoleDao(conn)
+				user.roles = factory.roleDao(conn)
 					.findRolesByUserName(user.userName)
 			})
 
@@ -64,9 +64,9 @@ object UserServiceImpl extends UserService {
 		withConnection { conn =>
 			conn.beginTransaction()
 
-			val userId = factory.getUserDao(conn).createNew(user)
+			val userId = factory.userDao(conn).createNew(user)
 			credential.userId = userId
-			val isNewCredentialCreated = factory.getCredentialDao(conn)
+			val isNewCredentialCreated = factory.credentialDao(conn)
 				.createNew(credential)
 
 			if (!isNewCredentialCreated) {
@@ -74,7 +74,7 @@ object UserServiceImpl extends UserService {
 				return false
 			}
 
-			factory.getRoleDao(conn).addRole(userId, userRole)
+			factory.roleDao(conn).addRole(userId, userRole)
 			conn.commitTransaction()
 
 			return true
@@ -82,6 +82,6 @@ object UserServiceImpl extends UserService {
 
 	override def emailExistsInDb(email: String): Boolean =
 		withConnection { conn =>
-			factory.getUserDao(conn).emailExistsInDb(email)
+			factory.userDao(conn).emailExistsInDb(email)
 		}
 }

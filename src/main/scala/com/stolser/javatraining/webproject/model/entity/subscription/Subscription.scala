@@ -33,7 +33,7 @@ case class Subscription private(@BeanProperty id: Long = 0,
 	override def toString: String = s"Subscription{id=$id, user='$user', periodical='$periodical', " +
 		s"deliveryAddress='$deliveryAddress', endDate='$endDate', status='$status'}"
 
-	def getEndDateAsInstant: Instant = endDate.orNull // used by JSP tags;
+	@BeanProperty val endDateAsInstant: Instant = endDate.orNull // used by JSP tags;
 }
 
 object SubscriptionStatus extends Enumeration {

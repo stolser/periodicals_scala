@@ -7,5 +7,5 @@ import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlDaoFactory
 	*/
 
 object DaoFactory {
-	def getMysqlDaoFactory: DaoFactoryTrait = MysqlDaoFactory
+	def mysqlDaoFactory: DaoFactoryTrait = MysqlDaoFactory
 }

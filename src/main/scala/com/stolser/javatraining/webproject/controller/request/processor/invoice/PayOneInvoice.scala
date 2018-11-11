@@ -5,7 +5,7 @@ import java.util.Objects.isNull
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message._
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.controller.utils.HttpUtils._
+import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus
 import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
@@ -35,13 +35,13 @@ object PayOneInvoice extends RequestProcessor {
 		if (isInvoiceValid(invoiceInDb, generalMessages))
 			tryToPayInvoice(invoiceInDb, request, generalMessages)
 
-		addGeneralMessagesToSession(request, generalMessages)
+		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
 
 		REDIRECT + CURRENT_USER_ACCOUNT_URI
 	}
 
 	private def getInvoiceIdFromRequest(request: HttpServletRequest) =
-		getFirstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
+		HttpUtils.firstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
 
 	private def isInvoiceValid(invoiceInDb: Invoice,
 							   generalMessages: mutable.ListBuffer[FrontendMessage]): Boolean = {
@@ -49,7 +49,7 @@ object PayOneInvoice extends RequestProcessor {
 		def invoiceExistsInDb(invoiceInDb: Invoice,
 							  generalMessages: mutable.ListBuffer[FrontendMessage]) =
 			if (isNull(invoiceInDb)) {
-				generalMessages += messageFactory.getError(MSG_VALIDATION_NO_SUCH_INVOICE)
+				generalMessages += messageFactory.error(MSG_VALIDATION_NO_SUCH_INVOICE)
 				false
 			} else
 				true
@@ -57,7 +57,7 @@ object PayOneInvoice extends RequestProcessor {
 		def isInvoiceNew(invoiceInDb: Invoice,
 								 generalMessages: mutable.ListBuffer[FrontendMessage]) =
 		if (InvoiceStatus.NEW != invoiceInDb.status) {
-			generalMessages += messageFactory.getError(MSG_VALIDATION_INVOICE_IS_NOT_NEW)
+			generalMessages += messageFactory.error(MSG_VALIDATION_INVOICE_IS_NOT_NEW)
 			false
 		} else
 			true
@@ -65,7 +65,7 @@ object PayOneInvoice extends RequestProcessor {
 		def isPeriodicalVisible(invoiceInDb: Invoice,
 								generalMessages: mutable.ListBuffer[FrontendMessage]) =
 			if (!isPeriodicalActive(invoiceInDb)) {
-				generalMessages += messageFactory.getError(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
+				generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
 				false
 			} else
 				true
@@ -86,15 +86,15 @@ object PayOneInvoice extends RequestProcessor {
 	private def tryToPayInvoice(invoiceInDb: Invoice, request: HttpServletRequest,
 								generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
 		try {
-			generalMessages += messageFactory.getInfo(MSG_VALIDATION_PASSED_SUCCESS)
+			generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 			val isInvoicePaid = invoiceService.payInvoice(invoiceInDb)
 			val resultMessage = if (isInvoicePaid) MSG_INVOICE_PAYMENT_SUCCESS else MSG_INVOICE_PAYMENT_ERROR
 
-			generalMessages += messageFactory.getSuccess(resultMessage)
+			generalMessages += messageFactory.success(resultMessage)
 		} catch {
 			case e: RuntimeException =>
-				LOGGER.error(s"User id = ${getUserIdFromSession(request)}. Exception during paying invoice $invoiceInDb.", e)
-				generalMessages += messageFactory.getError(MSG_INVOICE_PAYMENT_ERROR)
+				LOGGER.error(s"User id = ${HttpUtils.userIdFromSession(request)}. Exception during paying invoice $invoiceInDb.", e)
+				generalMessages += messageFactory.error(MSG_INVOICE_PAYMENT_ERROR)
 		}
 	}
 }

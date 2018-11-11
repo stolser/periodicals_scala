@@ -34,9 +34,9 @@ object DeleteDiscardedPeriodicals extends RequestProcessor {
 									   deletedPeriodicalsNumber: Int): Unit = {
 		val message =
 			if (deletedPeriodicalsNumber > 0)
-				messageFactory.getSuccess(MSG_PERIODICALS_DELETED_SUCCESS)
+				messageFactory.success(MSG_PERIODICALS_DELETED_SUCCESS)
 			else
-				messageFactory.getWarning(MSG_NO_PERIODICALS_TO_DELETE)
+				messageFactory.warning(MSG_NO_PERIODICALS_TO_DELETE)
 
 		generalMessages += message
 	}
