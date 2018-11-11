@@ -8,8 +8,6 @@ import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlPeriodicalDao._
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus._
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 
-import scala.collection.JavaConverters._
-
 /**
 	* Created by Oleg Stoliarov on 11/6/18.
 	*/
@@ -59,7 +57,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteBase {
 		when(daoUtilsMock.getPeriodicalFromResultSet(resultSet))
 			.thenReturn(expectedPeriodical1, expectedPeriodical2)
 
-		val actualPeriodicals = periodicalDao.findAll.asScala
+		val actualPeriodicals = periodicalDao.findAll
 
 		verify(statement).executeQuery
 		verify(statement).close()
@@ -80,7 +78,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteBase {
 			.thenReturn(expectedPeriodical1, expectedPeriodical2, expectedPeriodical3)
 
 		val periodicalStatus = ACTIVE
-		val actualPeriodicals = periodicalDao.findAllByStatus(periodicalStatus).asScala
+		val actualPeriodicals = periodicalDao.findAllByStatus(periodicalStatus)
 
 		verify(statement).setString(1, periodicalStatus.toString.toLowerCase)
 		verify(statement).executeQuery

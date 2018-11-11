@@ -1,7 +1,6 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql._
-import java.util
 
 import com.stolser.javatraining.webproject.controller.utils.DaoUtils
 import com.stolser.javatraining.webproject.dao.SubscriptionDao
@@ -10,9 +9,11 @@ import com.stolser.javatraining.webproject.model.entity.subscription.{Subscripti
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
+import scala.collection.mutable
+
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object MysqlSubscriptionDao {
 	private val DB_SUBSCRIPTIONS_ID = "subscriptions.id"
@@ -56,7 +57,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 	}
 
 	override def findAllByPeriodicalIdAndStatus(periodicalId: Long,
-												status: SubscriptionStatus.Value): util.List[Subscription] = {
+																							status: SubscriptionStatus.Value): List[Subscription] = {
 		val sqlStatement = "SELECT * FROM subscriptions " +
 			"JOIN periodicals ON (subscriptions.periodical_id = periodicals.id) " +
 			"WHERE periodicals.id = ? AND subscriptions.status = ?"
@@ -69,12 +70,12 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
-							val subscriptions = new util.ArrayList[Subscription]
+							val subscriptions = mutable.Buffer[Subscription]()
 
 							while (rs.next)
-								subscriptions.add(newSubscriptionFromRs(rs))
+								subscriptions += newSubscriptionFromRs(rs)
 
-							subscriptions
+							subscriptions.toList
 					}
 				}
 			}
@@ -101,7 +102,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 		)
 	}
 
-	override def findAllByUser(user: User): util.List[Subscription] = {
+	override def findAllByUser(user: User): List[Subscription] = {
 		val sqlStatement = "SELECT * FROM users " +
 			"JOIN subscriptions ON (users.id = subscriptions.user_id) " +
 			"JOIN periodicals ON (subscriptions.periodical_id = periodicals.id) " +
@@ -114,18 +115,18 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
-							val subscriptions = new util.ArrayList[Subscription]
+							val subscriptions = mutable.Buffer[Subscription]()
 							while (rs.next)
-								subscriptions.add(Subscription(
+								subscriptions += Subscription(
 									id = rs.getLong(DB_SUBSCRIPTIONS_ID),
 									user = user,
 									periodical = DaoUtils.getPeriodicalFromResultSet(rs),
 									deliveryAddress = rs.getString(DB_SUBSCRIPTIONS_DELIVERY_ADDRESS),
 									endDate = Option(rs.getTimestamp(DB_SUBSCRIPTIONS_END_DATE).toInstant),
 									status = SubscriptionStatus.withName(rs.getString(DB_SUBSCRIPTIONS_STATUS).toUpperCase)
-								))
+								)
 
-							subscriptions
+							subscriptions.toList
 					}
 				}
 			}
@@ -150,7 +151,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 
 	@throws[SQLException]
 	private def setSubscriptionForInsertUpdateStatement(st: PreparedStatement,
-														subscription: Subscription): Unit = {
+																											subscription: Subscription): Unit = {
 		st.setLong(1, subscription.user.id)
 		st.setLong(2, subscription.periodical.id)
 		st.setString(3, subscription.deliveryAddress)
@@ -183,5 +184,5 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 
 	override def findOneById(id: Long) = throw new UnsupportedOperationException
 
-	override def findAll = throw new UnsupportedOperationException
+	override def findAll: List[Subscription] = throw new UnsupportedOperationException
 }

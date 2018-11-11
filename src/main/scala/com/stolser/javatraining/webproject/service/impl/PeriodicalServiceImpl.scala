@@ -1,6 +1,5 @@
 package com.stolser.javatraining.webproject.service.impl
 
-import java.util
 import java.util.NoSuchElementException
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
@@ -11,20 +10,22 @@ import com.stolser.javatraining.webproject.model.entity.subscription.Subscriptio
 import com.stolser.javatraining.webproject.service.PeriodicalService
 import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 
+import scala.collection.mutable
+
 /**
-  * Created by Oleg Stoliarov on 10/15/18.
-  */
+	* Created by Oleg Stoliarov on 10/15/18.
+	*/
 object PeriodicalServiceImpl extends PeriodicalService {
 	private val NO_PERIODICAL_WITH_ID_MESSAGE = "There is no periodical in the DB with id = %d"
 	private var factory = DaoFactory.getMysqlDaoFactory
 	private implicit var implicitConnectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
-	private[impl] def daoFactory_= (factory: DaoFactoryTrait): Unit = {
+	private[impl] def daoFactory_=(factory: DaoFactoryTrait): Unit = {
 		require(factory != null)
 		this.factory = factory
 	}
 
-	private[impl] def connectionPool_= (connectionPool: ConnectionPool): Unit = {
+	private[impl] def connectionPool_=(connectionPool: ConnectionPool): Unit = {
 		require(connectionPool != null)
 		implicitConnectionPool = connectionPool
 	}
@@ -39,12 +40,12 @@ object PeriodicalServiceImpl extends PeriodicalService {
 			factory.getPeriodicalDao(conn).findOneByName(name)
 		}
 
-	override def findAll: util.List[Periodical] =
+	override def findAll: List[Periodical] =
 		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findAll
 		}
 
-	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] =
+	override def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical] =
 		withConnection { conn =>
 			factory.getPeriodicalDao(conn).findAllByStatus(status)
 		}
@@ -88,25 +89,25 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	override def hasActiveSubscriptions(periodicalId: Long): Boolean =
 		withConnection { conn =>
-			!factory.getSubscriptionDao(conn)
+			factory.getSubscriptionDao(conn)
 				.findAllByPeriodicalIdAndStatus(periodicalId, SubscriptionStatus.ACTIVE)
-				.isEmpty
+				.nonEmpty
 		}
 
-	override def getQuantitativeStatistics: util.List[PeriodicalNumberByCategory] =
+	override def getQuantitativeStatistics: List[PeriodicalNumberByCategory] =
 		withConnection { conn =>
-			val statistics = new util.ArrayList[PeriodicalNumberByCategory]
+			val statistics = mutable.Buffer[PeriodicalNumberByCategory]()
 			val dao = factory.getPeriodicalDao(conn)
 
 			for (category <- PeriodicalCategory.values) {
-				statistics.add(getPeriodicalNumberByCategory(dao, category))
+				statistics += getPeriodicalNumberByCategory(dao, category)
 			}
 
-			statistics
+			statistics.toList
 		}
 
 	private def getPeriodicalNumberByCategory(dao: PeriodicalDao,
-											  category: PeriodicalCategory): PeriodicalNumberByCategory = {
+																						category: PeriodicalCategory): PeriodicalNumberByCategory = {
 		val activeNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
 			PeriodicalStatus.ACTIVE)
 		val inActiveNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,

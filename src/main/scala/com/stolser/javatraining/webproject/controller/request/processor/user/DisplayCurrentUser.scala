@@ -14,9 +14,9 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/11/18.
-  * Processes a GET request to a current user personal account page.
-  */
+	* Created by Oleg Stoliarov on 10/11/18.
+	* Processes a GET request to a current user personal account page.
+	*/
 object DisplayCurrentUser extends RequestProcessor {
 	private val invoiceService = InvoiceServiceImpl
 	private val subscriptionService = SubscriptionServiceImpl
@@ -24,8 +24,8 @@ object DisplayCurrentUser extends RequestProcessor {
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		val currentUserId: Long = HttpUtils.getUserIdFromSession(request)
-		val invoices: mutable.Buffer[Invoice] = invoiceService.findAllByUserId(currentUserId).asScala
-		val subscriptions: mutable.Buffer[Subscription] = subscriptionService.findAllByUserId(currentUserId).asScala
+		val invoices: mutable.Buffer[Invoice] = mutable.Buffer(invoiceService.findAllByUserId(currentUserId): _*)
+		val subscriptions: mutable.Buffer[Subscription] = mutable.Buffer(subscriptionService.findAllByUserId(currentUserId): _*)
 
 		if (invoices nonEmpty) {
 			invoices.foreach(invoice =>
@@ -62,7 +62,7 @@ object DisplayCurrentUser extends RequestProcessor {
 		})
 
 	private def compareInvoiceDates(first: Option[Instant],
-									second: Option[Instant]) =
+																	second: Option[Instant]) =
 		(first, second) match {
 			case (Some(firstDate), Some(secondDate)) => firstDate.compareTo(secondDate)
 			case _ => throw new IllegalStateException(s"Something wrong with the date fields " +
@@ -80,7 +80,7 @@ object DisplayCurrentUser extends RequestProcessor {
 		})
 
 	private def compareSubscriptionDates(first: Option[Instant],
-										 second: Option[Instant]) =
+																			 second: Option[Instant]) =
 		(first, second) match {
 			case (Some(firstDate), Some(secondDate)) => firstDate.compareTo(secondDate)
 			case _ => throw new IllegalStateException(s"Something wrong with the end date " +

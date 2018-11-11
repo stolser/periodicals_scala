@@ -18,7 +18,6 @@ libraryDependencies ++= Seq(
 	"mysql" % "mysql-connector-java" % "8.0.11",
 	"com.h2database" % "h2" % "1.4.192",
 	"org.scalatest" %% "scalatest" % "3.0.5" % Test,
-//	"org.mockito" % "mockito-core" % "2.2.17" % Test,
 	"org.mockito" %% "mockito-scala" % "1.0.0-beta.6" % Test,
 )
 

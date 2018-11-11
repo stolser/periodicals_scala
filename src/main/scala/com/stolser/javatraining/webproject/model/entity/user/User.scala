@@ -5,6 +5,7 @@ import java.util.Date
 import com.google.common.base.Preconditions.checkNotNull
 
 import scala.beans.BeanProperty
+import scala.collection.JavaConverters._
 
 /**
 	* Created by Oleg Stoliarov on 10/20/18.
@@ -44,11 +45,7 @@ case class User private(@BeanProperty id: Long = 0,
 
 	def getAddressAsString: String = address.getOrElse("") // used by JSP tags;
 
-	def getRolesAsJavaCollection: java.util.Set[UserRole.Value] = { // used by JSP tags;
-		import scala.collection.JavaConverters._
-
-		roles.asJava
-	}
+	def getRolesAsJavaCollection: java.util.Set[UserRole.Value] = roles.asJava // used by JSP tags;
 }
 
 object UserStatus extends Enumeration {

@@ -1,27 +1,27 @@
 package com.stolser.javatraining.webproject.dao
 
 /**
-  * Created by Oleg Stoliarov on 10/13/18.
-  * Represents an abstract connection.
-  */
+	* Created by Oleg Stoliarov on 10/13/18.
+	* Represents an abstract connection.
+	*/
 trait AbstractConnection extends AutoCloseable {
 	/**
-	  * Defines begin of a transaction.
-	  */
+		* Defines begin of a transaction.
+		*/
 	def beginTransaction(): Unit
 
 	/**
-	  * Saves a transaction.
-	  */
+		* Saves a transaction.
+		*/
 	def commitTransaction(): Unit
 
 	/**
-	  * rolls back a transaction.
-	  */
+		* rolls back a transaction.
+		*/
 	def rollbackTransaction(): Unit
 
 	/**
-	  * Closes a connection.
-	  */
+		* Closes a connection.
+		*/
 	override def close(): Unit
 }

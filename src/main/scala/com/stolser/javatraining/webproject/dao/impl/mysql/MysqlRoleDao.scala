@@ -1,15 +1,16 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
-import java.util
 
 import com.stolser.javatraining.webproject.dao.RoleDao
 import com.stolser.javatraining.webproject.model.entity.user.UserRole
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
+import scala.collection.mutable
+
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object MysqlRoleDao {
 	private val DB_USER_ROLES_NAME = "user_roles.name"
@@ -21,7 +22,7 @@ class MysqlRoleDao(conn: Connection) extends RoleDao {
 
 	import MysqlRoleDao._
 
-	override def findRolesByUserName(userName: String): util.Set[UserRole.Value] = {
+	override def findRolesByUserName(userName: String): Set[UserRole.Value] = {
 		val sqlStatement = "SELECT user_roles.name " +
 			"FROM users INNER JOIN user_roles " +
 			"ON (users.id = user_roles.user_id) " +
@@ -36,11 +37,11 @@ class MysqlRoleDao(conn: Connection) extends RoleDao {
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
-							val roles = new util.HashSet[UserRole.Value]()
+							val roles = mutable.Set[UserRole.Value]()
 							while (rs.next)
 								roles.add(UserRole.withName(rs.getString(DB_USER_ROLES_NAME).toUpperCase))
 
-							roles
+							roles.toSet
 					}
 				}
 			}

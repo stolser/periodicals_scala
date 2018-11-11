@@ -1,6 +1,5 @@
 package com.stolser.javatraining.webproject.service.impl
 
-import java.util
 import java.util.NoSuchElementException
 
 import com.stolser.javatraining.webproject.FunSuiteBase
@@ -104,7 +103,6 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 
 	test("hasActiveSubscriptions() Should return 'false' if there is no ACTIVE subscriptions on his periodical") {
 		val periodicalId = 10
-		val emptyList = new util.ArrayList[Subscription]()
 		val periodicalServiceImpl = PeriodicalServiceImpl
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
@@ -112,7 +110,7 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		when(connectionPool.getConnection) thenReturn conn
 		when(daoFactory.getSubscriptionDao(any[AbstractConnection])) thenReturn subscriptionDao
 		when(subscriptionDao.findAllByPeriodicalIdAndStatus(periodicalId, ACTIVE))
-			.thenReturn(emptyList)
+			.thenReturn(List.empty[Subscription])
 
 		assert(!periodicalServiceImpl.hasActiveSubscriptions(periodicalId))
 	}

@@ -1,26 +1,23 @@
 package com.stolser.javatraining.webproject.dao
 
-import java.util
-import java.util.List
-
 /**
   * Created by Oleg Stoliarov on 10/13/18.
   */
-trait GenericDao[E] {
+trait GenericDao[A] {
 	/**
 	  * Retrieves an entity by its id.
 	  *
 	  * @param id must not be null
 	  * @return the entity with the given id or { @code null} if none found
 	  */
-	def findOneById(id: Long): E
+	def findOneById(id: Long): A
 
 	/**
 	  * Returns all entities from the db.
 	  *
 	  * @return all entities
 	  */
-	def findAll: util.List[E]
+	def findAll: List[A]
 
 	/**
 	  * Creates a new entity taking values for the fields from the passed entity.
@@ -30,7 +27,7 @@ trait GenericDao[E] {
 	  * @return a persisted entity's id
 	  * @throws IllegalArgumentException in case the given entity is null
 	  */
-	def createNew(entity: E): Long
+	def createNew(entity: A): Long
 
 	/**
 	  * Updates an entity in the db. If the passed entity has such an 'id' that there is no
@@ -39,5 +36,5 @@ trait GenericDao[E] {
 	  * @param entity an object to be updated
 	  * @return an updated entity
 	  */
-	def update(entity: E): Int
+	def update(entity: A): Int
 }

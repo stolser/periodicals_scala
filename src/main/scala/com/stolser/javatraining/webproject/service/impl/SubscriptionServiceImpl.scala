@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.service.impl
 
-import java.util
-
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
 import com.stolser.javatraining.webproject.dao.DaoFactory
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
@@ -15,9 +13,9 @@ object SubscriptionServiceImpl extends SubscriptionService {
 	private lazy val factory = DaoFactory.getMysqlDaoFactory
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
-	override def findAllByUserId(id: Long): util.List[Subscription] =
+	override def findAllByUserId(id: Long): List[Subscription] =
 		withConnection { conn =>
 			factory.getSubscriptionDao(conn)
-				.findAllByUser(factory.getUserDao(conn).findOneById(id))
+							.findAllByUser(factory.getUserDao(conn).findOneById(id))
 		}
 }

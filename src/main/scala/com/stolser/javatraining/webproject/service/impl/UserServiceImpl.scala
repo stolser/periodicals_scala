@@ -1,6 +1,5 @@
 package com.stolser.javatraining.webproject.service.impl
 
-import java.util
 import java.util.Objects.nonNull
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
@@ -9,11 +8,9 @@ import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, 
 import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 import com.stolser.javatraining.webproject.service.UserService
 
-import scala.collection.JavaConverters._
-
 /**
-  * Created by Oleg Stoliarov on 10/15/18.
-  */
+	* Created by Oleg Stoliarov on 10/15/18.
+	*/
 object UserServiceImpl extends UserService {
 	private lazy val factory = DaoFactory.getMysqlDaoFactory
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
@@ -28,10 +25,10 @@ object UserServiceImpl extends UserService {
 		}
 
 	private def setUserRoles(user: User,
-							 conn: AbstractConnection): Unit =
+													 conn: AbstractConnection): Unit =
 		if (nonNull(user)) {
 			user.roles = factory.getRoleDao(conn)
-				.findRolesByUserName(user.userName).asScala.toSet
+				.findRolesByUserName(user.userName)
 		}
 
 	override def findOneCredentialByUserName(userName: String): Credential =
@@ -49,21 +46,21 @@ object UserServiceImpl extends UserService {
 			user
 		}
 
-	override def findAll: util.List[User] =
+	override def findAll: List[User] =
 		withConnection { conn =>
 			val allUser = factory.getUserDao(conn).findAll
 
-			allUser.forEach(user => {
+			allUser.foreach(user => {
 				user.roles = factory.getRoleDao(conn)
-					.findRolesByUserName(user.userName).asScala.toSet
+					.findRolesByUserName(user.userName)
 			})
 
 			allUser
 		}
 
 	override def createNewUser(user: User,
-							   credential: Credential,
-							   userRole: UserRole.Value): Boolean =
+														 credential: Credential,
+														 userRole: UserRole.Value): Boolean =
 		withConnection { conn =>
 			conn.beginTransaction()
 

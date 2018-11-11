@@ -21,8 +21,8 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/13/18.
-  */
+	* Created by Oleg Stoliarov on 10/13/18.
+	*/
 object HttpUtils extends HttpUtilsTrait {
 	private val LOGGER = LoggerFactory.getLogger(getClass)
 	private val ALGORITHM_NAME = "MD5"
@@ -33,10 +33,10 @@ object HttpUtils extends HttpUtilsTrait {
 	private val userService = UserServiceImpl
 
 	/**
-	  * Retrieves a current user's id from the session.
-	  *
-	  * @return id of the current signed in user or 0 if a user has not been authenticated yet
-	  */
+		* Retrieves a current user's id from the session.
+		*
+		* @return id of the current signed in user or 0 if a user has not been authenticated yet
+		*/
 	def getUserIdFromSession(request: HttpServletRequest): Long = {
 		val user: User = request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User]
 		if (nonNull(user)) user.id
@@ -44,14 +44,14 @@ object HttpUtils extends HttpUtilsTrait {
 	}
 
 	/**
-	  * Retrieves a user object from the db for the current user from the request.
-	  */
+		* Retrieves a user object from the db for the current user from the request.
+		*/
 	override def getCurrentUserFromFromDb(request: HttpServletRequest): User =
 		userService.findOneById(getUserIdFromSession(request))
 
 	/**
-	  * Creates a new periodical using the data from the request.
-	  */
+		* Creates a new periodical using the data from the request.
+		*/
 	def getPeriodicalFromRequest(request: HttpServletRequest): Periodical =
 		Periodical(
 			id = java.lang.Long.parseLong(request.getParameter(ENTITY_ID_PARAM_NAME)),
@@ -64,8 +64,8 @@ object HttpUtils extends HttpUtilsTrait {
 		)
 
 	/**
-	  * Tries to find the first number in the uri.
-	  */
+		* Tries to find the first number in the uri.
+		*/
 	override def getFirstIdFromUri(uri: String): Int = {
 		val numberInUriMatcher: Matcher = Pattern.compile(NUMBER_REGEX).matcher(uri)
 		if (!numberInUriMatcher.find)
@@ -75,25 +75,25 @@ object HttpUtils extends HttpUtilsTrait {
 	}
 
 	/**
-	  * Sets a session scoped attribute 'messages'.
-	  */
+		* Sets a session scoped attribute 'messages'.
+		*/
 	def addMessagesToSession(request: HttpServletRequest,
-							 frontMessageMap: Map[String, util.List[FrontendMessage]]): Unit =
+													 frontMessageMap: Map[String, util.List[FrontendMessage]]): Unit =
 		request.getSession.setAttribute(MESSAGES_ATTR_NAME, frontMessageMap.asJava)
 
 	/**
-	  * Adds general messages to the session.
-	  */
+		* Adds general messages to the session.
+		*/
 	def addGeneralMessagesToSession(request: HttpServletRequest,
-									generalMessages: mutable.ListBuffer[FrontendMessage]): Unit =
+																	generalMessages: mutable.ListBuffer[FrontendMessage]): Unit =
 		addMessagesToSession(
 			request,
 			Map(GENERAL_MESSAGES_FRONT_BLOCK_NAME -> generalMessages.toList.asJava)
 		)
 
 	def sendRedirect(request: HttpServletRequest,
-					 response: HttpServletResponse,
-					 redirectUri: String): Unit =
+									 response: HttpServletResponse,
+									 redirectUri: String): Unit =
 		try
 			response.sendRedirect(redirectUri)
 		catch {
@@ -103,8 +103,8 @@ object HttpUtils extends HttpUtilsTrait {
 		}
 
 	/**
-	  * Returns an appropriate view name for this exception.
-	  */
+		* Returns an appropriate view name for this exception.
+		*/
 	def getErrorViewName(exception: Throwable): String = {
 		exception match {
 			case _: DaoException => STORAGE_EXCEPTION_PAGE_VIEW_NAME
@@ -115,8 +115,8 @@ object HttpUtils extends HttpUtilsTrait {
 	}
 
 	/**
-	  * Returns a hash for this password.
-	  */
+		* Returns a hash for this password.
+		*/
 	def getPasswordHash(password: String): String = {
 		val md: MessageDigest = MessageDigest.getInstance(ALGORITHM_NAME)
 		md.update(password.getBytes)

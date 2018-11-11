@@ -1,7 +1,6 @@
 package com.stolser.javatraining.webproject.service.impl
 
 import java.time.{Instant, LocalDateTime, ZoneId, ZoneOffset}
-import java.util
 import java.util.Objects.isNull
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
@@ -26,12 +25,12 @@ object InvoiceServiceImpl extends InvoiceService {
 			factory.getInvoiceDao(conn).findOneById(invoiceId)
 		}
 
-	override def findAllByUserId(userId: Long): util.List[Invoice] =
+	override def findAllByUserId(userId: Long): List[Invoice] =
 		withConnection { conn =>
 			factory.getInvoiceDao(conn).findAllByUserId(userId)
 		}
 
-	override def findAllByPeriodicalId(periodicalId: Long): util.List[Invoice] =
+	override def findAllByPeriodicalId(periodicalId: Long): List[Invoice] =
 		withConnection { conn =>
 			factory.getInvoiceDao(conn).findAllByPeriodicalId(periodicalId)
 		}

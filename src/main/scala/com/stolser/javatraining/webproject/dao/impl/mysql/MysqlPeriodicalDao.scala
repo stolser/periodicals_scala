@@ -1,14 +1,15 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet, SQLException}
-import java.util
 
 import com.stolser.javatraining.webproject.controller.utils.{DaoUtils, DaoUtilsTrait}
 import com.stolser.javatraining.webproject.dao.PeriodicalDao
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlPeriodicalDao._
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
-import MysqlPeriodicalDao._
+
+import scala.collection.mutable
 
 /**
 	* Created by Oleg Stoliarov on 10/14/18.
@@ -83,26 +84,26 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 			throw new IllegalArgumentException(INCORRECT_FIELD_NAME)
 	}
 
-	override def findAll: util.List[Periodical] =
+	override def findAll: List[Periodical] =
 		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_RETRIEVING_ALL_PERIODICALS) { () =>
 			withResources(conn.prepareStatement(SELECT_ALL_PERIODICALS)) {
 				st: PreparedStatement => {
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet => {
-							val periodicals = new util.ArrayList[Periodical]()
+							val periodicals = mutable.Buffer[Periodical]()
 
 							while (rs.next())
-								periodicals.add(daoUtils.getPeriodicalFromResultSet(rs))
+								periodicals += daoUtils.getPeriodicalFromResultSet(rs)
 
-							periodicals
+							periodicals.toList
 						}
 					}
 				}
 			}
 		}
 
-	override def findAllByStatus(status: PeriodicalStatus.Value): util.List[Periodical] =
+	override def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical] =
 		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ALL_BY_STATUS.format(status)) { () =>
 			withResources(conn.prepareStatement(SELECT_ALL_BY_STATUS)) {
 				st: PreparedStatement => {
@@ -110,12 +111,12 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 
 					withResources(st.executeQuery()) {
 						rs: ResultSet => {
-							val periodicals = new util.ArrayList[Periodical]()
+							val periodicals = mutable.Buffer[Periodical]()
 
 							while (rs.next())
-								periodicals.add(daoUtils.getPeriodicalFromResultSet(rs))
+								periodicals += daoUtils.getPeriodicalFromResultSet(rs)
 
-							periodicals
+							periodicals.toList
 						}
 					}
 				}

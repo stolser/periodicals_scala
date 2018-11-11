@@ -2,7 +2,6 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql._
 import java.time.Instant
-import java.util
 
 import com.stolser.javatraining.webproject.dao.InvoiceDao
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
@@ -10,9 +9,11 @@ import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
+import scala.collection.mutable
+
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object MysqlInvoiceDao {
 	private val DB_INVOICES_ID = "invoices.id"
@@ -57,7 +58,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 		}
 	}
 
-	override def findAllByUserId(userId: Long): util.List[Invoice] = {
+	override def findAllByUserId(userId: Long): List[Invoice] = {
 		val sqlStatement: String = "SELECT * FROM invoices " +
 			"JOIN users ON (invoices.user_id = users.id) " +
 			"WHERE users.id = ?"
@@ -68,7 +69,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 		}
 	}
 
-	override def findAllByPeriodicalId(periodicalId: Long): util.List[Invoice] = {
+	override def findAllByPeriodicalId(periodicalId: Long): List[Invoice] = {
 		val sqlStatement: String = "SELECT * FROM invoices " +
 			"JOIN periodicals ON (invoices.periodical_id = periodicals.id) " +
 			"WHERE periodicals.id = ?"
@@ -81,25 +82,25 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 
 	@throws[SQLException]
 	private def executeAndGetInvoicesFromRs(sqlStatement: String,
-											periodicalId: Long): util.List[Invoice] =
+																					periodicalId: Long): List[Invoice] =
 		withResources(conn.prepareStatement(sqlStatement)) {
 			st: PreparedStatement => {
 				st.setLong(1, periodicalId)
 
 				withResources(st.executeQuery()) {
 					rs: ResultSet => {
-						val invoices = new util.ArrayList[Invoice]
+						val invoices = mutable.Buffer[Invoice]()
 						while (rs.next)
-							invoices.add(getInvoiceFromRs(rs))
+							invoices += getInvoiceFromRs(rs)
 
-						invoices
+						invoices.toList
 					}
 				}
 			}
 		}
 
 	override def getCreatedInvoiceSumByCreationDate(since: Instant,
-													until: Instant): Long = {
+																									until: Instant): Long = {
 		val sqlStatement = "SELECT SUM(total_sum) FROM invoices " +
 			"WHERE creation_date >= ? AND creation_date <= ?"
 		val exceptionMessage = EXCEPTION_DURING_GETTING_INVOICE_SUM.format(sqlStatement, since, until)
@@ -213,7 +214,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 
 	@throws[SQLException]
 	private def setCreateUpdateStatementFromInvoice(st: PreparedStatement,
-													invoice: Invoice): Unit = {
+																									invoice: Invoice): Unit = {
 		st.setLong(1, invoice.user.id)
 		st.setLong(2, invoice.periodical.id)
 		st.setInt(3, invoice.subscriptionPeriod)
@@ -235,6 +236,6 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 			case None => null
 		}
 
-	override def findAll: util.List[Invoice] =
+	override def findAll: List[Invoice] =
 		throw new UnsupportedOperationException
 }

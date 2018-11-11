@@ -1,18 +1,20 @@
 package com.stolser.javatraining.webproject.dao.impl.mysql
 
+import java.sql
 import java.sql._
 import java.util.Date
 import java.util.Objects.nonNull
-import java.{sql, util}
 
 import com.stolser.javatraining.webproject.dao.UserDao
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
+import scala.collection.mutable
+
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object MysqlUserDao {
 	private val DB_USERS_ID = "users.id"
@@ -95,7 +97,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		}
 	}
 
-	override def findAll: util.List[User] = {
+	override def findAll: List[User] = {
 		val sqlStatement = "SELECT * FROM credentials " +
 			"RIGHT OUTER JOIN users ON (credentials.user_id = users.id)"
 
@@ -104,12 +106,12 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 				st: PreparedStatement => {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
-							val users = new util.ArrayList[User]
+							val users = mutable.Buffer[User]()
 
 							while (rs.next)
-								users.add(getUserFromResults(rs))
+								users += getUserFromResults(rs)
 
-							users
+							users.toList
 					}
 				}
 			}
@@ -166,7 +168,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 
 	@throws[SQLException]
 	private def tryExecuteUpdate(st: PreparedStatement,
-								 exceptionMessage: String): Unit = {
+															 exceptionMessage: String): Unit = {
 		val affectedRows = st.executeUpdate
 		if (affectedRows == 0)
 			throw new DaoException(exceptionMessage)
@@ -174,7 +176,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 
 	@throws[SQLException]
 	private def tryRetrieveId(st: PreparedStatement,
-							  exceptionMessageNoRows: String) =
+														exceptionMessageNoRows: String) =
 		withResources(st.getGeneratedKeys) {
 			generatedKeys: ResultSet => {
 				if (generatedKeys.next)
