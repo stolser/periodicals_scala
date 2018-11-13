@@ -37,7 +37,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteBase {
 		when(resultSet.next()) thenReturn true
 		when(daoUtilsMock.periodicalFromResultSet(resultSet)) thenReturn expectedPeriodical
 
-		val actualPeriodical = periodicalDao.findOneById(periodicalId)
+		val actualPeriodical = periodicalDao.findOneById(periodicalId).get
 
 		verify(statement).setLong(1, periodicalId)
 		verify(statement).executeQuery

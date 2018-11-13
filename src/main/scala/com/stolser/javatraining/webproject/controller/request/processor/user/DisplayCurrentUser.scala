@@ -27,9 +27,13 @@ object DisplayCurrentUser extends RequestProcessor {
 		val invoices: mutable.Buffer[Invoice] = mutable.Buffer(invoiceService.findAllByUserId(currentUserId): _*)
 		val subscriptions: mutable.Buffer[Subscription] = mutable.Buffer(subscriptionService.findAllByUserId(currentUserId): _*)
 
-		if (invoices nonEmpty) {
+		if (invoices.nonEmpty) {
 			invoices.foreach(invoice =>
-				invoice.periodical = periodicalService.findOneById(id = invoice.periodical.id)
+				periodicalService.findOneById(invoice.periodical.id) match {
+					case Some(periodical) => invoice.periodical = periodical
+					case None => throw new NoSuchElementException(s"A periodical with id = ${invoice.periodical.id} " +
+						s"is missing for an existing invoice = $invoice")
+				}
 			)
 
 			request.setAttribute(
@@ -38,12 +42,11 @@ object DisplayCurrentUser extends RequestProcessor {
 			)
 		}
 
-		if (subscriptions nonEmpty)
+		if (subscriptions.nonEmpty)
 			request.setAttribute(
 				USER_SUBSCRIPTIONS_PARAM_NAME,
 				sortSubscriptions(subscriptions).asJava
 			)
-
 
 		FORWARD + ONE_USER_INFO_VIEW_NAME
 	}

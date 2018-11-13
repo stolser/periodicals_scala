@@ -14,10 +14,10 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/11/18.
-  * Performs validation of the username, checks the password for correctness, checks that
-  * this user is active (not blocked) and if everything is OK, adds this user into the session.
-  */
+	* Created by Oleg Stoliarov on 10/11/18.
+	* Performs validation of the username, checks the password for correctness, checks that
+	* this user is active (not blocked) and if everything is OK, adds this user into the session.
+	*/
 object SignIn extends RequestProcessor {
 	private val userService = UserServiceImpl
 	private val messageFactory = FrontMessageFactory
@@ -40,29 +40,34 @@ object SignIn extends RequestProcessor {
 	private def isCredentialCorrect(request: HttpServletRequest) =
 		isPasswordCorrect(
 			password = request.getParameter(USER_PASSWORD_PARAM_NAME),
-			credential = getCredentialFromDb(request)
+			credentialOpt = getCredentialFromDb(request)
 		)
 
 	private def getCredentialFromDb(request: HttpServletRequest) =
-		userService.findOneCredentialByUserName(
-			userName = request.getParameter(SIGN_IN_USERNAME_PARAM_NAME)
-		)
+		userService.findOneCredentialByUserName(userName = request.getParameter(SIGN_IN_USERNAME_PARAM_NAME))
 
-	private def isPasswordCorrect(password: String, credential: Credential) =
-		nonNull(credential) &&
-			(HttpUtils.passwordHash(password) == credential.passwordHash)
+	private def isPasswordCorrect(password: String,
+																credentialOpt: Option[Credential]) =
+		credentialOpt match {
+			case Some(credential) => HttpUtils.passwordHash(password) == credential.passwordHash
+			case None => false
+		}
 
 	private def signInIfUserIsActive(request: HttpServletRequest,
-									 messages: mutable.Map[String, FrontendMessage]) = {
-		val currentUser = userService.findOneUserByUserName(
+																	 messages: mutable.Map[String, FrontendMessage]) = {
+		val currentUser = userService.findOneByName(
 			userName = request.getParameter(SIGN_IN_USERNAME_PARAM_NAME)
 		)
 
-		if (isUserActive(currentUser))
-			signInUserAndGetRedirectUri(request, currentUser)
-		else {
-			messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.error(MSG_ERROR_USER_IS_BLOCKED))
-			LOGIN_PAGE
+		currentUser match {
+			case None => LOGIN_PAGE
+			case Some(user) =>
+				if (isUserActive(user))
+					signInUserAndGetRedirectUri(request, user)
+				else {
+					messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.error(MSG_ERROR_USER_IS_BLOCKED))
+					LOGIN_PAGE
+				}
 		}
 	}
 
@@ -71,11 +76,10 @@ object SignIn extends RequestProcessor {
 
 	private def signInUserAndGetRedirectUri(request: HttpServletRequest, currentUser: User) = {
 		val session = request.getSession
-		val redirectUri = getRedirectUri(request, currentUser)
 		session.setAttribute(CURRENT_USER_ATTR_NAME, currentUser)
 		session.removeAttribute(ORIGINAL_URI_ATTR_NAME)
 
-		redirectUri
+		redirectUri(request, currentUser)
 	}
 
 	private def addSignInErrorMessages(messages: mutable.Map[String, FrontendMessage]): Unit = {
@@ -83,7 +87,8 @@ object SignIn extends RequestProcessor {
 		messages.put(USER_PASSWORD_PARAM_NAME, messageFactory.error(MSG_CREDENTIALS_ARE_NOT_CORRECT))
 	}
 
-	private def getRedirectUri(request: HttpServletRequest, currentUser: User) = {
+	private def redirectUri(request: HttpServletRequest,
+													currentUser: User) = {
 		val originalUri = request.getSession.getAttribute(ORIGINAL_URI_ATTR_NAME).asInstanceOf[String]
 		val defaultUri =
 			if (currentUser.hasRole(UserRole.ADMIN))
@@ -98,7 +103,7 @@ object SignIn extends RequestProcessor {
 	}
 
 	private def setSessionAttributes(request: HttpServletRequest,
-									 messages: mutable.Map[String, FrontendMessage]): Unit = {
+																	 messages: mutable.Map[String, FrontendMessage]): Unit = {
 		val session = request.getSession
 		val username = request.getParameter(SIGN_IN_USERNAME_PARAM_NAME)
 		session.setAttribute(USERNAME_ATTR_NAME, username)

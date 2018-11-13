@@ -8,7 +8,7 @@ import com.stolser.javatraining.webproject.model.entity.user.User
 	*/
 trait SubscriptionDao extends GenericDao[Subscription] {
 	def findOneByUserIdAndPeriodicalId(userId: Long,
-																		 periodicalId: Long): Subscription
+																		 periodicalId: Long): Option[Subscription]
 
 	/**
 		* Retrieves all the subscriptions (active and expired) of the specified user.

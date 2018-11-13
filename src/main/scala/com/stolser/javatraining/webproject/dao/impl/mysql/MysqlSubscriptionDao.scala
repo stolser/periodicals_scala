@@ -33,7 +33,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 
 	import MysqlSubscriptionDao._
 
-	override def findOneByUserIdAndPeriodicalId(userId: Long, periodicalId: Long): Subscription = {
+	override def findOneByUserIdAndPeriodicalId(userId: Long, periodicalId: Long): Option[Subscription] = {
 		val sqlStatement = "SELECT * FROM subscriptions " +
 			"WHERE user_id = ? AND periodical_id = ?"
 		val exceptionMessage = EXCEPTION_MSG_FINDING_ALL_PERIODICALS_BY_USER_ID.format(userId, periodicalId)
@@ -47,9 +47,8 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next)
-								newSubscriptionFromRs(rs)
-							else
-								null
+								Some(newSubscriptionFromRs(rs))
+							else None
 					}
 				}
 			}
@@ -182,7 +181,7 @@ class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
 		}
 	}
 
-	override def findOneById(id: Long) = throw new UnsupportedOperationException
+	override def findOneById(id: Long): Option[Subscription] = throw new UnsupportedOperationException
 
 	override def findAll: List[Subscription] = throw new UnsupportedOperationException
 }

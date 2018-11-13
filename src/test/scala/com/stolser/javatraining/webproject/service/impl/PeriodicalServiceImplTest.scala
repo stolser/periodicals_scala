@@ -29,7 +29,7 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 
 	test("findOneByName() Should return the correct periodical") {
 		val periodicalName = "Test Periodical"
-		val expectedPeriodical = Periodical(id = 7, name = "Test Periodical", publisher = "Test Publisher")
+		val expectedPeriodical = Some(Periodical(id = 7, name = "Test Periodical", publisher = "Test Publisher"))
 		val periodicalServiceImpl = PeriodicalServiceImpl
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
@@ -49,7 +49,7 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		val periodicalName = "Periodical A"
 		val newPeriodicalIdInDb = 7
 		val periodicalToSave = Periodical(id = 0, name = periodicalName)
-		val savedPeriodical = Periodical(id = newPeriodicalIdInDb, name = periodicalName)
+		val savedPeriodical = Some(Periodical(id = newPeriodicalIdInDb, name = periodicalName))
 		val periodicalServiceImpl = PeriodicalServiceImpl
 		periodicalServiceImpl.daoFactory_=(daoFactory)
 		periodicalServiceImpl.connectionPool_=(connectionPool)
@@ -60,7 +60,7 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 
 		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)
 
-		assert(actualPeriodical === savedPeriodical)
+		assert(actualPeriodical === savedPeriodical.get)
 
 		verify(periodicalDao).createNew(periodicalToSave)
 		verify(periodicalDao).findOneByName(periodicalName)
@@ -68,7 +68,7 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 
 	test("save() Should update an existing periodical if id != 0") {
 		val periodicalName = "Test Periodical"
-		val periodicalToSave = Periodical(id = 5, name = periodicalName)
+		val periodicalToSave = Some(Periodical(id = 5, name = periodicalName))
 		val updatedRowsNumber = 1
 		val periodicalServiceImpl = PeriodicalServiceImpl
 		periodicalServiceImpl.daoFactory_=(daoFactory)
@@ -77,13 +77,13 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		when(connectionPool.connection) thenReturn conn
 		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn periodicalToSave
-		when(periodicalDao.update(periodicalToSave)) thenReturn updatedRowsNumber
+		when(periodicalDao.update(periodicalToSave.get)) thenReturn updatedRowsNumber
 
-		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)
+		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave.get)
 
-		assert(actualPeriodical === periodicalToSave)
+		assert(actualPeriodical === periodicalToSave.get)
 
-		verify(periodicalDao).update(periodicalToSave)
+		verify(periodicalDao).update(periodicalToSave.get)
 		verify(periodicalDao).findOneByName(periodicalName)
 	}
 

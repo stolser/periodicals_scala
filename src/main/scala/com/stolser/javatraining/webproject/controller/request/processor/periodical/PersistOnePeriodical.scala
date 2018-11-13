@@ -174,8 +174,8 @@ object PersistOnePeriodical extends RequestProcessor {
 		private[periodical] def instance(periodicalToSave: Periodical) = {
 			val periodicalInDb = PeriodicalServiceImpl.findOneById(periodicalToSave.id)
 			val oldStatus =
-				if (nonNull(periodicalInDb))
-					periodicalInDb.status
+				if (periodicalInDb.isDefined)
+					periodicalInDb.get.status
 				else null
 			val newStatus = periodicalToSave.status
 			val cacheKey = getCacheKey(oldStatus, newStatus)
@@ -197,5 +197,4 @@ object PersistOnePeriodical extends RequestProcessor {
 
 		private[periodical] def newStatus = _newStatus
 	}
-
 }

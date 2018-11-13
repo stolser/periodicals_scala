@@ -35,7 +35,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 
 	import MysqlUserDao._
 
-	override def findOneById(id: Long): User = {
+	override def findOneById(id: Long): Option[User] = {
 		val sqlStatement = "SELECT * FROM users " +
 			"JOIN credentials ON (users.id = credentials.user_id) " +
 			"WHERE users.id = ?"
@@ -48,16 +48,15 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next)
-								getUserFromResults(rs)
-							else
-								null
+								Some(getUserFromResults(rs))
+							else None
 					}
 				}
 			}
 		}
 	}
 
-	override def findOneByUserName(userName: String): User = {
+	override def findOneByUserName(userName: String): Option[User] = {
 		val sqlStatement = "SELECT * FROM credentials " +
 			"INNER JOIN users ON (credentials.user_id = users.id) " +
 			"WHERE credentials.user_name = ?"
@@ -70,9 +69,8 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next)
-								getUserFromResults(rs)
-							else
-								null
+								Some(getUserFromResults(rs))
+							else None
 					}
 				}
 			}
@@ -125,7 +123,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 			userName = rs.getString(MysqlCredentialDao.DB_CREDENTIALS_USER_NAME),
 			firstName = Option(rs.getString(DB_USERS_FIRST_NAME)),
 			lastName = Option(rs.getString(DB_USERS_LAST_NAME)),
-			birthday = Option(getBirthdayFromRs(rs)),
+			birthday = getBirthdayFromRs(rs),
 			email = rs.getString(DB_USERS_EMAIL),
 			address = Option(rs.getString(DB_USERS_ADDRESS)),
 			status = UserStatus.withName(rs.getString(DB_USERS_STATUS).toUpperCase)
@@ -136,9 +134,9 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		val birthday = rs.getDate(DB_USERS_BIRTHDAY)
 
 		if (nonNull(birthday))
-			new Date(birthday.getTime)
+			Some(new Date(birthday.getTime))
 		else
-			null
+			None
 	}
 
 	override def createNew(user: User): Long = {

@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.service.impl
 
-import java.util.Objects.nonNull
-
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
 import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory}
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole}
@@ -15,35 +13,43 @@ object UserServiceImpl extends UserService {
 	private lazy val factory = DaoFactory.mysqlDaoFactory
 	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 
-	override def findOneById(id: Long): User =
-		withConnection { conn =>
-			val user = factory.userDao(conn)
-				.findOneById(id)
-			setUserRoles(user, conn)
+	private object UserParameterName extends Enumeration {
+		val ID, NAME = Value
+	}
 
-			user
+	private def findOneUserBy(paramName: UserParameterName.Value,
+														paramValue: Any): Option[User] = {
+		withConnection { conn =>
+			val userInDb = paramName match {
+				case UserParameterName.ID => factory.userDao(conn)
+					.findOneById(paramValue.asInstanceOf[Long])
+				case UserParameterName.NAME => factory.userDao(conn)
+					.findOneByUserName(paramValue.asInstanceOf[String])
+			}
+
+			userInDb match {
+				case Some(user) =>
+					setUserRoles(user, conn)
+					Some(user)
+				case _ => None
+			}
 		}
+	}
+
+	override def findOneById(id: Long): Option[User] =
+		findOneUserBy(UserParameterName.ID, id)
+
+	override def findOneByName(userName: String): Option[User] =
+		findOneUserBy(UserParameterName.NAME, userName)
 
 	private def setUserRoles(user: User,
 													 conn: AbstractConnection): Unit =
-		if (nonNull(user)) {
-			user.roles = factory.roleDao(conn)
-				.findRolesByUserName(user.userName)
-		}
+		user.roles = factory.roleDao(conn).findRolesByUserName(user.userName)
 
-	override def findOneCredentialByUserName(userName: String): Credential =
+	override def findOneCredentialByUserName(userName: String): Option[Credential] =
 		withConnection { conn =>
 			factory.credentialDao(conn)
 				.findCredentialByUserName(userName)
-		}
-
-	override def findOneUserByUserName(userName: String): User =
-		withConnection { conn =>
-			val user = factory.userDao(conn)
-				.findOneByUserName(userName)
-			setUserRoles(user, conn)
-
-			user
 		}
 
 	override def findAll: List[User] =
@@ -60,7 +66,11 @@ object UserServiceImpl extends UserService {
 
 	override def createNewUser(user: User,
 														 credential: Credential,
-														 userRole: UserRole.Value): Boolean =
+														 userRole: UserRole.Value): Boolean = {
+		require(user != null)
+		require(credential != null)
+		require(userRole != null)
+
 		withConnection { conn =>
 			conn.beginTransaction()
 
@@ -79,6 +89,7 @@ object UserServiceImpl extends UserService {
 
 			return true
 		}
+	}
 
 	override def emailExistsInDb(email: String): Boolean =
 		withConnection { conn =>

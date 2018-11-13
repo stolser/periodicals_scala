@@ -46,8 +46,7 @@ object AjaxFormValidation extends RequestProcessor {
 	}
 
 	private def removeMessagesForCurrentParam(session: HttpSession, paramName: String): Unit = {
-		var frontEndMessages: Map[String, _] = session.getAttribute(MESSAGES_ATTR_NAME)
-			.asInstanceOf[Map[String, _]]
+		var frontEndMessages: Map[String, _] = session.getAttribute(MESSAGES_ATTR_NAME).asInstanceOf[Map[String, _]]
 		if (nonNull(frontEndMessages)) frontEndMessages -= paramName
 	}
 

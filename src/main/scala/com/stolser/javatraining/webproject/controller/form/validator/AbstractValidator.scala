@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.controller.form.validator
 
-import java.util.Optional
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{MSG_SUCCESS, STATUS_CODE_SUCCESS}
 import javax.servlet.http.HttpServletRequest
 
@@ -13,10 +11,10 @@ abstract class AbstractValidator extends Validator {
 
 	override final def validate(paramValue: String, request: HttpServletRequest): ValidationResult =
 		checkParameter(paramValue, request)
-			.orElse(successResult)
+			.getOrElse(successResult)
 
 	/**
 	  * Returns an empty object if the parameter value is valid and an object describing the failure otherwise.
 	  */
-	protected def checkParameter(paramValue: String, request: HttpServletRequest): Optional[ValidationResult]
+	protected def checkParameter(paramValue: String, request: HttpServletRequest): Option[ValidationResult]
 }

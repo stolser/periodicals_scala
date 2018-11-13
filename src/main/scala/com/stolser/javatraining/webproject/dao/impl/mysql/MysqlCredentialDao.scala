@@ -7,8 +7,8 @@ import com.stolser.javatraining.webproject.model.entity.user.Credential
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object MysqlCredentialDao {
 	private val DB_CREDENTIALS_ID = "credentials.id"
@@ -21,7 +21,7 @@ class MysqlCredentialDao(conn: Connection) extends CredentialDao {
 
 	import MysqlCredentialDao._
 
-	override def findCredentialByUserName(userName: String): Credential = {
+	override def findCredentialByUserName(userName: String): Option[Credential] = {
 		val sqlStatement = "SELECT * FROM credentials WHERE user_name = ?"
 		val exceptionMessage = s"Exception during execution statement '$sqlStatement' for userName = $userName."
 
@@ -31,12 +31,10 @@ class MysqlCredentialDao(conn: Connection) extends CredentialDao {
 					st.setString(1, userName)
 
 					withResources(st.executeQuery()) {
-						rs: ResultSet => {
+						rs: ResultSet =>
 							if (rs.next())
-								getCredentialFromResultSet(rs)
-							else
-								null
-						}
+								Some(getCredentialFromResultSet(rs))
+							else None
 					}
 				}
 			}

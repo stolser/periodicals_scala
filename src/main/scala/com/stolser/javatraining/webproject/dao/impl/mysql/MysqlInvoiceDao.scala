@@ -35,7 +35,7 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 
 	import MysqlInvoiceDao._
 
-	override def findOneById(invoiceId: Long): Invoice = {
+	override def findOneById(invoiceId: Long): Option[Invoice] = {
 		val sqlStatement: String = "SELECT * FROM invoices WHERE id = ?"
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_STATEMENT_FOR_INVOICE_ID.format(sqlStatement, invoiceId)
 
@@ -47,9 +47,8 @@ class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet => {
 							if (rs.next())
-								getInvoiceFromRs(rs)
-							else
-								null
+								Some(getInvoiceFromRs(rs))
+							else None
 						}
 					}
 

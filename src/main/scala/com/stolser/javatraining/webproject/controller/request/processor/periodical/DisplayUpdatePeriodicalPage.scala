@@ -1,7 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.periodical
 
 import java.util.NoSuchElementException
-import java.util.Objects.isNull
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
@@ -12,25 +11,28 @@ import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
-  * Created by Oleg Stoliarov on 10/11/18.
-  * Processes a GET request to a page where admin can update information of one periodical.
-  */
+	* Created by Oleg Stoliarov on 10/11/18.
+	* Processes a GET request to a page where admin can update information of one periodical.
+	*/
 object DisplayUpdatePeriodicalPage extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
 		val periodicalId = HttpUtils.firstIdFromUri(request.getRequestURI)
-		val periodical = periodicalService.findOneById(periodicalId)
+		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
-		if (isNull(periodical))
-			throw new NoSuchElementException(s"There is no periodical with id $periodicalId in the db.")
+		periodicalInDb match {
+			case Some(periodical) =>
+				setRequestAttributes(request, periodical)
 
-		setRequestAttributes(request, periodical)
-
-		FORWARD + CREATE_EDIT_PERIODICAL_VIEW_NAME
+				FORWARD + CREATE_EDIT_PERIODICAL_VIEW_NAME
+			case None =>
+				throw new NoSuchElementException(s"There is no periodical with id $periodicalId in the db.")
+		}
 	}
 
-	private def setRequestAttributes(request: HttpServletRequest, periodical: Periodical): Unit = {
+	private def setRequestAttributes(request: HttpServletRequest,
+																	 periodical: Periodical): Unit = {
 		import scala.collection.JavaConverters.asJavaIterableConverter
 
 		request.setAttribute(PERIODICAL_ATTR_NAME, periodical)

@@ -32,7 +32,7 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 	test("process() Should throw NoSuchElementException if a periodical does not exist") {
 		val periodicalId = 1
 		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
-		when(periodicalService.findOneById(periodicalId)) thenReturn null
+		when(periodicalService.findOneById(periodicalId)) thenReturn None
 
 		assertThrows[NoSuchElementException] {
 			DisplayOnePeriodical.process(request, response)
@@ -40,39 +40,39 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 	}
 
 	test("process() Should allow 'SUBSCRIBER' to see an 'ACTIVE' periodical") {
-		val subscriber = User(roles = Set(UserRole.SUBSCRIBER))
+		val subscriber = Some(User(roles = Set(UserRole.SUBSCRIBER)))
 		val periodicalId = 1
-		val activePeriodical = Periodical(status = PeriodicalStatus.ACTIVE)
+		val activePeriodical = Some(Periodical(status = PeriodicalStatus.ACTIVE))
 		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
 		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn activePeriodical
 
 		val actualUri = DisplayOnePeriodical.process(request, response)
 
-		verify(request) setAttribute(PERIODICAL_ATTR_NAME, activePeriodical)
+		verify(request) setAttribute(PERIODICAL_ATTR_NAME, activePeriodical.get)
 
 		assert((FORWARD + ONE_PERIODICAL_VIEW_NAME) === actualUri)
 	}
 
 	test("process() Should allow 'ADMIN' to see a 'DISCARDED' periodical") {
-		val admin = User(roles = Set(UserRole.ADMIN))
+		val admin = Some(User(roles = Set(UserRole.ADMIN)))
 		val periodicalId = 1
-		val discardedPeriodical = Periodical(status = PeriodicalStatus.DISCARDED)
+		val discardedPeriodical = Some(Periodical(status = PeriodicalStatus.DISCARDED))
 		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn admin
 		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn discardedPeriodical
 
 		val actualUri = DisplayOnePeriodical.process(request, response)
 
-		verify(request) setAttribute(PERIODICAL_ATTR_NAME, discardedPeriodical)
+		verify(request) setAttribute(PERIODICAL_ATTR_NAME, discardedPeriodical.get)
 
 		assert((FORWARD + ONE_PERIODICAL_VIEW_NAME) === actualUri)
 	}
 
 	test("process() Should throw 'AccessDeniedException' if periodical is 'INACTIVE' and user is 'SUBSCRIBER'") {
-		val subscriber = User(roles = Set(UserRole.SUBSCRIBER))
+		val subscriber = Some(User(roles = Set(UserRole.SUBSCRIBER)))
 		val periodicalId = 1
-		val inactivePeriodical = Periodical(status = PeriodicalStatus.INACTIVE)
+		val inactivePeriodical = Some(Periodical(status = PeriodicalStatus.INACTIVE))
 		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
 		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn inactivePeriodical
@@ -83,9 +83,9 @@ class DisplayOnePeriodicalTest extends FunSuiteBase {
 	}
 
 	test("process() Should throw 'AccessDeniedException' if periodical is 'DISCARDED' and user is 'SUBSCRIBER'") {
-		val subscriber = User(roles = Set(UserRole.SUBSCRIBER))
+		val subscriber = Some(User(roles = Set(UserRole.SUBSCRIBER)))
 		val periodicalId = 1
-		val discardedPeriodical = Periodical(status = PeriodicalStatus.DISCARDED)
+		val discardedPeriodical = Some(Periodical(status = PeriodicalStatus.DISCARDED))
 		when(httpUtils.currentUserFromFromDb(any[HttpServletRequest])) thenReturn subscriber
 		when(httpUtils.firstIdFromUri(anyString())) thenReturn periodicalId
 		when(periodicalService.findOneById(periodicalId)) thenReturn discardedPeriodical

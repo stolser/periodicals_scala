@@ -9,7 +9,9 @@ import javax.servlet._
 class CharsetEncoder extends Filter {
 	override def init(filterConfig: FilterConfig): Unit = println("CharsetEncoder#init()")
 
-	override def doFilter(request: ServletRequest, response: ServletResponse, filterChain: FilterChain): Unit = {
+	override def doFilter(request: ServletRequest,
+												response: ServletResponse,
+												filterChain: FilterChain): Unit = {
 		request.setCharacterEncoding(ApplicationResources.CHARACTER_ENCODING)
 		filterChain.doFilter(request, response)
 	}

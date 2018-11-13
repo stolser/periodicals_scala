@@ -37,7 +37,7 @@ object HttpUtils extends HttpUtilsTrait {
 		*
 		* @return id of the current signed in user or 0 if a user has not been authenticated yet
 		*/
-	def userIdFromSession(request: HttpServletRequest): Long = {
+	override def userIdFromSession(request: HttpServletRequest): Long = {
 		val user: User = request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User]
 		if (nonNull(user)) user.id
 		else 0
@@ -46,7 +46,7 @@ object HttpUtils extends HttpUtilsTrait {
 	/**
 		* Retrieves a user object from the db for the current user from the request.
 		*/
-	override def currentUserFromFromDb(request: HttpServletRequest): User =
+	override def currentUserFromFromDb(request: HttpServletRequest): Option[User] =
 		userService.findOneById(userIdFromSession(request))
 
 	/**

@@ -7,9 +7,9 @@ import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNum
 	* Created by Oleg Stoliarov on 10/15/18.
 	*/
 trait PeriodicalService {
-	def findOneById(id: Long): Periodical
+	def findOneById(id: Long): Option[Periodical]
 
-	def findOneByName(name: String): Periodical
+	def findOneByName(name: String): Option[Periodical]
 
 	def findAll: List[Periodical]
 
@@ -21,18 +21,23 @@ trait PeriodicalService {
 		* Use the returned instance for further operations as the save operation
 		* might have changed the entity instance completely.
 		*
-		* @param periodical the persisted periodical
-		* @return a periodical from the db
+		* @param periodical a periodical to be persisted. Must not be null
+		* @return the saved periodical will never be null
+		* @throws IllegalArgumentException - in case the given periodical is null
 		*/
+	@throws[IllegalArgumentException]
 	def save(periodical: Periodical): Periodical
 
 	/**
 		* Updates a periodical and sets a new status 'discarded' only if there is no active subscriptions
 		* of this periodical.
 		*
-		* @return the number of affected rows: 0 - if the condition was not satisfied and updated
+		* @param periodical a periodical to be discarded. Must not be null
+		* @return the number of affected rows: 0 - if the condition was not satisfied and updating
 		*         has not happened; 1 - if the status of this periodical has been changed to 'discarded'
+		* @throws IllegalArgumentException - in case the given periodical is null
 		*/
+	@throws[IllegalArgumentException]
 	def updateAndSetDiscarded(periodical: Periodical): Int
 
 	/**

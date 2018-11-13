@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.controller.security
 
-import java.util.Objects.isNull
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{LOGIN_PAGE, ORIGINAL_URI_ATTR_NAME, SIGN_OUT_URI}
 import com.stolser.javatraining.webproject.controller.utils.{HttpUtils, HttpUtilsTrait}
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
@@ -27,20 +25,18 @@ class AuthenticationFilter extends Filter {
 
 		if (requestNotRequiresAuthentication(request)) {
 			filterChain.doFilter(servletRequest, servletResponse)
-			return
+		} else {
+			httpUtils.currentUserFromFromDb(request) match {
+				case None =>
+					request.getSession.setAttribute(ORIGINAL_URI_ATTR_NAME, request.getRequestURI)
+					response.sendRedirect(LOGIN_PAGE)
+				case Some(user) =>
+					if (isUserNotActive(user))
+						response.sendRedirect(SIGN_OUT_URI)
+					else
+						filterChain.doFilter(servletRequest, servletResponse)
+			}
 		}
-
-		val requestUri = request.getRequestURI
-		val currentUser = httpUtils.currentUserFromFromDb(request)
-
-		if (isNull(currentUser)) {
-			request.getSession.setAttribute(ORIGINAL_URI_ATTR_NAME, requestUri)
-			response.sendRedirect(LOGIN_PAGE)
-		}
-		else if (isUserNotActive(currentUser))
-			response.sendRedirect(SIGN_OUT_URI)
-		else
-			filterChain.doFilter(servletRequest, servletResponse)
 	}
 
 	private def requestNotRequiresAuthentication(request: HttpServletRequest) =
@@ -48,7 +44,6 @@ class AuthenticationFilter extends Filter {
 
 	private def isUserNotActive(currentUser: User) =
 		UserStatus.ACTIVE != currentUser.status
-
 
 	override def destroy(): Unit = {}
 }

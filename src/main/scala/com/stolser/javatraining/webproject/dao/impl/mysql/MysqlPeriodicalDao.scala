@@ -45,17 +45,17 @@ object MysqlPeriodicalDao {
 class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 	private[mysql] val daoUtils: DaoUtilsTrait = DaoUtils
 
-	override def findOneById(id: Long): Periodical = {
+	override def findOneById(id: Long): Option[Periodical] = {
 		getPeriodicalFromDb(SELECT_ALL_BY_ID, id, DB_PERIODICALS_ID)
 	}
 
-	override def findOneByName(name: String): Periodical = {
+	override def findOneByName(name: String): Option[Periodical] = {
 		getPeriodicalFromDb(SELECT_ALL_BY_NAME, name, DB_PERIODICALS_NAME)
 	}
 
 	private def getPeriodicalFromDb(sqlStatement: String,
 																	fieldValue: Any,
-																	fieldName: String): Periodical =
+																	fieldName: String): Option[Periodical] =
 		tryAndCatchSqlException(EXCEPTION_DURING_RETRIEVING_PERIODICAL.format(fieldName, fieldValue)) { () =>
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
@@ -64,9 +64,9 @@ class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next())
-								daoUtils.periodicalFromResultSet(rs)
+								Some(daoUtils.periodicalFromResultSet(rs))
 							else
-								null
+								None
 					}
 				}
 			}

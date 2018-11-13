@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.controller.request.processor.invoice
 
-import java.util.Objects.isNull
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message._
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
@@ -16,11 +14,11 @@ import org.slf4j.LoggerFactory
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/10/18.
-  * Processes a POST request to pay one invoice. In one transaction the status of the invoice is changed
-  * to { @code paid} and a subscription is updated (created a new one or the status
-  * and the end date are updated).
-  */
+	* Created by Oleg Stoliarov on 10/10/18.
+	* Processes a POST request to pay one invoice. In one transaction the status of the invoice is changed
+	* to { @code paid} and a subscription is updated (created a new one or the status
+	* and the end date are updated).
+	*/
 object PayOneInvoice extends RequestProcessor {
 	private val LOGGER = LoggerFactory.getLogger(PayOneInvoice.getClass)
 	private val invoiceService: InvoiceService = InvoiceServiceImpl
@@ -28,63 +26,52 @@ object PayOneInvoice extends RequestProcessor {
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
-						 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): String = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
-		val invoiceInDb: Invoice = invoiceService.findOneById(getInvoiceIdFromRequest(request).toLong)
+		val invoiceIdFromRequest = HttpUtils.firstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
+		val invoiceInDb = invoiceService.findOneById(invoiceIdFromRequest.toLong)
 
-		if (isInvoiceValid(invoiceInDb, generalMessages))
-			tryToPayInvoice(invoiceInDb, request, generalMessages)
+		invoiceInDb match {
+			case Some(invoice) if isInvoiceValid(invoice, generalMessages) =>
+				tryToPayInvoice(invoice, request, generalMessages)
+			case None =>
+				generalMessages += messageFactory.error(MSG_VALIDATION_NO_SUCH_INVOICE)
+		}
 
 		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
 
 		REDIRECT + CURRENT_USER_ACCOUNT_URI
 	}
 
-	private def getInvoiceIdFromRequest(request: HttpServletRequest) =
-		HttpUtils.firstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
-
 	private def isInvoiceValid(invoiceInDb: Invoice,
-							   generalMessages: mutable.ListBuffer[FrontendMessage]): Boolean = {
+														 generalMessages: mutable.ListBuffer[FrontendMessage]): Boolean = {
 
-		def invoiceExistsInDb(invoiceInDb: Invoice,
-							  generalMessages: mutable.ListBuffer[FrontendMessage]) =
-			if (isNull(invoiceInDb)) {
-				generalMessages += messageFactory.error(MSG_VALIDATION_NO_SUCH_INVOICE)
+		def isInvoiceNew() =
+			if (InvoiceStatus.NEW != invoiceInDb.status) {
+				generalMessages += messageFactory.error(MSG_VALIDATION_INVOICE_IS_NOT_NEW)
 				false
-			} else
-				true
+			} else true
 
-		def isInvoiceNew(invoiceInDb: Invoice,
-								 generalMessages: mutable.ListBuffer[FrontendMessage]) =
-		if (InvoiceStatus.NEW != invoiceInDb.status) {
-			generalMessages += messageFactory.error(MSG_VALIDATION_INVOICE_IS_NOT_NEW)
-			false
-		} else
-			true
+		val isPeriodicalActive =
+			periodicalService.findOneById(invoiceInDb.periodical.id) match {
+				case Some(periodicalInDb) =>
+					PeriodicalStatus.ACTIVE == periodicalInDb.status
+				case None =>
+					throw new RuntimeException(s"Periodical corresponding to invoice = $invoiceInDb does not exist, but must.")
+			}
 
-		def isPeriodicalVisible(invoiceInDb: Invoice,
-								generalMessages: mutable.ListBuffer[FrontendMessage]) =
-			if (!isPeriodicalActive(invoiceInDb)) {
+		def isPeriodicalVisible() =
+			if (!isPeriodicalActive) {
 				generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
 				false
-			} else
-				true
+			} else true
 
-		def isPeriodicalActive(invoiceInDb: Invoice) = {
-			val periodicalInDb = periodicalService.findOneById(getPeriodicalIdFromInvoice(invoiceInDb))
-			PeriodicalStatus.ACTIVE == periodicalInDb.status
-		}
-
-		def getPeriodicalIdFromInvoice(invoiceInDb: Invoice) =
-			invoiceInDb.periodical.id
-
-		invoiceExistsInDb(invoiceInDb, generalMessages) &&
-			isInvoiceNew(invoiceInDb, generalMessages) &&
-			isPeriodicalVisible(invoiceInDb, generalMessages)
+		isInvoiceNew() && isPeriodicalVisible()
 	}
 
-	private def tryToPayInvoice(invoiceInDb: Invoice, request: HttpServletRequest,
-								generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
+	private def tryToPayInvoice(invoiceInDb: Invoice,
+															request: HttpServletRequest,
+															generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
 		try {
 			generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 			val isInvoicePaid = invoiceService.payInvoice(invoiceInDb)

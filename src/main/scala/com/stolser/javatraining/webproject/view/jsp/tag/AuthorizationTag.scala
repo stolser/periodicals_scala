@@ -10,10 +10,10 @@ import javax.servlet.jsp.tagext.{Tag, TagSupport}
 import scala.beans.BeanProperty
 
 /**
-  * Created by Oleg Stoliarov on 10/15/18.
-  * Allows specifying two sets of roles that a user must have and must not have in order to
-  * see the content of this tag.
-  */
+	* Created by Oleg Stoliarov on 10/15/18.
+	* Allows specifying two sets of roles that a user must have and must not have in order to
+	* see the content of this tag.
+	*/
 class AuthorizationTag extends TagSupport {
 	@BeanProperty
 	var mustHaveRoles: String = _
@@ -25,9 +25,9 @@ class AuthorizationTag extends TagSupport {
 	@throws[JspException]
 	override def doStartTag(): Int = {
 		user = getUserFromSession
-		if (nonNull(user) &&
-			hasUserLegitRoles &&
-			hasUserNoProhibitedRoles)
+		if (nonNull(user)
+			&& hasUserLegitRoles
+			&& hasUserNoProhibitedRoles)
 			Tag.EVAL_BODY_INCLUDE
 		else
 			Tag.SKIP_BODY

@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.controller.request.processor.user
 
-import java.util.Objects.nonNull
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.form.validator.ValidatorFactory
 import com.stolser.javatraining.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
@@ -70,5 +68,5 @@ object CreateUser extends RequestProcessor {
 			(password == repeatPassword)
 	}
 
-	private def usernameExistsInDb(username: String) = nonNull(userService.findOneCredentialByUserName(username))
+	private def usernameExistsInDb(username: String) = userService.findOneCredentialByUserName(username).nonEmpty
 }

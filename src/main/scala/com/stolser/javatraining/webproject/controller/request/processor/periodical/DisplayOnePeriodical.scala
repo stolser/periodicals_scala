@@ -1,7 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.periodical
 
 import java.util.NoSuchElementException
-import java.util.Objects.isNull
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{ONE_PERIODICAL_VIEW_NAME, PERIODICAL_ATTR_NAME}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
@@ -23,23 +22,30 @@ object DisplayOnePeriodical extends RequestProcessor {
 	private val ACCESS_DENIED_TO = "Access denied to '%s'"
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
-		val currentUser = httpUtils.currentUserFromFromDb(request)
 		val periodicalId = httpUtils.firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
-		checkPeriodicalExists(periodicalId, periodicalInDb)
+		if (periodicalInDb.isEmpty)
+			throw new NoSuchElementException(s"There is no periodical with id $periodicalId in the db.")
 
-		if (!hasUserEnoughPermissions(currentUser, periodicalInDb))
-			throw new AccessDeniedException(String.format(ACCESS_DENIED_TO, request.getRequestURI))
+		val currentUser = httpUtils.currentUserFromFromDb(request)
 
-		request.setAttribute(PERIODICAL_ATTR_NAME, periodicalInDb)
-
-		FORWARD + ONE_PERIODICAL_VIEW_NAME
+		currentUser match {
+			case Some(user) => checkPermissionsAndGetUri(request, periodicalInDb.get, user)
+			case None =>
+				throw new NoSuchElementException(s"There is no user in the db with id = ${httpUtils.userIdFromSession(request)}.")
+		}
 	}
 
-	private def checkPeriodicalExists(periodicalId: Long, periodicalInDb: Periodical): Unit = {
-		if (isNull(periodicalInDb))
-			throw new NoSuchElementException(s"There is no periodical with id $periodicalId in the db.")
+	private def checkPermissionsAndGetUri(request: HttpServletRequest,
+																				periodicalInDb: Periodical,
+																				user: User): String = {
+		if (hasUserEnoughPermissions(user, periodicalInDb)) {
+			request.setAttribute(PERIODICAL_ATTR_NAME, periodicalInDb)
+
+			FORWARD + ONE_PERIODICAL_VIEW_NAME
+		} else
+			throw new AccessDeniedException(String.format(ACCESS_DENIED_TO, request.getRequestURI))
 	}
 
 	private def hasUserEnoughPermissions(currentUser: User, periodicalInDb: Periodical) =

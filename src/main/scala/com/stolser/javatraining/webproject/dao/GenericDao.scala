@@ -10,7 +10,7 @@ trait GenericDao[A] {
 	  * @param id must not be null
 	  * @return the entity with the given id or { @code null} if none found
 	  */
-	def findOneById(id: Long): A
+	def findOneById(id: Long): Option[A]
 
 	/**
 	  * Returns all entities from the db.

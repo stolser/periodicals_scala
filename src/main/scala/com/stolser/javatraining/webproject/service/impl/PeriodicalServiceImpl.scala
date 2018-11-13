@@ -30,12 +30,12 @@ object PeriodicalServiceImpl extends PeriodicalService {
 		implicitConnectionPool = connectionPool
 	}
 
-	override def findOneById(id: Long): Periodical =
+	override def findOneById(id: Long): Option[Periodical] =
 		withConnection { conn =>
 			factory.periodicalDao(conn).findOneById(id)
 		}
 
-	override def findOneByName(name: String): Periodical =
+	override def findOneByName(name: String): Option[Periodical] =
 		withConnection { conn =>
 			factory.periodicalDao(conn).findOneByName(name)
 		}
@@ -51,6 +51,8 @@ object PeriodicalServiceImpl extends PeriodicalService {
 		}
 
 	override def save(periodical: Periodical): Periodical = {
+		require(periodical != null)
+
 		if (periodical.id == 0)
 			createNewPeriodical(periodical)
 		else
@@ -66,7 +68,10 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	private def getPeriodicalFromDbByName(name: String): Periodical =
 		withConnection { conn =>
-			factory.periodicalDao(conn).findOneByName(name)
+			factory.periodicalDao(conn).findOneByName(name) match {
+				case Some(periodical) => periodical
+				case None => throw new RuntimeException(s"Periodical with name $name must exist in the db.")
+			}
 		}
 
 	private def updatePeriodical(periodical: Periodical): Unit =
@@ -77,10 +82,13 @@ object PeriodicalServiceImpl extends PeriodicalService {
 				throw new NoSuchElementException(NO_PERIODICAL_WITH_ID_MESSAGE.format(periodical.id))
 		}
 
-	override def updateAndSetDiscarded(periodical: Periodical): Int =
+	override def updateAndSetDiscarded(periodical: Periodical): Int = {
+		require(periodical != null)
+
 		withConnection { conn =>
 			factory.periodicalDao(conn).updateAndSetDiscarded(periodical)
 		}
+	}
 
 	override def deleteAllDiscarded(): Int =
 		withConnection { conn =>

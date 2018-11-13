@@ -6,7 +6,7 @@ import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, 
 	* Created by Oleg Stoliarov on 10/13/18.
 	*/
 trait PeriodicalDao extends GenericDao[Periodical] {
-	def findOneByName(name: String): Periodical
+	def findOneByName(name: String): Option[Periodical]
 
 	def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical]
 
