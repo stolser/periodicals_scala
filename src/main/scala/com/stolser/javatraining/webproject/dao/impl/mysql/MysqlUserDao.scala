@@ -29,6 +29,7 @@ object MysqlUserDao {
 	private val EXCEPTION_DURING_FINDING_USER_BY_ID = "Exception during finding a user with id = %d."
 	private val EXCEPTION_DURING_CREATING_NEW_USER = "Exception during creating a new user: %s"
 	private val CREATING_USER_FAILED_NO_ROWS_AFFECTED = "Creating user (%s) failed, no rows affected."
+	private val SELECT_COUNT_FROM_USERS_WHERE_EMAIL = "SELECT COUNT(id) FROM users WHERE users.email = ?"
 }
 
 class MysqlUserDao(conn: Connection) extends UserDao {
@@ -77,12 +78,9 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 		}
 	}
 
-	override def emailExistsInDb(email: String): Boolean = {
-		val sqlStatement = "SELECT COUNT(id) FROM users " +
-			"WHERE users.email = ?"
-
+	override def emailExistsInDb(email: String): Boolean =
 		tryAndCatchSqlException() { () =>
-			withResources(conn.prepareStatement(sqlStatement)) {
+			withResources(conn.prepareStatement(SELECT_COUNT_FROM_USERS_WHERE_EMAIL)) {
 				st: PreparedStatement => {
 					st.setString(1, email)
 
@@ -93,7 +91,6 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 				}
 			}
 		}
-	}
 
 	override def findAll: List[User] = {
 		val sqlStatement = "SELECT * FROM credentials " +

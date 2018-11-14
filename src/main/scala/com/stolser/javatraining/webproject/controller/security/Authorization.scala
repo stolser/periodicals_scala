@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.controller.security
 
-import java.util.regex.Pattern
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources.CURRENT_USER_ATTR_NAME
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProviderImpl._
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
@@ -47,9 +45,9 @@ object Authorization {
 
 	private def isUserIdInUriValid(request: HttpServletRequest) = {
 		val requestUri = request.getRequestURI
-		val matcher = Pattern.compile(USERS_URI_WITH_ID).matcher(requestUri)
-
-		if (matcher.find) {
+//		val matcher = Pattern.compile(USERS_URI_WITH_ID).matcher(requestUri)
+		val userIdPattern = USERS_URI_WITH_ID.r
+		if (userIdPattern.findFirstIn(requestUri).isDefined) {
 			val userIdFromUri = HttpUtils.firstIdFromUri(requestUri)
 			val userIdFromSession = HttpUtils.userIdFromSession(request)
 			userIdFromUri == userIdFromSession

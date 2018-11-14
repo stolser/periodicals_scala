@@ -31,8 +31,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		val periodicalName = "Test Periodical"
 		val expectedPeriodical = Some(Periodical(id = 7, name = "Test Periodical", publisher = "Test Publisher"))
 		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory_=(daoFactory)
-		periodicalServiceImpl.connectionPool_=(connectionPool)
+		periodicalServiceImpl.daoFactory = daoFactory
+		periodicalServiceImpl.connectionPool = connectionPool
 
 		when(connectionPool.connection) thenReturn conn
 		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
@@ -51,8 +51,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		val periodicalToSave = Periodical(id = 0, name = periodicalName)
 		val savedPeriodical = Some(Periodical(id = newPeriodicalIdInDb, name = periodicalName))
 		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory_=(daoFactory)
-		periodicalServiceImpl.connectionPool_=(connectionPool)
+		periodicalServiceImpl.daoFactory = daoFactory
+		periodicalServiceImpl.connectionPool =connectionPool
 
 		when(connectionPool.connection) thenReturn conn
 		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
@@ -71,8 +71,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 		val periodicalToSave = Some(Periodical(id = 5, name = periodicalName))
 		val updatedRowsNumber = 1
 		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory_=(daoFactory)
-		periodicalServiceImpl.connectionPool_=(connectionPool)
+		periodicalServiceImpl.daoFactory = daoFactory
+		periodicalServiceImpl.connectionPool = connectionPool
 
 		when(connectionPool.connection) thenReturn conn
 		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
@@ -89,8 +89,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 
 	test("save() Should throw NoSuchElementException if no rows were updated by the query") {
 		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory_=(daoFactory)
-		periodicalServiceImpl.connectionPool_=(connectionPool)
+		periodicalServiceImpl.daoFactory = daoFactory
+		periodicalServiceImpl.connectionPool = connectionPool
 
 		when(connectionPool.connection) thenReturn conn
 		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
@@ -104,8 +104,8 @@ class PeriodicalServiceImplTest extends FunSuiteBase {
 	test("hasActiveSubscriptions() Should return 'false' if there is no ACTIVE subscriptions on his periodical") {
 		val periodicalId = 10
 		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory_=(daoFactory)
-		periodicalServiceImpl.connectionPool_=(connectionPool)
+		periodicalServiceImpl.daoFactory = daoFactory
+		periodicalServiceImpl.connectionPool = connectionPool
 
 		when(connectionPool.connection) thenReturn conn
 		when(daoFactory.subscriptionDao(any[AbstractConnection])) thenReturn subscriptionDao

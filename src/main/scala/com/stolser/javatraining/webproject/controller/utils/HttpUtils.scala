@@ -117,7 +117,7 @@ object HttpUtils extends HttpUtilsTrait {
 		* Returns a hash for this password.
 		*/
 	def passwordHash(password: String): String = {
-		val md: MessageDigest = MessageDigest.getInstance(ALGORITHM_NAME)
+		val md = MessageDigest.getInstance(ALGORITHM_NAME)
 		md.update(password.getBytes)
 		val builder: StringBuilder = new StringBuilder
 		for (aByteData <- md.digest) {

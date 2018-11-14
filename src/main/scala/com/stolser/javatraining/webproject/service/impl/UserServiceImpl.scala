@@ -54,14 +54,13 @@ object UserServiceImpl extends UserService {
 
 	override def findAll: List[User] =
 		withConnection { conn =>
-			val allUser = factory.userDao(conn).findAll
+			val roleDao = factory.roleDao(conn)
 
-			allUser.foreach(user => {
-				user.roles = factory.roleDao(conn)
-					.findRolesByUserName(user.userName)
-			})
-
-			allUser
+			for (user <- factory.userDao(conn).findAll)
+				yield {
+					user.roles = roleDao.findRolesByUserName(user.userName)
+					user
+				}
 		}
 
 	override def createNewUser(user: User,

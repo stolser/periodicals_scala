@@ -33,7 +33,7 @@ class AuthenticationFilterTest extends FunSuiteBase {
 		httpUtilsMock = mock[HttpUtilsTrait]
 	}
 
-	private def getAuthenticationFilterWithMocks =
+	private def authenticationFilterWithMocks =
 		new AuthenticationFilter() {
 			override private[security] val httpUtils: HttpUtilsTrait = httpUtilsMock
 		}
@@ -69,7 +69,7 @@ class AuthenticationFilterTest extends FunSuiteBase {
 		when(request.getRequestURI) thenReturn requestURI
 		when(httpUtilsMock.currentUserFromFromDb(request)) thenReturn Some(User(id = 2, status = BLOCKED))
 
-		getAuthenticationFilterWithMocks.doFilter(request, response, chain)
+		authenticationFilterWithMocks.doFilter(request, response, chain)
 
 		verify(response).sendRedirect(SIGN_OUT_URI)
 		verify(chain, times(0)).doFilter(any[HttpServletRequest], any[HttpServletResponse])
@@ -83,7 +83,7 @@ class AuthenticationFilterTest extends FunSuiteBase {
 		when(httpUtilsMock.currentUserFromFromDb(ArgumentMatchers.any[HttpServletRequest]))
 			.thenReturn(Some(User(id = 2, status = ACTIVE)))
 
-		getAuthenticationFilterWithMocks.doFilter(request, response, chain)
+		authenticationFilterWithMocks.doFilter(request, response, chain)
 
 		verify(chain).doFilter(request, response)
 		verify(response, times(0)).sendRedirect(anyString())

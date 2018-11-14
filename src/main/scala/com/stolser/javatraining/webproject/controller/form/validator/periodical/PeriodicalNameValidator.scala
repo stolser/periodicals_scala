@@ -1,7 +1,5 @@
 package com.stolser.javatraining.webproject.controller.form.validator.periodical
 
-import java.util.regex.Pattern
-
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.form.validator.{AbstractValidator, ValidationProcessorException, ValidationResult}
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalOperationType
@@ -19,13 +17,13 @@ object PeriodicalNameValidator extends AbstractValidator {
 
 	override protected def checkParameter(periodicalName: String,
 																				request: HttpServletRequest): Option[ValidationResult] = {
-		if (nameDoesNotMatchRegex(periodicalName)) return Some(incorrectFailedResult)
+		if (isNameNotValid(periodicalName)) return Some(incorrectFailedResult)
 		if (isNameNotUnique(request, periodicalName)) return Some(duplicationFailedResult)
 
 		Option.empty[ValidationResult]
 	}
 
-	private def nameDoesNotMatchRegex(periodicalName: String) = !Pattern.matches(PERIODICAL_NAME_PATTERN_REGEX, periodicalName)
+	private def isNameNotValid(periodicalName: String) = !periodicalName.matches(PERIODICAL_NAME_PATTERN_REGEX)
 
 	private def isNameNotUnique(request: HttpServletRequest, periodicalName: String) = {
 		val periodicalId = java.lang.Long.parseLong(request.getParameter(ENTITY_ID_PARAM_NAME))

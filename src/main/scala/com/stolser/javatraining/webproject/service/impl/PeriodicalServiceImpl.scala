@@ -3,27 +3,29 @@ package com.stolser.javatraining.webproject.service.impl
 import java.util.NoSuchElementException
 
 import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
-import com.stolser.javatraining.webproject.dao.{DaoFactory, DaoFactoryTrait, PeriodicalDao}
+import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory, DaoFactoryTrait}
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
 import com.stolser.javatraining.webproject.service.PeriodicalService
 import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 
-import scala.collection.mutable
-
 /**
 	* Created by Oleg Stoliarov on 10/15/18.
 	*/
 object PeriodicalServiceImpl extends PeriodicalService {
+	private implicit var implicitConnectionPool: ConnectionPool = ConnectionPoolProvider.getPool
 	private val NO_PERIODICAL_WITH_ID_MESSAGE = "There is no periodical in the DB with id = %d"
 	private var factory = DaoFactory.mysqlDaoFactory
-	private implicit var implicitConnectionPool: ConnectionPool = ConnectionPoolProvider.getPool
+
+	private[impl] def daoFactory = factory
 
 	private[impl] def daoFactory_=(factory: DaoFactoryTrait): Unit = {
 		require(factory != null)
 		this.factory = factory
 	}
+
+	private[impl] def connectionPool = implicitConnectionPool
 
 	private[impl] def connectionPool_=(connectionPool: ConnectionPool): Unit = {
 		require(connectionPool != null)
@@ -104,18 +106,15 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	override def quantitativeStatistics: List[PeriodicalNumberByCategory] =
 		withConnection { conn =>
-			val statistics = mutable.Buffer[PeriodicalNumberByCategory]()
-			val dao = factory.periodicalDao(conn)
-
-			for (category <- PeriodicalCategory.values) {
-				statistics += getPeriodicalNumberByCategory(dao, category)
-			}
-
-			statistics.toList
+			(for (category <- PeriodicalCategory.values)
+				yield getPeriodicalNumberByCategory(conn, category))
+				.toList
 		}
 
-	private def getPeriodicalNumberByCategory(dao: PeriodicalDao,
+	private def getPeriodicalNumberByCategory(conn: AbstractConnection,
 																						category: PeriodicalCategory): PeriodicalNumberByCategory = {
+		val dao = factory.periodicalDao(conn)
+
 		val activeNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
 			PeriodicalStatus.ACTIVE)
 		val inActiveNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,

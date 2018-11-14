@@ -13,7 +13,11 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 	*/
 class AuthenticationFilter extends Filter {
 	private[security] val httpUtils: HttpUtilsTrait = HttpUtils
-	private val unProtectedUris = Array("/backend/signIn", "/backend/signUp", "/backend/validation")
+	private val unProtectedUris = Array(
+		"/backend/signIn",
+		"/backend/signUp",
+		"/backend/validation",
+	)
 
 	override def init(filterConfig: FilterConfig): Unit = {}
 
