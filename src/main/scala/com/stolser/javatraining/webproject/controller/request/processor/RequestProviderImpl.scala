@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletRequest
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/10/18.
-  * Provides mapping request uri to classes that will perform actual request processing.
-  */
+	* Created by Oleg Stoliarov on 10/10/18.
+	* Provides mapping request uri to classes that will perform actual request processing.
+	*/
 object RequestProviderImpl extends RequestProvider {
 	val GET_BACKEND_REQUEST_PATTERN: String = "GET:/backend/?"
 	val GET_ADMIN_PANEL_REQUEST_PATTERN: String = "GET:" + ADMIN_PANEL_URI + "/?"
@@ -49,27 +49,27 @@ object RequestProviderImpl extends RequestProvider {
 
 		currentMapping match {
 			case Some((_, requestProcessor)) => requestProcessor
-			case None => throw new NoSuchElementException(String.format(NO_MAPPING_FOR_SUCH_REQUEST, request.getRequestURI))
+			case None => throw new NoSuchElementException(NO_MAPPING_FOR_SUCH_REQUEST.format(request.getRequestURI))
 		}
 	}
 
 	private def initializeRequestMapping = {
 		requestMapping += (POST_SIGN_IN_REQUEST_PATTERN -> SignIn)
 		requestMapping += (GET_BACKEND_REQUEST_PATTERN -> DisplayBackendHomePage)
-		requestMapping.put(GET_ADMIN_PANEL_REQUEST_PATTERN, DisplayAdminPanel)
-		requestMapping.put(GET_ALL_USERS_REQUEST_PATTERN, DisplayAllUsers)
-		requestMapping.put(GET_CURRENT_USER_REQUEST_PATTERN, DisplayCurrentUser)
-		requestMapping.put(POST_PERSIST_INVOICE_REQUEST_PATTERN, PersistOneInvoice)
-		requestMapping.put(POST_PAY_INVOICE_REQUEST_PATTERN, PayOneInvoice)
-		requestMapping.put(GET_ONE_PERIODICAL_REQUEST_PATTERN, DisplayOnePeriodical)
-		requestMapping.put(GET_ALL_PERIODICALS_REQUEST_PATTERN, DisplayAllPeriodicals)
-		requestMapping.put(POST_PERSIST_PERIODICAL_REQUEST_PATTERN, PersistOnePeriodical)
-		requestMapping.put(GET_CREATE_PERIODICAL_REQUEST_PATTERN, DisplayNewPeriodicalPage)
-		requestMapping.put(GET_UPDATE_PERIODICAL_REQUEST_PATTERN, DisplayUpdatePeriodicalPage)
-		requestMapping.put(POST_DELETE_PERIODICALS_REQUEST_PATTERN, DeleteDiscardedPeriodicals)
-		requestMapping.put(GET_SIGN_OUT_REQUEST_PATTERN, SignOut)
-		requestMapping.put(POST_SIGN_UP_REQUEST_PATTERN, CreateUser)
-		requestMapping.put(GET_SIGN_UP_REQUEST_PATTERN, DisplaySignUpPage)
+		requestMapping += (GET_ADMIN_PANEL_REQUEST_PATTERN -> DisplayAdminPanel)
+		requestMapping += (GET_ALL_USERS_REQUEST_PATTERN -> DisplayAllUsers)
+		requestMapping += (GET_CURRENT_USER_REQUEST_PATTERN -> DisplayCurrentUser)
+		requestMapping += (POST_PERSIST_INVOICE_REQUEST_PATTERN -> PersistOneInvoice)
+		requestMapping += (POST_PAY_INVOICE_REQUEST_PATTERN -> PayOneInvoice)
+		requestMapping += (GET_ONE_PERIODICAL_REQUEST_PATTERN -> DisplayOnePeriodical)
+		requestMapping += (GET_ALL_PERIODICALS_REQUEST_PATTERN -> DisplayAllPeriodicals)
+		requestMapping += (POST_PERSIST_PERIODICAL_REQUEST_PATTERN -> PersistOnePeriodical)
+		requestMapping += (GET_CREATE_PERIODICAL_REQUEST_PATTERN -> DisplayNewPeriodicalPage)
+		requestMapping += (GET_UPDATE_PERIODICAL_REQUEST_PATTERN -> DisplayUpdatePeriodicalPage)
+		requestMapping += (POST_DELETE_PERIODICALS_REQUEST_PATTERN -> DeleteDiscardedPeriodicals)
+		requestMapping += (GET_SIGN_OUT_REQUEST_PATTERN -> SignOut)
+		requestMapping += (POST_SIGN_UP_REQUEST_PATTERN -> CreateUser)
+		requestMapping += (GET_SIGN_UP_REQUEST_PATTERN -> DisplaySignUpPage)
 		requestMapping += (POST_AJAX_FORM_VALIDATOR_REQUEST_PATTERN -> AjaxFormValidation)
 	}
 }

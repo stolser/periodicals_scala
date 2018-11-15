@@ -27,18 +27,12 @@ object ValidatorFactory {
 		* @param paramName a http parameter name that need to be validated
 		*/
 	def newValidator(paramName: String): Validator = paramName match {
-		case PERIODICAL_NAME_PARAM_NAME =>
-			PeriodicalNameValidator
-		case PERIODICAL_CATEGORY_PARAM_NAME =>
-			PeriodicalCategoryValidator
-		case PERIODICAL_PUBLISHER_PARAM_NAME =>
-			PeriodicalPublisherValidator
-		case PERIODICAL_COST_PARAM_NAME =>
-			PeriodicalCostValidator
-		case USER_EMAIL_PARAM_NAME =>
-			UserEmailValidator
-		case USER_PASSWORD_PARAM_NAME =>
-			UserPasswordValidator
+		case PERIODICAL_NAME_PARAM_NAME => PeriodicalNameValidator
+		case PERIODICAL_CATEGORY_PARAM_NAME => PeriodicalCategoryValidator
+		case PERIODICAL_PUBLISHER_PARAM_NAME => PeriodicalPublisherValidator
+		case PERIODICAL_COST_PARAM_NAME => PeriodicalCostValidator
+		case USER_EMAIL_PARAM_NAME => UserEmailValidator
+		case USER_PASSWORD_PARAM_NAME => UserPasswordValidator
 		case _ =>
 			throw new ValidationProcessorException(THERE_IS_NO_VALIDATOR_FOR_SUCH_PARAM)
 	}

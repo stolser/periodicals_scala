@@ -9,8 +9,14 @@ import javax.servlet.http.HttpServletRequest
 	* Created by Oleg Stoliarov on 10/7/18.
 	*/
 object UserEmailValidator extends AbstractValidator {
-	private val regexFailedResult = new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_USER_EMAIL_REGEX_ERROR)
-	private val duplicationFailedResult = new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_USER_EMAIL_DUPLICATION_ERROR)
+	private val regexFailedResult = new ValidationResult(
+		statusCode = STATUS_CODE_VALIDATION_FAILED,
+		messageKey = MSG_USER_EMAIL_REGEX_ERROR
+	)
+	private val duplicationFailedResult = new ValidationResult(
+		statusCode = STATUS_CODE_VALIDATION_FAILED,
+		messageKey = MSG_USER_EMAIL_DUPLICATION_ERROR
+	)
 
 	override protected def checkParameter(userEmail: String,
 																				request: HttpServletRequest): Option[ValidationResult] = {

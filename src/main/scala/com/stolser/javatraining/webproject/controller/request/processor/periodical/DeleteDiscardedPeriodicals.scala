@@ -11,19 +11,22 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/11/18.
-  * Processes a POST request to delete all periodicals with status = "discarded".
-  */
+	* Created by Oleg Stoliarov on 10/11/18.
+	* Processes a POST request to delete all periodicals with status = "discarded".
+	*/
 object DeleteDiscardedPeriodicals extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 	private val messageFactory = FrontMessageFactory
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 
 		persistPeriodicalsToDeleteAndRelatedData()
-		addDeleteResultMessage(generalMessages,
-			deletedPeriodicalsNumber = periodicalService.deleteAllDiscarded())
+		addDeleteResultMessage(
+			generalMessages,
+			deletedPeriodicalsNumber = periodicalService.deleteAllDiscarded()
+		)
 
 		addGeneralMessagesToSession(request, generalMessages)
 
@@ -31,7 +34,7 @@ object DeleteDiscardedPeriodicals extends RequestProcessor {
 	}
 
 	private def addDeleteResultMessage(generalMessages: mutable.ListBuffer[FrontendMessage],
-									   deletedPeriodicalsNumber: Int): Unit = {
+																		 deletedPeriodicalsNumber: Int): Unit = {
 		val message =
 			if (deletedPeriodicalsNumber > 0)
 				messageFactory.success(MSG_PERIODICALS_DELETED_SUCCESS)

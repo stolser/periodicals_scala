@@ -27,7 +27,8 @@ object PersistOnePeriodical extends RequestProcessor {
 	private val periodicalService = PeriodicalServiceImpl
 	private val messageFactory = FrontMessageFactory
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val periodicalToSave = HttpUtils.periodicalFromRequest(request)
 		val redirectUri = getRedirectUriByOperationType(request, periodicalToSave)
@@ -52,8 +53,7 @@ object PersistOnePeriodical extends RequestProcessor {
 					addErrorMessage(MSG_PERIODICAL_HAS_ACTIVE_SUBSCRIPTIONS_ERROR, generalMessages, request)
 					return REDIRECT + redirectUri
 				}
-			}
-			else periodicalService.save(periodicalToSave)
+			} else periodicalService.save(periodicalToSave)
 
 			addMessagesToSession(request, generalMessages)
 
@@ -197,4 +197,5 @@ object PersistOnePeriodical extends RequestProcessor {
 
 		private[periodical] def newStatus = _newStatus
 	}
+
 }

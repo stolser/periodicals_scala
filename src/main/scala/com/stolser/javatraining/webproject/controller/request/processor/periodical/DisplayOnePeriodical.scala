@@ -21,7 +21,8 @@ object DisplayOnePeriodical extends RequestProcessor {
 	private[periodical] var httpUtils: HttpUtilsTrait = HttpUtils
 	private val ACCESS_DENIED_TO = "Access denied to '%s'"
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val periodicalId = httpUtils.firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
@@ -45,7 +46,7 @@ object DisplayOnePeriodical extends RequestProcessor {
 
 			FORWARD + ONE_PERIODICAL_VIEW_NAME
 		} else
-			throw new AccessDeniedException(String.format(ACCESS_DENIED_TO, request.getRequestURI))
+			throw new AccessDeniedException(ACCESS_DENIED_TO.format(request.getRequestURI))
 	}
 
 	private def hasUserEnoughPermissions(currentUser: User, periodicalInDb: Periodical) =

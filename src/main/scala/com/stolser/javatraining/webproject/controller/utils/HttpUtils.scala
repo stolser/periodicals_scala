@@ -5,7 +5,6 @@ import java.security.MessageDigest
 import java.util
 import java.util.NoSuchElementException
 import java.util.Objects.nonNull
-import java.util.regex.{Matcher, Pattern}
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.message.FrontendMessage
@@ -66,13 +65,11 @@ object HttpUtils extends HttpUtilsTrait {
 	/**
 		* Tries to find the first number in the uri.
 		*/
-	override def firstIdFromUri(uri: String): Int = {
-		val numberInUriMatcher: Matcher = Pattern.compile(NUMBER_REGEX).matcher(uri)
-		if (!numberInUriMatcher.find)
-			throw new IllegalArgumentException(String.format(URI_MUST_CONTAIN_ID_TEXT, uri))
-
-		numberInUriMatcher.group.toInt
-	}
+	override def firstIdFromUri(uri: String): Int =
+		NUMBER_REGEX.r.findFirstIn(uri) match {
+			case None => throw new IllegalArgumentException(URI_MUST_CONTAIN_ID_TEXT.format(uri))
+			case Some(number) => number.toInt
+		}
 
 	/**
 		* Sets a session scoped attribute 'messages'.
@@ -91,9 +88,9 @@ object HttpUtils extends HttpUtilsTrait {
 			Map(GENERAL_MESSAGES_FRONT_BLOCK_NAME -> generalMessages.toList.asJava)
 		)
 
-	def sendRedirect(request: HttpServletRequest,
-									 response: HttpServletResponse,
-									 redirectUri: String): Unit =
+	def tryToSendRedirect(request: HttpServletRequest,
+												response: HttpServletResponse,
+												redirectUri: String): Unit =
 		try
 			response.sendRedirect(redirectUri)
 		catch {
@@ -135,8 +132,7 @@ object HttpUtils extends HttpUtilsTrait {
 	}
 
 	def filterRequestByUri(request: HttpServletRequest, mapping: String): Boolean = {
-		val urlPattern: String = mapping.split(METHODS_URI_SEPARATOR)(1)
-		val requestUri: String = request.getRequestURI
-		Pattern.matches(urlPattern, requestUri)
+		val urlPattern = mapping.split(METHODS_URI_SEPARATOR)(1)
+		request.getRequestURI.matches(urlPattern)
 	}
 }

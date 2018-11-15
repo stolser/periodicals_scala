@@ -8,7 +8,10 @@ import javax.servlet.http.HttpServletRequest
 	* Created by Oleg Stoliarov on 10/8/18.
 	*/
 object UserPasswordValidator extends AbstractValidator {
-	private val failedResult = new ValidationResult(STATUS_CODE_VALIDATION_FAILED, MSG_USER_PASSWORD_ERROR)
+	private val failedResult = new ValidationResult(
+		statusCode = STATUS_CODE_VALIDATION_FAILED,
+		messageKey = MSG_USER_PASSWORD_ERROR
+	)
 
 	override protected def checkParameter(password: String,
 																				request: HttpServletRequest): Option[ValidationResult] = {

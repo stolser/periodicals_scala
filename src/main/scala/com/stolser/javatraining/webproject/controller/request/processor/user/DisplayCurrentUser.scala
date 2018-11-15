@@ -22,10 +22,11 @@ object DisplayCurrentUser extends RequestProcessor {
 	private val subscriptionService = SubscriptionServiceImpl
 	private val periodicalService = PeriodicalServiceImpl
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val currentUserId: Long = HttpUtils.userIdFromSession(request)
-		val invoices: mutable.Buffer[Invoice] = mutable.Buffer(invoiceService.findAllByUserId(currentUserId): _*)
-		val subscriptions: mutable.Buffer[Subscription] = mutable.Buffer(subscriptionService.findAllByUserId(currentUserId): _*)
+		val invoices = mutable.Buffer(invoiceService.findAllByUserId(currentUserId): _*)
+		val subscriptions = mutable.Buffer(subscriptionService.findAllByUserId(currentUserId): _*)
 
 		if (invoices.nonEmpty) {
 			invoices.foreach(invoice =>

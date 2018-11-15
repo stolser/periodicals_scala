@@ -27,7 +27,8 @@ object PersistOneInvoice extends RequestProcessor {
 	private val invoiceService: InvoiceService = InvoiceServiceImpl
 	private val messageFactory = FrontMessageFactory
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val periodicalId = java.lang.Long.parseLong(request.getParameter(PERIODICAL_ID_PARAM_NAME))
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
@@ -101,7 +102,7 @@ object PersistOneInvoice extends RequestProcessor {
 			generalMessages += messageFactory.success(MSG_INVOICE_CREATION_SUCCESS)
 		} catch {
 			case e: RuntimeException =>
-				LOGGER.error(String.format(EXCEPTION_DURING_PERSISTING_INVOICE, invoiceToPersist), e)
+				LOGGER.error(EXCEPTION_DURING_PERSISTING_INVOICE.format(invoiceToPersist), e)
 				generalMessages += messageFactory.error(MSG_INVOICE_PERSISTING_FAILED)
 		}
 	}

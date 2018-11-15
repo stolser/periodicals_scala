@@ -8,13 +8,14 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import scala.collection.JavaConverters._
 
 /**
-  * Created by Oleg Stoliarov on 10/11/18.
-  * Processes a GET request to a page with a list of all users in the system.
-  */
+	* Created by Oleg Stoliarov on 10/11/18.
+	* Processes a GET request to a page with a list of all users in the system.
+	*/
 object DisplayAllUsers extends RequestProcessor {
 	private val userService = UserServiceImpl
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		request.setAttribute(ALL_USERS_ATTR_NAME, userService.findAll.asJava)
 
 		FORWARD + USER_LIST_VIEW_NAME

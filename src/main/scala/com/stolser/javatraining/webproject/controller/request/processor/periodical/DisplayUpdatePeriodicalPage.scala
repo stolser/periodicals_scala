@@ -17,17 +17,17 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 object DisplayUpdatePeriodicalPage extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val periodicalId = HttpUtils.firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
 		periodicalInDb match {
+			case None => throw new NoSuchElementException(s"There is no periodical with id $periodicalId in the db.")
 			case Some(periodical) =>
 				setRequestAttributes(request, periodical)
 
 				FORWARD + CREATE_EDIT_PERIODICAL_VIEW_NAME
-			case None =>
-				throw new NoSuchElementException(s"There is no periodical with id $periodicalId in the db.")
 		}
 	}
 

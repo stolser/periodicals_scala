@@ -45,7 +45,6 @@ object Authorization {
 
 	private def isUserIdInUriValid(request: HttpServletRequest) = {
 		val requestUri = request.getRequestURI
-//		val matcher = Pattern.compile(USERS_URI_WITH_ID).matcher(requestUri)
 		val userIdPattern = USERS_URI_WITH_ID.r
 		if (userIdPattern.findFirstIn(requestUri).isDefined) {
 			val userIdFromUri = HttpUtils.firstIdFromUri(requestUri)

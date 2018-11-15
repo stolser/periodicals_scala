@@ -18,8 +18,10 @@ import scala.collection.JavaConverters._
 object DisplayAllPeriodicals extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		request.setAttribute(ALL_PERIODICALS_ATTR_NAME, periodicalService.findAll.asJava)
+
 		FORWARD + PERIODICAL_LIST_VIEW_NAME
 	}
 }

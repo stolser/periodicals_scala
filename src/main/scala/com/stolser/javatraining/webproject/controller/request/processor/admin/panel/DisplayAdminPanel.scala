@@ -19,7 +19,8 @@ object DisplayAdminPanel extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
 	private val invoiceService: InvoiceService = InvoiceServiceImpl
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		addPeriodicalStatsIntoRequest(request)
 		addFinStatsIntoRequest(request)
 

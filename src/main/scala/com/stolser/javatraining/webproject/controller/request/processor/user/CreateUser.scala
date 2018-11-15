@@ -19,7 +19,8 @@ object CreateUser extends RequestProcessor {
 	private val userService = UserServiceImpl
 	private val messageFactory = FrontMessageFactory
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		val formMessages = mutable.Map[String, FrontendMessage]()
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val session: HttpSession = request.getSession
@@ -52,7 +53,10 @@ object CreateUser extends RequestProcessor {
 		REDIRECT + redirectUri
 	}
 
-	private def createUser(username: String, userEmail: String, password: String, userRole: UserRole.Value) =
+	private def createUser(username: String,
+												 userEmail: String,
+												 password: String,
+												 userRole: UserRole.Value) =
 		userService.createNewUser(
 			User(
 				status = UserStatus.ACTIVE,

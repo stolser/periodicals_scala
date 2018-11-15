@@ -138,7 +138,6 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 
 	override def createNew(user: User): Long = {
 		val exceptionMessage = EXCEPTION_DURING_CREATING_NEW_USER.format(user)
-		val exceptionMessageNoRows = String.format(CREATING_USER_FAILED_NO_ROWS_AFFECTED, user)
 		val sqlStatement = "INSERT INTO users " +
 			"(first_name, last_name, birthday, email, address, status) " +
 			"VALUES (?, ?, ?, ?, ?, ?)"
@@ -155,7 +154,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 
 					tryExecuteUpdate(st, exceptionMessage)
 
-					tryRetrieveId(st, exceptionMessageNoRows)
+					tryRetrieveId(st, exceptionMessageNoRows = CREATING_USER_FAILED_NO_ROWS_AFFECTED.format(user))
 				}
 			}
 		}

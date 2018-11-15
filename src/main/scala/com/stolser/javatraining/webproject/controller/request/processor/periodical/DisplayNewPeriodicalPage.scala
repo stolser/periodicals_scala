@@ -13,7 +13,8 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 	* Processes a GET request to a page where admin can create a new periodical.
 	*/
 object DisplayNewPeriodicalPage extends RequestProcessor {
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): String = {
 		request.getSession.removeAttribute(PERIODICAL_ATTR_NAME)
 		setRequestAttributes(request)
 

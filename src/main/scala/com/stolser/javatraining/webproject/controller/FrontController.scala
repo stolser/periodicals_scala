@@ -10,9 +10,9 @@ import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
 import org.slf4j.LoggerFactory
 
 /**
-  * Created by Oleg Stoliarov on 10/13/18.
-  * Implementation of the Front Controller pattern.
-  */
+	* Created by Oleg Stoliarov on 10/13/18.
+	* Implementation of the Front Controller pattern.
+	*/
 class FrontController extends HttpServlet {
 	private val LOGGER = LoggerFactory.getLogger(classOf[FrontController])
 	private val DISPATCHING_TO_THE_VIEW_NAME = "Dispatching to the viewName = '%s'."
@@ -32,45 +32,52 @@ class FrontController extends HttpServlet {
 
 	@throws[ServletException]
 	@throws[IOException]
-	private def processRequest(request: HttpServletRequest, response: HttpServletResponse): Unit = {
-		try {
+	private def processRequest(request: HttpServletRequest, response: HttpServletResponse): Unit =
+		tryToProcessRequestAndDispatchResponse(request, response) {
 			val abstractViewName = requestProvider.requestProcessor(request).process(request, response)
 			dispatch(abstractViewName, request, response)
+		}
+
+	private def tryToProcessRequestAndDispatchResponse(request: HttpServletRequest, response: HttpServletResponse)
+																										(block: => Unit): Unit =
+		try {
+			block
 		} catch {
 			case e: RuntimeException =>
 				logExceptionAndRedirectToErrorPage(request, response, e)
 		}
-	}
 
-	private def dispatch(abstractViewName: String, request: HttpServletRequest, response: HttpServletResponse): Unit = {
+	private def dispatch(abstractViewName: String,
+											 request: HttpServletRequest,
+											 response: HttpServletResponse): Unit = {
 		val viewNameParts = abstractViewName.split(":")
 		val dispatchType = viewNameParts(0)
 		val viewName = viewNameParts(1)
+
 		dispatchType match {
 			case "forward" =>
 				sendForward(request, response, viewName)
 			case "redirect" =>
-				HttpUtils.sendRedirect(request, response, viewName)
+				HttpUtils.tryToSendRedirect(request, response, viewName)
 			case "noAction" => ()
 			case _ =>
-				throw new IllegalArgumentException(String.format(INCORRECT_THE_DISPATCH_TYPE, abstractViewName))
+				throw new IllegalArgumentException(INCORRECT_THE_DISPATCH_TYPE.format(abstractViewName))
 		}
 	}
 
-	def sendForward(request: HttpServletRequest, response: HttpServletResponse, viewName: String): Unit = {
+	def sendForward(request: HttpServletRequest, response: HttpServletResponse, viewName: String): Unit =
 		try {
 			val dispatcher = request.getRequestDispatcher(viewResolver.resolvePrivateViewName(viewName))
 			dispatcher.forward(request, response)
 		} catch {
-			case e @ (_: ServletException | _: IOException) =>
-				throw new DispatchException(String.format(DISPATCHING_TO_THE_VIEW_NAME, viewName), e)
+			case e@(_: ServletException | _: IOException) =>
+				throw new DispatchException(DISPATCHING_TO_THE_VIEW_NAME.format(viewName), e)
 		}
-	}
 
 	private def logExceptionAndRedirectToErrorPage(request: HttpServletRequest,
-												   response: HttpServletResponse,
-												   e: RuntimeException): Unit = {
+																								 response: HttpServletResponse,
+																								 e: RuntimeException): Unit = {
 		LOGGER.error(s"User id = ${HttpUtils.userIdFromSession(request)}. requestURI = ${request.getRequestURI}", e)
-		HttpUtils.sendRedirect(request, response, viewResolver.resolvePublicViewName(HttpUtils.errorViewName(e)))
+		HttpUtils.tryToSendRedirect(request, response, viewResolver.resolvePublicViewName(HttpUtils.errorViewName(e)))
 	}
 }
