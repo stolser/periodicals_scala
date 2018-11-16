@@ -42,16 +42,14 @@ object MysqlPeriodicalDao {
 		"Exception during getting number of periodicals with category = '%s' and status = '%s'."
 }
 
-class MysqlPeriodicalDao(conn: Connection) extends PeriodicalDao {
+case class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao {
 	private[mysql] val daoUtils: DaoUtilsTrait = DaoUtils
 
-	override def findOneById(id: Long): Option[Periodical] = {
+	override def findOneById(id: Long): Option[Periodical] =
 		getPeriodicalFromDb(SELECT_ALL_BY_ID, id, DB_PERIODICALS_ID)
-	}
 
-	override def findOneByName(name: String): Option[Periodical] = {
+	override def findOneByName(name: String): Option[Periodical] =
 		getPeriodicalFromDb(SELECT_ALL_BY_NAME, name, DB_PERIODICALS_NAME)
-	}
 
 	private def getPeriodicalFromDb(sqlStatement: String,
 																	fieldValue: Any,

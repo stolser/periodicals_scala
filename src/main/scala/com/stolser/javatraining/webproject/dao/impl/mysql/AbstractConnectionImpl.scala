@@ -3,25 +3,21 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 import java.sql.Connection
 
 import com.stolser.javatraining.webproject.dao.AbstractConnection
+import com.stolser.javatraining.webproject.dao.impl.mysql.AbstractConnectionImpl._
 import com.stolser.javatraining.webproject.utils.TryCatchUtils.tryAndCatchSqlException
 
 /**
-  * Created by Oleg Stoliarov on 10/14/18.
-  */
+	* Created by Oleg Stoliarov on 10/14/18.
+	*/
 
 object AbstractConnectionImpl {
 	private val CAN_NOT_BEGIN_TRANSACTION = "Can not begin transaction."
 	private val CAN_NOT_COMMIT_TRANSACTION = "Can not commit transaction"
 	private val CAN_NOT_ROLLBACK_TRANSACTION = "Can not rollback transaction"
 	private val CAN_NOT_CLOSE_CONNECTION = "Can not close connection"
-
-	def apply(connection: Connection): AbstractConnectionImpl = new AbstractConnectionImpl(connection)
 }
 
-class AbstractConnectionImpl private(val connection: Connection) extends AbstractConnection {
-
-	import AbstractConnectionImpl._
-
+case class AbstractConnectionImpl private(connection: Connection) extends AbstractConnection {
 	private var transactionBegun = false
 	private var transactionCommitted = false
 

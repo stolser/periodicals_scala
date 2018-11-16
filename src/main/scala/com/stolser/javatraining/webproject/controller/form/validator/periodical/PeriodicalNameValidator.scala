@@ -12,11 +12,11 @@ import javax.servlet.http.HttpServletRequest
 object PeriodicalNameValidator extends AbstractValidator {
 	private val INCORRECT_ENTITY_OPERATION_TYPE_DURING_VALIDATION = "Incorrect periodicalOperationType during validation!"
 	private val periodicalService = PeriodicalServiceImpl
-	private val incorrectFailedResult = new ValidationResult(
+	private val incorrectFailedResult = ValidationResult(
 		statusCode = STATUS_CODE_VALIDATION_FAILED,
 		messageKey = MSG_PERIODICAL_NAME_INCORRECT
 	)
-	private val duplicationFailedResult = new ValidationResult(
+	private val duplicationFailedResult = ValidationResult(
 		statusCode = STATUS_CODE_VALIDATION_FAILED,
 		messageKey = MSG_PERIODICAL_NAME_DUPLICATION
 	)
@@ -38,7 +38,7 @@ object PeriodicalNameValidator extends AbstractValidator {
 				PeriodicalOperationType.withName(request.getParameter(PERIODICAL_OPERATION_TYPE_PARAM_ATTR_NAME).toUpperCase)
 			catch {
 				case e: IllegalArgumentException =>
-					throw new ValidationProcessorException(INCORRECT_ENTITY_OPERATION_TYPE_DURING_VALIDATION, e)
+					throw ValidationProcessorException(INCORRECT_ENTITY_OPERATION_TYPE_DURING_VALIDATION, e)
 			}
 
 		def isOperationCreate(periodicalOperationType: PeriodicalOperationType.Value) =

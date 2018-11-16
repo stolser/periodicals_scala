@@ -1,11 +1,11 @@
 package com.stolser.javatraining.webproject.controller.form.validator
 
-import ValidationProcessorException._
+import com.stolser.javatraining.webproject.controller.form.validator.ValidationProcessorException._
 
 /**
   * Created by Oleg Stoliarov on 10/7/18.
   */
-class ValidationProcessorException(message: String = null, cause: Throwable = null)
+case class ValidationProcessorException private(message: String = null, cause: Throwable = null)
 	extends RuntimeException(defaultMessage(message, cause), cause) {}
 
 object ValidationProcessorException {

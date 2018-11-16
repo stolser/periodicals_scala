@@ -10,8 +10,8 @@ import org.apache.commons.dbcp2.BasicDataSource
 /**
   * Created by Oleg Stoliarov on 10/6/18.
   */
-class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
-	private val dataSource: DataSource = getBasicDataSource
+case class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
+	private val dataSource: DataSource = basicDataSource
 	private val description = builder.url + builder.dbName
 
 	override def connection: AbstractConnection =
@@ -21,7 +21,7 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 
 	override def toString: String = description
 
-	private def getBasicDataSource = {
+	private def basicDataSource = {
 		val dataSource = new BasicDataSource
 		dataSource.setDriverClassName(builder.driverClassName)
 		dataSource.setUrl(generateUrl(builder))

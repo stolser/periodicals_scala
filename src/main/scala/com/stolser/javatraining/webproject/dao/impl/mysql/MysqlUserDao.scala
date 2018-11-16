@@ -7,6 +7,7 @@ import java.util.Objects.nonNull
 
 import com.stolser.javatraining.webproject.dao.UserDao
 import com.stolser.javatraining.webproject.dao.exception.DaoException
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlUserDao._
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
@@ -32,9 +33,7 @@ object MysqlUserDao {
 	private val SELECT_COUNT_FROM_USERS_WHERE_EMAIL = "SELECT COUNT(id) FROM users WHERE users.email = ?"
 }
 
-class MysqlUserDao(conn: Connection) extends UserDao {
-
-	import MysqlUserDao._
+case class MysqlUserDao private(conn: Connection) extends UserDao {
 
 	override def findOneById(id: Long): Option[User] = {
 		val sqlStatement = "SELECT * FROM users " +
@@ -165,7 +164,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 															 exceptionMessage: String): Unit = {
 		val affectedRows = st.executeUpdate
 		if (affectedRows == 0)
-			throw new DaoException(exceptionMessage)
+			throw DaoException(exceptionMessage)
 	}
 
 	@throws[SQLException]
@@ -176,7 +175,7 @@ class MysqlUserDao(conn: Connection) extends UserDao {
 				if (generatedKeys.next)
 					generatedKeys.getLong(1)
 				else
-					throw new DaoException(exceptionMessageNoRows)
+					throw DaoException(exceptionMessageNoRows)
 			}
 		}
 

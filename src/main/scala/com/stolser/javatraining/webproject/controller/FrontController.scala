@@ -71,7 +71,7 @@ class FrontController extends HttpServlet {
 			dispatcher.forward(request, response)
 		} catch {
 			case e@(_: ServletException | _: IOException) =>
-				throw new DispatchException(DISPATCHING_TO_THE_VIEW_NAME.format(viewName), e)
+				throw DispatchException(DISPATCHING_TO_THE_VIEW_NAME.format(viewName), e)
 		}
 
 	private def logExceptionAndRedirectToErrorPage(request: HttpServletRequest,

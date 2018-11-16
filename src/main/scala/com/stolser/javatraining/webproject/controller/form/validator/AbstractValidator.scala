@@ -7,7 +7,10 @@ import javax.servlet.http.HttpServletRequest
   * Created by Oleg Stoliarov on 10/7/18.
   */
 abstract class AbstractValidator extends Validator {
-	private lazy val successResult = new ValidationResult(STATUS_CODE_SUCCESS, MSG_SUCCESS)
+	private lazy val successResult = ValidationResult(
+		statusCode = STATUS_CODE_SUCCESS,
+		messageKey = MSG_SUCCESS
+	)
 
 	override final def validate(paramValue: String, request: HttpServletRequest): ValidationResult =
 		checkParameter(paramValue, request)

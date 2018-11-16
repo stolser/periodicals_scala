@@ -16,7 +16,7 @@ object TryCatchUtils {
 			block()
 		} catch {
 			case e: SQLException =>
-				throw new DaoException(exceptionMessage, e)
+				throw DaoException(exceptionMessage, e)
 		}
 	}
 

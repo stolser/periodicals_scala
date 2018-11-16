@@ -19,6 +19,7 @@ libraryDependencies ++= Seq(
 	"com.h2database" % "h2" % "1.4.192",
 	"org.scalatest" %% "scalatest" % "3.0.5" % Test,
 	"org.mockito" %% "mockito-scala" % "1.0.0-beta.6" % Test,
+	"org.scalamock" %% "scalamock" % "4.0.0" % Test
 )
 
 enablePlugins(JettyPlugin)

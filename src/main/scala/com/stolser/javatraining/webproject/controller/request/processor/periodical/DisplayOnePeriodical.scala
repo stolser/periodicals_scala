@@ -46,7 +46,7 @@ object DisplayOnePeriodical extends RequestProcessor {
 
 			FORWARD + ONE_PERIODICAL_VIEW_NAME
 		} else
-			throw new AccessDeniedException(ACCESS_DENIED_TO.format(request.getRequestURI))
+			throw AccessDeniedException(ACCESS_DENIED_TO.format(request.getRequestURI))
 	}
 
 	private def hasUserEnoughPermissions(currentUser: User, periodicalInDb: Periodical) =

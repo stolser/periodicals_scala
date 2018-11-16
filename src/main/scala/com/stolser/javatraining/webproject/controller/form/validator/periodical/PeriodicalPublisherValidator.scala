@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 	* Created by Oleg Stoliarov on 10/8/18.
 	*/
 object PeriodicalPublisherValidator extends AbstractValidator {
-	private val failedResult = new ValidationResult(
+	private val failedResult = ValidationResult(
 		statusCode = STATUS_CODE_VALIDATION_FAILED,
 		messageKey = MSG_PERIODICAL_PUBLISHER_ERROR
 	)

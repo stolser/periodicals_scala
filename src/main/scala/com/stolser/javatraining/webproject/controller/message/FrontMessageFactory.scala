@@ -15,17 +15,21 @@ object FrontMessageFactory {
 	private val messagesWarning = mutable.Map[String, FrontendMessage]()
 	private val messagesError = mutable.Map[String, FrontendMessage]()
 
-	def success(messageKey: String): FrontendMessage = getMessageFromCache(messagesSuccess, SUCCESS, messageKey)
+	def success(messageKey: String): FrontendMessage =
+		updateCacheAndGetMessageFromCache(cache = messagesSuccess, messageType = SUCCESS, messageKey)
 
-	def info(messageKey: String): FrontendMessage = getMessageFromCache(messagesInfo, INFO, messageKey)
+	def info(messageKey: String): FrontendMessage =
+		updateCacheAndGetMessageFromCache(cache = messagesInfo, messageType = INFO, messageKey)
 
-	def warning(messageKey: String): FrontendMessage = getMessageFromCache(messagesWarning, WARNING, messageKey)
+	def warning(messageKey: String): FrontendMessage =
+		updateCacheAndGetMessageFromCache(cache = messagesWarning, messageType = WARNING, messageKey)
 
-	def error(messageKey: String): FrontendMessage = getMessageFromCache(messagesError, ERROR, messageKey)
+	def error(messageKey: String): FrontendMessage =
+		updateCacheAndGetMessageFromCache(cache = messagesError, messageType = ERROR, messageKey)
 
-	private def getMessageFromCache(cache: mutable.Map[String, FrontendMessage],
-																	messageType: FrontendMessage.MessageType.Value,
-																	messageKey: String): FrontendMessage = {
+	private def updateCacheAndGetMessageFromCache(cache: mutable.Map[String, FrontendMessage],
+																								messageType: FrontendMessage.MessageType.Value,
+																								messageKey: String): FrontendMessage = {
 		if (!cache.contains(messageKey))
 			cache += (messageKey -> FrontendMessage(messageKey, messageType))
 

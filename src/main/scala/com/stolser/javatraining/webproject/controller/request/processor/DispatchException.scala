@@ -1,10 +1,10 @@
 package com.stolser.javatraining.webproject.controller.request.processor
 
-import DispatchException._
+import com.stolser.javatraining.webproject.controller.request.processor.DispatchException._
 /**
   * Created by Oleg Stoliarov on 10/10/18.
   */
-class DispatchException(message: String = null, cause: Throwable = null)
+case class DispatchException private(message: String = null, cause: Throwable = null)
 	extends RuntimeException(defaultMessage(message, cause), cause) {}
 
 object DispatchException {

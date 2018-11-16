@@ -4,6 +4,7 @@ import java.sql._
 import java.time.Instant
 
 import com.stolser.javatraining.webproject.dao.InvoiceDao
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlInvoiceDao._
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
@@ -31,9 +32,7 @@ object MysqlInvoiceDao {
 	private val EXCEPTION_DURING_EXECUTION_FOR_PERIODICAL_ID = "Exception during execution statement '%s' for periodicalId = %d."
 }
 
-class MysqlInvoiceDao(conn: Connection) extends InvoiceDao {
-
-	import MysqlInvoiceDao._
+case class MysqlInvoiceDao private(conn: Connection) extends InvoiceDao {
 
 	override def findOneById(invoiceId: Long): Option[Invoice] = {
 		val sqlStatement: String = "SELECT * FROM invoices WHERE id = ?"

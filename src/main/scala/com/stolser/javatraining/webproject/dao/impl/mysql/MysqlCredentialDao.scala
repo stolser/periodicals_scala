@@ -3,6 +3,7 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 import java.sql.{Connection, PreparedStatement, ResultSet}
 
 import com.stolser.javatraining.webproject.dao.CredentialDao
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlCredentialDao._
 import com.stolser.javatraining.webproject.model.entity.user.Credential
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
@@ -17,9 +18,7 @@ object MysqlCredentialDao {
 	private val EXCEPTION_DURING_CREATING_CREDENTIAL = "Exception during creating a credential."
 }
 
-class MysqlCredentialDao(conn: Connection) extends CredentialDao {
-
-	import MysqlCredentialDao._
+case class MysqlCredentialDao private(conn: Connection) extends CredentialDao {
 
 	override def findCredentialByUserName(userName: String): Option[Credential] = {
 		val sqlStatement = "SELECT * FROM credentials WHERE user_name = ?"

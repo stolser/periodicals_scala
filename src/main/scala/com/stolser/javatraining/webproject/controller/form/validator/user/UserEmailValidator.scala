@@ -9,11 +9,11 @@ import javax.servlet.http.HttpServletRequest
 	* Created by Oleg Stoliarov on 10/7/18.
 	*/
 object UserEmailValidator extends AbstractValidator {
-	private val regexFailedResult = new ValidationResult(
+	private val regexFailedResult = ValidationResult(
 		statusCode = STATUS_CODE_VALIDATION_FAILED,
 		messageKey = MSG_USER_EMAIL_REGEX_ERROR
 	)
-	private val duplicationFailedResult = new ValidationResult(
+	private val duplicationFailedResult = ValidationResult(
 		statusCode = STATUS_CODE_VALIDATION_FAILED,
 		messageKey = MSG_USER_EMAIL_DUPLICATION_ERROR
 	)

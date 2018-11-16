@@ -52,9 +52,9 @@ object AjaxFormValidation extends RequestProcessor {
 		} catch {
 			case e: JSONException =>
 				LOGGER.error(EXCEPTION_DURING_PUTTING_VALUES_INTO_JSON_OBJECT, e)
-				throw new ValidationProcessorException(EXCEPTION_DURING_PUTTING_VALUES_INTO_JSON_OBJECT, e)
+				throw ValidationProcessorException(EXCEPTION_DURING_PUTTING_VALUES_INTO_JSON_OBJECT, e)
 			case e: IOException =>
-				throw new ValidationProcessorException(EXCEPTION_DURING_VALIDATION, e)
+				throw ValidationProcessorException(EXCEPTION_DURING_VALIDATION, e)
 		}
 
 	private def removeMessagesForCurrentParam(session: HttpSession, paramName: String): Unit = {

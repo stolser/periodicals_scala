@@ -34,6 +34,6 @@ object ValidatorFactory {
 		case USER_EMAIL_PARAM_NAME => UserEmailValidator
 		case USER_PASSWORD_PARAM_NAME => UserPasswordValidator
 		case _ =>
-			throw new ValidationProcessorException(THERE_IS_NO_VALIDATOR_FOR_SUCH_PARAM)
+			throw ValidationProcessorException(THERE_IS_NO_VALIDATOR_FOR_SUCH_PARAM)
 	}
 }

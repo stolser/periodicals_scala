@@ -3,6 +3,7 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 import java.sql.{Connection, PreparedStatement, ResultSet}
 
 import com.stolser.javatraining.webproject.dao.RoleDao
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlRoleDao._
 import com.stolser.javatraining.webproject.model.entity.user.UserRole
 import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
@@ -18,9 +19,7 @@ object MysqlRoleDao {
 	private val EXCEPTION_DURING_INSERTING_ROLE = "Exception during executing statement: '%s' for " + "userId = %d"
 }
 
-class MysqlRoleDao(conn: Connection) extends RoleDao {
-
-	import MysqlRoleDao._
+case class MysqlRoleDao private(conn: Connection) extends RoleDao {
 
 	override def findRolesByUserName(userName: String): Set[UserRole.Value] = {
 		val sqlStatement = "SELECT user_roles.name " +

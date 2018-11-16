@@ -4,6 +4,7 @@ import java.sql._
 
 import com.stolser.javatraining.webproject.controller.utils.DaoUtils
 import com.stolser.javatraining.webproject.dao.SubscriptionDao
+import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlSubscriptionDao._
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
@@ -29,9 +30,7 @@ object MysqlSubscriptionDao {
 	private val EXCEPTION_MSG_UPDATING = "Exception during updating %s."
 }
 
-class MysqlSubscriptionDao(conn: Connection) extends SubscriptionDao {
-
-	import MysqlSubscriptionDao._
+case class MysqlSubscriptionDao private(conn: Connection) extends SubscriptionDao {
 
 	override def findOneByUserIdAndPeriodicalId(userId: Long, periodicalId: Long): Option[Subscription] = {
 		val sqlStatement = "SELECT * FROM subscriptions " +
