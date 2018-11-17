@@ -2,7 +2,7 @@ package com.stolser.javatraining.webproject.service.impl
 
 import java.util.NoSuchElementException
 
-import com.stolser.javatraining.webproject.FunSuiteBase
+import com.stolser.javatraining.webproject.FunSuiteMockitoScalaBase
 import com.stolser.javatraining.webproject.connection.pool.ConnectionPool
 import com.stolser.javatraining.webproject.dao._
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
@@ -12,7 +12,7 @@ import com.stolser.javatraining.webproject.model.entity.subscription.Subscriptio
 /**
 	* Created by Oleg Stoliarov on 11/7/18.
 	*/
-class PeriodicalServiceImplTest extends FunSuiteBase {
+class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
 	private var daoFactory: DaoFactoryTrait = _
 	private var connectionPool: ConnectionPool = _
 	private var conn: AbstractConnection = _

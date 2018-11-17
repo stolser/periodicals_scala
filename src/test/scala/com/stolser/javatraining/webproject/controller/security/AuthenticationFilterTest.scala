@@ -5,7 +5,7 @@ import com.stolser.javatraining.webproject.controller.security.AuthenticationFil
 import com.stolser.javatraining.webproject.controller.utils.HttpUtilsTrait
 import com.stolser.javatraining.webproject.model.entity.user.User
 import com.stolser.javatraining.webproject.model.entity.user.UserStatus._
-import com.stolser.javatraining.webproject.{FunSuiteBase, TestResources}
+import com.stolser.javatraining.webproject.{FunSuiteMockitoScalaBase, TestResources}
 import javax.servlet.FilterChain
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
 import org.mockito.ArgumentMatchers
@@ -18,7 +18,7 @@ object AuthenticationFilterTest {
 	private val USER_ID = 77
 }
 
-class AuthenticationFilterTest extends FunSuiteBase {
+class AuthenticationFilterTest extends FunSuiteMockitoScalaBase {
 	private var session: HttpSession = _
 	private var request: HttpServletRequest = _
 	private var response: HttpServletResponse = _

@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.security
 
-import com.stolser.javatraining.webproject.FunSuiteBase
+import com.stolser.javatraining.webproject.FunSuiteMockitoScalaBase
 import com.stolser.javatraining.webproject.TestResources._
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
@@ -9,7 +9,7 @@ import javax.servlet.http.{HttpServletRequest, HttpSession}
 /**
 	* Created by Oleg Stoliarov on 11/5/18.
 	*/
-class AuthorizationTest extends FunSuiteBase {
+class AuthorizationTest extends FunSuiteMockitoScalaBase {
 	private var session: HttpSession = _
 	private var request: HttpServletRequest = _
 	private val admin = User(roles = Set(UserRole.ADMIN))

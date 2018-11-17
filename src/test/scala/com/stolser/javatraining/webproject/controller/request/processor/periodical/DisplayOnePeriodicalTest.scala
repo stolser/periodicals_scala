@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor.periodical
 
-import com.stolser.javatraining.webproject.FunSuiteBase
+import com.stolser.javatraining.webproject.FunSuiteMockitoScalaBase
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.controller.request.processor.periodical.DisplayOnePeriodical.FORWARD
 import com.stolser.javatraining.webproject.controller.security.AccessDeniedException
@@ -14,7 +14,7 @@ import org.mockito.ArgumentMatchers._
 /**
 	* Created by Oleg Stoliarov on 11/6/18.
 	*/
-class DisplayOnePeriodicalTest extends FunSuiteBase {
+class DisplayOnePeriodicalTest extends FunSuiteMockitoScalaBase {
 	private var request: HttpServletRequest = _
 	private var response: HttpServletResponse = _
 	private var periodicalService: PeriodicalService = _

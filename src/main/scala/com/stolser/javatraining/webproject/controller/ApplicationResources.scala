@@ -74,9 +74,9 @@ object ApplicationResources {
 
 	val PERIODICAL_NAME_PATTERN_REGEX = "[а-яА-ЯіІїЇєЄёЁ\\w\\s!&?$#@'\"-]{2,45}"
 	val PERIODICAL_PUBLISHER_PATTERN_REGEX = "[а-яА-ЯіІїЇєЄёЁ\\w\\s-]{2,45}"
-	val PERIODICAL_COST_PATTERN_REGEX = "0|[1-9]{1}\\d{0,8}"
+	val PERIODICAL_COST_PATTERN_REGEX = "0|[1-9]{1}\\d{0,4}"
 	val USER_EMAIL_PATTERN_REGEX = "^([a-z0-9_-]+\\.)*[a-z0-9_-]+@[a-z0-9_-]+(\\.[a-z0-9_-]+)*\\.[a-z]{2,6}$"
-	val USER_PASSWORD_PATTERN_REGEX = "[\\w]{6,12}"
+	val USER_PASSWORD_PATTERN_REGEX = "[\\w!@#$%^&*/=(){}<>_]{6,12}"
 
 	val MSG_KEY_CATEGORY_NEWS = "category.news"
 	val MSG_KEY_CATEGORY_NATURE = "category.nature"

@@ -14,7 +14,7 @@ they can be removed from the database as a separate operation.
 
 ## Used technologies:
 * Scala 2.12.7, Enumeratum
-* ScalaTest (FunSuite style), Mockito Scala
+* ScalaTest (FunSuite, FlatSpec styles), Mockito Scala, ScalaMock
 * sbt
 * Java EE 7: Servlets, JSP, JSTL
 * JDBC, MySQL

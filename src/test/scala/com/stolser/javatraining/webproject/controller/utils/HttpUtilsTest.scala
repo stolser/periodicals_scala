@@ -3,13 +3,13 @@ package com.stolser.javatraining.webproject.controller.utils
 import com.stolser.javatraining.webproject.controller.ApplicationResources._
 import com.stolser.javatraining.webproject.model.entity.periodical.{PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.{FunSuiteBase, TestResources}
+import com.stolser.javatraining.webproject.{FunSuiteMockitoScalaBase, TestResources}
 import javax.servlet.http.{HttpServletRequest, HttpSession}
 
 /**
 	* Created by Oleg Stoliarov on 11/4/18.
 	*/
-class HttpUtilsTest extends FunSuiteBase {
+class HttpUtilsTest extends FunSuiteMockitoScalaBase {
 	private val USER_ID = 2
 	private var session: HttpSession = _
 	private var request: HttpServletRequest = _

@@ -1,6 +1,6 @@
 package com.stolser.javatraining.webproject.controller.request.processor
 
-import com.stolser.javatraining.webproject.FunSuiteBase
+import com.stolser.javatraining.webproject.FunSuiteMockitoScalaBase
 import com.stolser.javatraining.webproject.controller.ApplicationResources.CURRENT_USER_ATTR_NAME
 import com.stolser.javatraining.webproject.controller.request.processor.sign._
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
@@ -8,7 +8,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
 /**
 	* Created by Oleg Stoliarov on 11/6/18.
 	*/
-class SignOutTest extends FunSuiteBase {
+class SignOutTest extends FunSuiteMockitoScalaBase {
 	private var session: HttpSession = _
 	private var request: HttpServletRequest = _
 	private var response: HttpServletResponse = _
