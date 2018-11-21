@@ -9,7 +9,7 @@ import com.stolser.javatraining.webproject.controller.utils.{HttpUtils, HttpUtil
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserRole}
 import com.stolser.javatraining.webproject.service.PeriodicalService
-import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
@@ -17,7 +17,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 	* Processes a GET request to page with the information of the selected individual periodical.
 	*/
 object DisplayOnePeriodical extends RequestProcessor {
-	private[periodical] var periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private[periodical] var periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
 	private[periodical] var httpUtils: HttpUtilsTrait = HttpUtils
 	private val ACCESS_DENIED_TO = "Access denied to '%s'"
 

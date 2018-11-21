@@ -7,7 +7,7 @@ import com.stolser.javatraining.webproject.controller.message.{FrontMessageFacto
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
-import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.collection.JavaConverters._
@@ -19,7 +19,7 @@ import scala.collection.mutable
 	* this user is active (not blocked) and if everything is OK, adds this user into the session.
 	*/
 object SignIn extends RequestProcessor {
-	private val userService = UserServiceImpl
+	private val userService = UserServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {

@@ -7,7 +7,7 @@ import com.stolser.javatraining.webproject.controller.request.processor.RequestP
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalOperationType, PeriodicalStatus}
 import com.stolser.javatraining.webproject.service.PeriodicalService
-import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
@@ -15,7 +15,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 	* Processes a GET request to a page where admin can update information of one periodical.
 	*/
 object DisplayUpdatePeriodicalPage extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private val periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): String = {

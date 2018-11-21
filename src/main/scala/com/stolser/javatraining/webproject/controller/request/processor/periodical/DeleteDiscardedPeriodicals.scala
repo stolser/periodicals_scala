@@ -5,7 +5,7 @@ import com.stolser.javatraining.webproject.controller.message.{FrontMessageFacto
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils._
 import com.stolser.javatraining.webproject.service.PeriodicalService
-import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.collection.mutable
@@ -15,7 +15,7 @@ import scala.collection.mutable
 	* Processes a POST request to delete all periodicals with status = "discarded".
 	*/
 object DeleteDiscardedPeriodicals extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private val periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,

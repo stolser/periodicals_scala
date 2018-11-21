@@ -2,8 +2,7 @@ package com.stolser.javatraining.webproject.service.impl
 
 import java.util.NoSuchElementException
 
-import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
-import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory, DaoFactoryTrait}
+import com.stolser.javatraining.webproject.dao.AbstractConnection
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
@@ -11,45 +10,31 @@ import com.stolser.javatraining.webproject.service.PeriodicalService
 import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 
 /**
-	* Created by Oleg Stoliarov on 10/15/18.
+	* Created by Oleg Stoliarov on 11/20/18.
 	*/
-object PeriodicalServiceImpl extends PeriodicalService {
-	private implicit var implicitConnectionPool: ConnectionPool = ConnectionPoolProvider.getPool
+abstract class PeriodicalServiceImpl extends PeriodicalService {
+	this: ServiceDependency =>
+
 	private val NO_PERIODICAL_WITH_ID_MESSAGE = "There is no periodical in the DB with id = %d"
-	private var factory = DaoFactory.mysqlDaoFactory
-
-	private[impl] def daoFactory = factory
-
-	private[impl] def daoFactory_=(factory: DaoFactoryTrait): Unit = {
-		require(factory != null)
-		this.factory = factory
-	}
-
-	private[impl] def connectionPool = implicitConnectionPool
-
-	private[impl] def connectionPool_=(connectionPool: ConnectionPool): Unit = {
-		require(connectionPool != null)
-		implicitConnectionPool = connectionPool
-	}
 
 	override def findOneById(id: Long): Option[Periodical] =
 		withConnection { conn =>
-			factory.periodicalDao(conn).findOneById(id)
+			daoFactory.periodicalDao(conn).findOneById(id)
 		}
 
 	override def findOneByName(name: String): Option[Periodical] =
 		withConnection { conn =>
-			factory.periodicalDao(conn).findOneByName(name)
+			daoFactory.periodicalDao(conn).findOneByName(name)
 		}
 
 	override def findAll: List[Periodical] =
 		withConnection { conn =>
-			factory.periodicalDao(conn).findAll
+			daoFactory.periodicalDao(conn).findAll
 		}
 
 	override def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical] =
 		withConnection { conn =>
-			factory.periodicalDao(conn).findAllByStatus(status)
+			daoFactory.periodicalDao(conn).findAllByStatus(status)
 		}
 
 	override def save(periodical: Periodical): Periodical = {
@@ -65,12 +50,12 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	private def createNewPeriodical(periodical: Periodical): Unit =
 		withConnection { conn =>
-			factory.periodicalDao(conn).createNew(periodical)
+			daoFactory.periodicalDao(conn).createNew(periodical)
 		}
 
 	private def getPeriodicalFromDbByName(name: String): Periodical =
 		withConnection { conn =>
-			factory.periodicalDao(conn).findOneByName(name) match {
+			daoFactory.periodicalDao(conn).findOneByName(name) match {
 				case Some(periodical) => periodical
 				case None => throw new RuntimeException(s"Periodical with name $name must exist in the db.")
 			}
@@ -78,7 +63,7 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	private def updatePeriodical(periodical: Periodical): Unit =
 		withConnection { conn =>
-			val affectedRows = factory.periodicalDao(conn).update(periodical)
+			val affectedRows = daoFactory.periodicalDao(conn).update(periodical)
 
 			if (affectedRows == 0)
 				throw new NoSuchElementException(NO_PERIODICAL_WITH_ID_MESSAGE.format(periodical.id))
@@ -88,18 +73,18 @@ object PeriodicalServiceImpl extends PeriodicalService {
 		require(periodical != null)
 
 		withConnection { conn =>
-			factory.periodicalDao(conn).updateAndSetDiscarded(periodical)
+			daoFactory.periodicalDao(conn).updateAndSetDiscarded(periodical)
 		}
 	}
 
 	override def deleteAllDiscarded(): Int =
 		withConnection { conn =>
-			factory.periodicalDao(conn).deleteAllDiscarded()
+			daoFactory.periodicalDao(conn).deleteAllDiscarded()
 		}
 
 	override def hasActiveSubscriptions(periodicalId: Long): Boolean =
 		withConnection { conn =>
-			factory.subscriptionDao(conn)
+			daoFactory.subscriptionDao(conn)
 				.findAllByPeriodicalIdAndStatus(periodicalId, SubscriptionStatus.ACTIVE)
 				.nonEmpty
 		}
@@ -113,7 +98,7 @@ object PeriodicalServiceImpl extends PeriodicalService {
 
 	private def getPeriodicalNumberByCategory(conn: AbstractConnection,
 																						category: PeriodicalCategory): PeriodicalNumberByCategory = {
-		val dao = factory.periodicalDao(conn)
+		val dao = daoFactory.periodicalDao(conn)
 
 		val activeNumber = dao.findNumberOfPeriodicalsWithCategoryAndStatus(category,
 			PeriodicalStatus.ACTIVE)

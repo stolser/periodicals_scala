@@ -2,8 +2,7 @@ package com.stolser.javatraining.webproject.service.impl
 
 import java.time.{Instant, LocalDateTime, ZoneId, ZoneOffset}
 
-import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
-import com.stolser.javatraining.webproject.dao.{DaoFactory, SubscriptionDao}
+import com.stolser.javatraining.webproject.dao.SubscriptionDao
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.statistics.FinancialStatistics
@@ -13,32 +12,31 @@ import com.stolser.javatraining.webproject.service.InvoiceService
 import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 
 /**
-	* Created by Oleg Stoliarov on 10/15/18.
+	* Created by Oleg Stoliarov on 11/21/18.
 	*/
-object InvoiceServiceImpl extends InvoiceService {
-	private lazy val factory = DaoFactory.mysqlDaoFactory
-	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
+abstract class InvoiceServiceImpl extends InvoiceService {
+	this: ServiceDependency =>
 
 	override def findOneById(invoiceId: Long): Option[Invoice] =
 		withConnection { conn =>
-			factory.invoiceDao(conn).findOneById(invoiceId)
+			daoFactory.invoiceDao(conn).findOneById(invoiceId)
 		}
 
 	override def findAllByUserId(userId: Long): List[Invoice] =
 		withConnection { conn =>
-			factory.invoiceDao(conn).findAllByUserId(userId)
+			daoFactory.invoiceDao(conn).findAllByUserId(userId)
 		}
 
 	override def findAllByPeriodicalId(periodicalId: Long): List[Invoice] =
 		withConnection { conn =>
-			factory.invoiceDao(conn).findAllByPeriodicalId(periodicalId)
+			daoFactory.invoiceDao(conn).findAllByPeriodicalId(periodicalId)
 		}
 
 	override def createNew(invoice: Invoice): Unit = {
 		require(invoice != null)
 
 		withConnection { conn =>
-			factory.invoiceDao(conn).createNew(invoice)
+			daoFactory.invoiceDao(conn).createNew(invoice)
 		}
 	}
 
@@ -46,15 +44,15 @@ object InvoiceServiceImpl extends InvoiceService {
 		require(invoiceToPay != null)
 
 		withConnection { conn =>
-			val subscriptionDao = factory.subscriptionDao(conn)
+			val subscriptionDao = daoFactory.subscriptionDao(conn)
 			invoiceToPay.status = InvoiceStatus.PAID
 			invoiceToPay.paymentDate = Some(Instant.now)
 
 			conn.beginTransaction()
 
-			factory.invoiceDao(conn).update(invoiceToPay)
+			daoFactory.invoiceDao(conn).update(invoiceToPay)
 
-			val userInDb: User = factory.userDao(conn).findOneById(invoiceToPay.user.id) match {
+			val userInDb: User = daoFactory.userDao(conn).findOneById(invoiceToPay.user.id) match {
 				case Some(user) => user
 				case None => throw new RuntimeException(s"There is no user in the db associated with this invoice: $invoiceToPay")
 			}
@@ -112,7 +110,7 @@ object InvoiceServiceImpl extends InvoiceService {
 
 	override def finStatistics(since: Instant, until: Instant): FinancialStatistics =
 		withConnection { conn =>
-			val dao = factory.invoiceDao(conn)
+			val dao = daoFactory.invoiceDao(conn)
 			val totalInvoiceSum = dao.createdInvoiceSumByCreationDate(since, until)
 			val paidInvoiceSum = dao.paidInvoiceSumByPaymentDate(since, until)
 

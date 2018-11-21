@@ -19,9 +19,9 @@ object ConnectionPoolProvider {
 	private val EXCEPTION_DURING_OPENING_DB_CONFIG_FILE = "Exception during opening the db-config file with path = {}."
 	private val EXCEPTION_DURING_LOADING_DB_CONFIG_PROPERTIES = "Exception during loading db-config properties from the file " + "(path = {})"
 
-	lazy val getPool: ConnectionPool = createPoolFromProperties(getProperties(DB_CONFIG_FILENAME))
+	def connectionPoolMysql: SqlConnectionPool = createMysqlPoolFromProperties(properties(DB_CONFIG_FILENAME))
 
-	private def createPoolFromProperties(properties: Properties): SqlConnectionPool =
+	private def createMysqlPoolFromProperties(properties: Properties): SqlConnectionPool =
 		try {
 			val url = properties.getProperty(DB_CONFIG_PARAM_URL)
 			val dbName = properties.getProperty(DB_CONFIG_PARAM_DB_NAME)
@@ -42,7 +42,7 @@ object ConnectionPoolProvider {
 				throw new RuntimeException(e)
 		}
 
-	private def getProperties(dbConfigFileName: String) = {
+	private def properties(dbConfigFileName: String) = {
 		val dbConfigFileInput: InputStream = ConnectionPoolProvider.getClass
 			.getClassLoader
 			.getResourceAsStream(dbConfigFileName)

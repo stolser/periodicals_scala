@@ -7,7 +7,7 @@ import com.stolser.javatraining.webproject.controller.request.processor.RequestP
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
-import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl, SubscriptionServiceImpl}
+import com.stolser.javatraining.webproject.service.impl.mysql.{InvoiceServiceMysqlImpl, PeriodicalServiceMysqlImpl, SubscriptionServiceMysqlImpl}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.collection.JavaConverters._
@@ -18,9 +18,9 @@ import scala.collection.mutable
 	* Processes a GET request to a current user personal account page.
 	*/
 object DisplayCurrentUser extends RequestProcessor {
-	private val invoiceService = InvoiceServiceImpl
-	private val subscriptionService = SubscriptionServiceImpl
-	private val periodicalService = PeriodicalServiceImpl
+	private val invoiceService = InvoiceServiceMysqlImpl
+	private val subscriptionService = SubscriptionServiceMysqlImpl
+	private val periodicalService = PeriodicalServiceMysqlImpl
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): String = {

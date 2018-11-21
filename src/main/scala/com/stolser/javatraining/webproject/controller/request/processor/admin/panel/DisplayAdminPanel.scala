@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit
 
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{ADMIN_PANEL_VIEW_NAME, FINANCIAL_STATISTICS_ATTR_NAME, PERIODICAL_STATISTICS_ATTR_NAME}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
-import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
+import com.stolser.javatraining.webproject.service.impl.mysql.{InvoiceServiceMysqlImpl, PeriodicalServiceMysqlImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
@@ -16,8 +16,8 @@ import scala.collection.JavaConverters._
 	* Processes a GET request to the Admin Panel page.
 	*/
 object DisplayAdminPanel extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
-	private val invoiceService: InvoiceService = InvoiceServiceImpl
+	private val periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
+	private val invoiceService: InvoiceService = InvoiceServiceMysqlImpl
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): String = {

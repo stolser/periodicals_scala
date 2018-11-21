@@ -6,7 +6,7 @@ import com.stolser.javatraining.webproject.controller.request.processor.RequestP
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus
-import com.stolser.javatraining.webproject.service.impl.{InvoiceServiceImpl, PeriodicalServiceImpl}
+import com.stolser.javatraining.webproject.service.impl.mysql.{InvoiceServiceMysqlImpl, PeriodicalServiceMysqlImpl}
 import com.stolser.javatraining.webproject.service.{InvoiceService, PeriodicalService}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.LoggerFactory
@@ -21,8 +21,8 @@ import scala.collection.mutable
 	*/
 object PayOneInvoice extends RequestProcessor {
 	private val LOGGER = LoggerFactory.getLogger(PayOneInvoice.getClass)
-	private val invoiceService: InvoiceService = InvoiceServiceImpl
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private val invoiceService: InvoiceService = InvoiceServiceMysqlImpl
+	private val periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,

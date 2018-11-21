@@ -3,14 +3,14 @@ package com.stolser.javatraining.webproject.controller.form.validator.user
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{MSG_USER_EMAIL_DUPLICATION_ERROR, MSG_USER_EMAIL_REGEX_ERROR, STATUS_CODE_VALIDATION_FAILED, USER_EMAIL_PATTERN_REGEX}
 import com.stolser.javatraining.webproject.controller.form.validator.{AbstractValidator, ValidationResult}
 import com.stolser.javatraining.webproject.service.UserService
-import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.HttpServletRequest
 
 /**
 	* Created by Oleg Stoliarov on 10/7/18.
 	*/
 object UserEmailValidator extends AbstractValidator {
-	private var userServiceImpl = UserServiceImpl: UserService
+	private var userServiceImpl = UserServiceMysqlImpl: UserService
 	private val regexFailedResult = ValidationResult(
 		statusCode = STATUS_CODE_VALIDATION_FAILED,
 		messageKey = MSG_USER_EMAIL_REGEX_ERROR

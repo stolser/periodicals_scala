@@ -8,7 +8,7 @@ import com.stolser.javatraining.webproject.dao.exception.DaoException
 /**
 	* Created by Oleg Stoliarov on 10/14/18.
 	*/
-object MysqlDaoFactory extends DaoFactoryTrait {
+object MysqlDaoFactory extends DaoFactory {
 	private val CONNECTION_CAN_NOT_BE_NULL = "Connection can not be null."
 	private val CONNECTION_IS_NOT_AN_ABSTRACT_CONNECTION_IMPL_FOR_JDBC =
 		"Connection is not an AbstractConnectionImpl for JDBC."

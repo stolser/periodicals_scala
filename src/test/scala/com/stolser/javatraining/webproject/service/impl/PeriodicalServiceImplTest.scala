@@ -8,34 +8,37 @@ import com.stolser.javatraining.webproject.dao._
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus._
+import com.stolser.javatraining.webproject.service.PeriodicalService
 
 /**
 	* Created by Oleg Stoliarov on 11/7/18.
 	*/
 class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
-	private var daoFactory: DaoFactoryTrait = _
-	private var connectionPool: ConnectionPool = _
+	private var daoFactoryMock: DaoFactory = _
+	private var connectionPoolMock: ConnectionPool = _
 	private var conn: AbstractConnection = _
 	private var periodicalDao: PeriodicalDao = _
 	private var subscriptionDao: SubscriptionDao = _
+	private var periodicalServiceImpl: PeriodicalService = _
 
 	before {
-		daoFactory = mock[DaoFactoryTrait]
-		connectionPool = mock[ConnectionPool]
+		daoFactoryMock = mock[DaoFactory]
+		connectionPoolMock = mock[ConnectionPool]
 		conn = mock[AbstractConnection]
 		periodicalDao = mock[PeriodicalDao]
 		subscriptionDao = mock[SubscriptionDao]
+		periodicalServiceImpl = new PeriodicalServiceImpl with ServiceDependency {
+			override implicit val connectionPool: ConnectionPool = connectionPoolMock
+			override val daoFactory: DaoFactory = daoFactoryMock
+		}
 	}
 
 	test("findOneByName() Should return the correct periodical") {
 		val periodicalName = "Test Periodical"
 		val expectedPeriodical = Some(Periodical(id = 7, name = "Test Periodical", publisher = "Test Publisher"))
-		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory = daoFactory
-		periodicalServiceImpl.connectionPool = connectionPool
 
-		when(connectionPool.connection) thenReturn conn
-		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPoolMock.connection) thenReturn conn
+		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn expectedPeriodical
 
 		val actualPeriodical = periodicalServiceImpl.findOneByName(periodicalName)
@@ -50,12 +53,9 @@ class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
 		val newPeriodicalIdInDb = 7
 		val periodicalToSave = Periodical(id = 0, name = periodicalName)
 		val savedPeriodical = Some(Periodical(id = newPeriodicalIdInDb, name = periodicalName))
-		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory = daoFactory
-		periodicalServiceImpl.connectionPool =connectionPool
 
-		when(connectionPool.connection) thenReturn conn
-		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPoolMock.connection) thenReturn conn
+		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn savedPeriodical
 
 		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)
@@ -70,12 +70,9 @@ class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
 		val periodicalName = "Test Periodical"
 		val periodicalToSave = Some(Periodical(id = 5, name = periodicalName))
 		val updatedRowsNumber = 1
-		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory = daoFactory
-		periodicalServiceImpl.connectionPool = connectionPool
 
-		when(connectionPool.connection) thenReturn conn
-		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPoolMock.connection) thenReturn conn
+		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.findOneByName(periodicalName)) thenReturn periodicalToSave
 		when(periodicalDao.update(periodicalToSave.get)) thenReturn updatedRowsNumber
 
@@ -88,12 +85,8 @@ class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
 	}
 
 	test("save() Should throw NoSuchElementException if no rows were updated by the query") {
-		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory = daoFactory
-		periodicalServiceImpl.connectionPool = connectionPool
-
-		when(connectionPool.connection) thenReturn conn
-		when(daoFactory.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
+		when(connectionPoolMock.connection) thenReturn conn
+		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDao
 		when(periodicalDao.update(any[Periodical])) thenReturn 0
 
 		assertThrows[NoSuchElementException] {
@@ -103,12 +96,9 @@ class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
 
 	test("hasActiveSubscriptions() Should return 'false' if there is no ACTIVE subscriptions on his periodical") {
 		val periodicalId = 10
-		val periodicalServiceImpl = PeriodicalServiceImpl
-		periodicalServiceImpl.daoFactory = daoFactory
-		periodicalServiceImpl.connectionPool = connectionPool
 
-		when(connectionPool.connection) thenReturn conn
-		when(daoFactory.subscriptionDao(any[AbstractConnection])) thenReturn subscriptionDao
+		when(connectionPoolMock.connection) thenReturn conn
+		when(daoFactoryMock.subscriptionDao(any[AbstractConnection])) thenReturn subscriptionDao
 		when(subscriptionDao.findAllByPeriodicalIdAndStatus(periodicalId, ACTIVE))
 			.thenReturn(List.empty[Subscription])
 

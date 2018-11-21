@@ -6,7 +6,7 @@ import com.stolser.javatraining.webproject.controller.message.{FrontMessageFacto
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
-import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
 
 import scala.collection.JavaConverters._
@@ -16,7 +16,7 @@ import scala.collection.mutable
   * Created by Oleg Stoliarov on 10/11/18.
   */
 object CreateUser extends RequestProcessor {
-	private val userService = UserServiceImpl
+	private val userService = UserServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,

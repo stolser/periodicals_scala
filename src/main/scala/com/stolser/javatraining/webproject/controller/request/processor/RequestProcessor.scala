@@ -22,4 +22,5 @@ trait RequestProcessor {
 	def process(request: HttpServletRequest, response: HttpServletResponse): String
 }
 
-abstract class RequestProcessorWrapper extends RequestProcessor {}
+abstract class RequestProcessorWrapper // was used to implement trait RequestProcessor from Java code;
+	extends RequestProcessor {}

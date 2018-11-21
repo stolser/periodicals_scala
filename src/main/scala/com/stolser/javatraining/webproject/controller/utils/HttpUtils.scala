@@ -12,7 +12,7 @@ import com.stolser.javatraining.webproject.controller.security.AccessDeniedExcep
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.service.impl.UserServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.LoggerFactory
 
@@ -29,7 +29,7 @@ object HttpUtils extends HttpUtilsTrait {
 	private val REDIRECTION_FROM_TO_TEXT = "During redirection from \"%s\" to \"%s\""
 	private val URI_MUST_CONTAIN_ID_TEXT = "Uri (%s) must contain id."
 	private val NUMBER_REGEX = "\\d+"
-	private val userService = UserServiceImpl
+	private val userService = UserServiceMysqlImpl
 
 	/**
 		* Retrieves a current user's id from the session.

@@ -10,7 +10,8 @@ trait PeriodicalDao extends GenericDao[Periodical] {
 
 	def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical]
 
-	def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory, status: PeriodicalStatus.Value): Int
+	def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory,
+																									 status: PeriodicalStatus.Value): Int
 
 	/**
 		* Updates a periodical and sets a new status 'discarded' only if there is no active subscriptions

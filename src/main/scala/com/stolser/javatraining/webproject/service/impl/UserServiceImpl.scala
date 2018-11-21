@@ -1,17 +1,21 @@
 package com.stolser.javatraining.webproject.service.impl
 
-import com.stolser.javatraining.webproject.connection.pool.{ConnectionPool, ConnectionPoolProvider}
-import com.stolser.javatraining.webproject.dao.{AbstractConnection, DaoFactory}
+import com.stolser.javatraining.webproject.dao.AbstractConnection
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole}
 import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
 import com.stolser.javatraining.webproject.service.UserService
 
 /**
-	* Created by Oleg Stoliarov on 10/15/18.
+	* Created by Oleg Stoliarov on 11/21/18.
 	*/
-object UserServiceImpl extends UserService {
-	private lazy val factory = DaoFactory.mysqlDaoFactory
-	private implicit lazy val connectionPool: ConnectionPool = ConnectionPoolProvider.getPool
+abstract class UserServiceImpl extends UserService {
+	this: ServiceDependency =>
+
+	override def findOneById(id: Long): Option[User] =
+		findOneUserBy(UserParameterName.ID, id)
+
+	override def findOneByName(userName: String): Option[User] =
+		findOneUserBy(UserParameterName.NAME, userName)
 
 	private object UserParameterName extends Enumeration {
 		val ID, NAME = Value
@@ -21,9 +25,9 @@ object UserServiceImpl extends UserService {
 														paramValue: Any): Option[User] = {
 		withConnection { conn =>
 			val userInDb = paramName match {
-				case UserParameterName.ID => factory.userDao(conn)
+				case UserParameterName.ID => daoFactory.userDao(conn)
 					.findOneById(paramValue.asInstanceOf[Long])
-				case UserParameterName.NAME => factory.userDao(conn)
+				case UserParameterName.NAME => daoFactory.userDao(conn)
 					.findOneByUserName(paramValue.asInstanceOf[String])
 			}
 
@@ -36,27 +40,21 @@ object UserServiceImpl extends UserService {
 		}
 	}
 
-	override def findOneById(id: Long): Option[User] =
-		findOneUserBy(UserParameterName.ID, id)
-
-	override def findOneByName(userName: String): Option[User] =
-		findOneUserBy(UserParameterName.NAME, userName)
-
 	private def setUserRoles(user: User,
 													 conn: AbstractConnection): Unit =
-		user.roles = factory.roleDao(conn).findRolesByUserName(user.userName)
+		user.roles = daoFactory.roleDao(conn).findRolesByUserName(user.userName)
 
 	override def findOneCredentialByUserName(userName: String): Option[Credential] =
 		withConnection { conn =>
-			factory.credentialDao(conn)
+			daoFactory.credentialDao(conn)
 				.findCredentialByUserName(userName)
 		}
 
 	override def findAll: List[User] =
 		withConnection { conn =>
-			val roleDao = factory.roleDao(conn)
+			val roleDao = daoFactory.roleDao(conn)
 
-			for (user <- factory.userDao(conn).findAll)
+			for (user <- daoFactory.userDao(conn).findAll)
 				yield {
 					user.roles = roleDao.findRolesByUserName(user.userName)
 					user
@@ -73,9 +71,9 @@ object UserServiceImpl extends UserService {
 		withConnection { conn =>
 			conn.beginTransaction()
 
-			val userId = factory.userDao(conn).createNew(user)
+			val userId = daoFactory.userDao(conn).createNew(user)
 			credential.userId = userId
-			val isNewCredentialCreated = factory.credentialDao(conn)
+			val isNewCredentialCreated = daoFactory.credentialDao(conn)
 				.createNew(credential)
 
 			if (!isNewCredentialCreated) {
@@ -83,7 +81,7 @@ object UserServiceImpl extends UserService {
 				return false
 			}
 
-			factory.roleDao(conn).addRole(userId, userRole)
+			daoFactory.roleDao(conn).addRole(userId, userRole)
 			conn.commitTransaction()
 
 			return true
@@ -92,6 +90,6 @@ object UserServiceImpl extends UserService {
 
 	override def emailExistsInDb(email: String): Boolean =
 		withConnection { conn =>
-			factory.userDao(conn).emailExistsInDb(email)
+			daoFactory.userDao(conn).emailExistsInDb(email)
 		}
 }

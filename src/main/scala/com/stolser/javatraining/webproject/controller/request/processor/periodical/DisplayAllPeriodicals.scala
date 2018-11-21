@@ -3,7 +3,7 @@ package com.stolser.javatraining.webproject.controller.request.processor.periodi
 import com.stolser.javatraining.webproject.controller.ApplicationResources.{ALL_PERIODICALS_ATTR_NAME, PERIODICAL_LIST_VIEW_NAME}
 import com.stolser.javatraining.webproject.controller.request.processor.RequestProcessor
 import com.stolser.javatraining.webproject.service.PeriodicalService
-import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 import scala.collection.JavaConverters._
@@ -16,7 +16,7 @@ import scala.collection.JavaConverters._
   * - a user with role = 'admin' will see all periodicals in the system.
   */
 object DisplayAllPeriodicals extends RequestProcessor {
-	private val periodicalService: PeriodicalService = PeriodicalServiceImpl
+	private val periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): String = {

@@ -10,7 +10,7 @@ import com.stolser.javatraining.webproject.controller.utils.HttpUtils
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalOperationType.{CREATE, UPDATE}
 import com.stolser.javatraining.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE}
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType, PeriodicalStatus}
-import com.stolser.javatraining.webproject.service.impl.PeriodicalServiceImpl
+import com.stolser.javatraining.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.LoggerFactory
 
@@ -24,7 +24,7 @@ import scala.collection.mutable
 	*/
 object PersistOnePeriodical extends RequestProcessor {
 	private val LOGGER = LoggerFactory.getLogger(PersistOnePeriodical.getClass)
-	private val periodicalService = PeriodicalServiceImpl
+	private val periodicalService = PeriodicalServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
@@ -172,7 +172,7 @@ object PersistOnePeriodical extends RequestProcessor {
 		private val cache = mutable.Map[String, PeriodicalStatusChange]()
 
 		private[periodical] def instance(periodicalToSave: Periodical) = {
-			val periodicalInDb = PeriodicalServiceImpl.findOneById(periodicalToSave.id)
+			val periodicalInDb = PeriodicalServiceMysqlImpl.findOneById(periodicalToSave.id)
 			val oldStatus =
 				if (periodicalInDb.isDefined)
 					periodicalInDb.get.status
