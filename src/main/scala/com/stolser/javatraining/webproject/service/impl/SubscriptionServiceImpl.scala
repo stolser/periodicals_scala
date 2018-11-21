@@ -1,8 +1,7 @@
 package com.stolser.javatraining.webproject.service.impl
 
 import com.stolser.javatraining.webproject.model.entity.subscription.Subscription
-import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
-import com.stolser.javatraining.webproject.service.SubscriptionService
+import com.stolser.javatraining.webproject.service.{SubscriptionService, _}
 
 /**
 	* Created by Oleg Stoliarov on 11/21/18.

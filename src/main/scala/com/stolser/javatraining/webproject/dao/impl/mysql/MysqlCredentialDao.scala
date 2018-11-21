@@ -2,10 +2,10 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
 
+import com.stolser.javatraining.webproject._
 import com.stolser.javatraining.webproject.dao.CredentialDao
 import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlCredentialDao._
 import com.stolser.javatraining.webproject.model.entity.user.Credential
-import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 /**
 	* Created by Oleg Stoliarov on 10/14/18.

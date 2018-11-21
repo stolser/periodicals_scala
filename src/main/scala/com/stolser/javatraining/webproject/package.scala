@@ -1,4 +1,4 @@
-package com.stolser.javatraining.webproject.utils
+package com.stolser.javatraining
 
 import java.sql.SQLException
 
@@ -7,9 +7,9 @@ import com.stolser.javatraining.webproject.dao.exception.DaoException
 import scala.util.control.NonFatal
 
 /**
-	* Created by Oleg Stoliarov on 10/14/18.
+	* Created by Oleg Stoliarov on 11/21/18.
 	*/
-object TryCatchUtils {
+package object webproject {
 	def tryAndCatchSqlException[A](exceptionMessage: String = null)
 																(block: () => A): A = {
 		try {

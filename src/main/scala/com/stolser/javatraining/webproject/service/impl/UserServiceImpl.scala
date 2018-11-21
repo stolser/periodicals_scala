@@ -2,8 +2,7 @@ package com.stolser.javatraining.webproject.service.impl
 
 import com.stolser.javatraining.webproject.dao.AbstractConnection
 import com.stolser.javatraining.webproject.model.entity.user.{Credential, User, UserRole}
-import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
-import com.stolser.javatraining.webproject.service.UserService
+import com.stolser.javatraining.webproject.service.{UserService, _}
 
 /**
 	* Created by Oleg Stoliarov on 11/21/18.

@@ -2,13 +2,13 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql._
 
+import com.stolser.javatraining.webproject._
 import com.stolser.javatraining.webproject.controller.utils.DaoUtils
 import com.stolser.javatraining.webproject.dao.SubscriptionDao
 import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlSubscriptionDao._
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 import scala.collection.mutable
 

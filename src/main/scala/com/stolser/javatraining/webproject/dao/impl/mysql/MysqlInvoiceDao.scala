@@ -3,12 +3,12 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 import java.sql._
 import java.time.Instant
 
+import com.stolser.javatraining.webproject._
 import com.stolser.javatraining.webproject.dao.InvoiceDao
 import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlInvoiceDao._
 import com.stolser.javatraining.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 import scala.collection.mutable
 

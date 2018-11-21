@@ -2,12 +2,12 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet, SQLException}
 
+import com.stolser.javatraining.webproject._
 import com.stolser.javatraining.webproject.controller.utils.{DaoUtils, DaoUtilsTrait}
 import com.stolser.javatraining.webproject.dao.PeriodicalDao
 import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlPeriodicalDao._
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
-import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 import scala.collection.mutable
 

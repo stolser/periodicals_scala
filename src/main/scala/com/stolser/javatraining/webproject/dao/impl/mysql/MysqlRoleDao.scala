@@ -2,10 +2,10 @@ package com.stolser.javatraining.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
 
+import com.stolser.javatraining.webproject._
 import com.stolser.javatraining.webproject.dao.RoleDao
 import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlRoleDao._
 import com.stolser.javatraining.webproject.model.entity.user.UserRole
-import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 import scala.collection.mutable
 

@@ -5,11 +5,11 @@ import java.sql._
 import java.util.Date
 import java.util.Objects.nonNull
 
+import com.stolser.javatraining.webproject._
 import com.stolser.javatraining.webproject.dao.UserDao
 import com.stolser.javatraining.webproject.dao.exception.DaoException
 import com.stolser.javatraining.webproject.dao.impl.mysql.MysqlUserDao._
 import com.stolser.javatraining.webproject.model.entity.user.{User, UserStatus}
-import com.stolser.javatraining.webproject.utils.TryCatchUtils._
 
 import scala.collection.mutable
 

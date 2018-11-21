@@ -6,8 +6,7 @@ import com.stolser.javatraining.webproject.dao.AbstractConnection
 import com.stolser.javatraining.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.stolser.javatraining.webproject.model.entity.statistics.PeriodicalNumberByCategory
 import com.stolser.javatraining.webproject.model.entity.subscription.SubscriptionStatus
-import com.stolser.javatraining.webproject.service.PeriodicalService
-import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
+import com.stolser.javatraining.webproject.service.{PeriodicalService, _}
 
 /**
 	* Created by Oleg Stoliarov on 11/20/18.

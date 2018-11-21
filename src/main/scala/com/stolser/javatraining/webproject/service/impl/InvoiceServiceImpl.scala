@@ -8,8 +8,7 @@ import com.stolser.javatraining.webproject.model.entity.periodical.Periodical
 import com.stolser.javatraining.webproject.model.entity.statistics.FinancialStatistics
 import com.stolser.javatraining.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.stolser.javatraining.webproject.model.entity.user.User
-import com.stolser.javatraining.webproject.service.InvoiceService
-import com.stolser.javatraining.webproject.service.ServiceUtils.withConnection
+import com.stolser.javatraining.webproject.service.{InvoiceService, _}
 
 /**
 	* Created by Oleg Stoliarov on 11/21/18.
