@@ -24,10 +24,10 @@
         <Root level="error">
             <AppenderRef ref="Console"/>
         </Root>
-        <!--<Logger name="com.stolser.javatraining" level="debug" additivity="false">-->
+        <!--<Logger name="com.ostoliarov.javatraining" level="debug" additivity="false">-->
             <!--<AppenderRef ref="Console"/>-->
         <!--</Logger>-->
-        <Logger name="com.stolser.javatraining" level="error" additivity="false">
+        <Logger name="com.ostoliarov.javatraining" level="error" additivity="false">
             <AppenderRef ref="ErrorLogFile"/>
         </Logger>
     </Loggers>

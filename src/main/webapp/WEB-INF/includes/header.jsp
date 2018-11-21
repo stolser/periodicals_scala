@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="custom" uri="http://stolser.com/javaee/jsp-tags-0.1" %>
 <fmt:setBundle basename="webproject.i18n.backend.general" var="langGeneral"/>
-<%@ page import="com.stolser.javatraining.webproject.controller.ApplicationResources" %>
+<%@ page import="com.ostoliarov.webproject.controller.ApplicationResources" %>
 
 <c:set var="language"
        value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}"
