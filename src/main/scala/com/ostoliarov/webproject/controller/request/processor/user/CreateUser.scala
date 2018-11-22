@@ -3,8 +3,9 @@ package com.ostoliarov.webproject.controller.request.processor.user
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
@@ -20,7 +21,7 @@ object CreateUser extends RequestProcessor {
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val formMessages = mutable.Map[String, FrontendMessage]()
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val session: HttpSession = request.getSession
@@ -50,7 +51,7 @@ object CreateUser extends RequestProcessor {
 			session.setAttribute(MESSAGES_ATTR_NAME, formMessages.asJava)
 		}
 
-		REDIRECT + redirectUri
+		ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
 	}
 
 	private def createUser(username: String,

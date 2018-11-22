@@ -7,10 +7,6 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
   * Together with concrete implementations (processors) implements the Command Design pattern.
   */
 trait RequestProcessor {
-	val FORWARD = "forward:"
-	val REDIRECT = "redirect:"
-	val NO_ACTION = "noAction:noUri"
-
 	/**
 	  * Processes a current http request. Can update session or request attributes, analyse request
 	  * parameters, generate frontend messages.
@@ -19,7 +15,7 @@ trait RequestProcessor {
 	  *         or { @code empty object} if a request was redirected to another uri and it does not
 	  *         require to be forwarded.
 	  */
-	def process(request: HttpServletRequest, response: HttpServletResponse): String
+	def process(request: HttpServletRequest, response: HttpServletResponse): ResourceRequest
 }
 
 abstract class RequestProcessorWrapper // was used to implement trait RequestProcessor from Java code;

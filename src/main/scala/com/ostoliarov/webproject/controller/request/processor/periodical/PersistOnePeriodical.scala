@@ -5,8 +5,10 @@ import java.util.Objects.nonNull
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
+import com.ostoliarov.webproject.controller.utils.HttpUtils.addGeneralMessagesToSession
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalOperationType.{CREATE, UPDATE}
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE}
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType, PeriodicalStatus}
@@ -28,7 +30,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val periodicalToSave = HttpUtils.periodicalFromRequest(request)
 		val redirectUri = getRedirectUriByOperationType(request, periodicalToSave)
@@ -38,7 +40,7 @@ object PersistOnePeriodical extends RequestProcessor {
 		if (isPeriodicalToSaveValid(periodicalToSave, request))
 			generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 		else
-			return REDIRECT + redirectUri
+			return ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
 
 		try {
 			checkPeriodicalForActiveSubscriptions(
@@ -51,7 +53,8 @@ object PersistOnePeriodical extends RequestProcessor {
 				val affectedRows: Int = periodicalService.updateAndSetDiscarded(periodicalToSave)
 				if (affectedRows == 0) {
 					addErrorMessage(MSG_PERIODICAL_HAS_ACTIVE_SUBSCRIPTIONS_ERROR, generalMessages, request)
-					return REDIRECT + redirectUri
+
+					return ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
 				}
 			} else periodicalService.save(periodicalToSave)
 
@@ -62,7 +65,7 @@ object PersistOnePeriodical extends RequestProcessor {
 			case e: RuntimeException =>
 				LOGGER.error(s"Exception during persisting periodical ($periodicalToSave).", e)
 				addErrorMessage(MSG_PERIODICAL_PERSISTING_ERROR, generalMessages, request)
-				return REDIRECT + redirectUri
+				return ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
 		}
 	}
 
@@ -82,7 +85,7 @@ object PersistOnePeriodical extends RequestProcessor {
 		)
 
 	private def checkPeriodicalForActiveSubscriptions(periodicalToSave: Periodical,
-																										statusChange: PersistOnePeriodical.PeriodicalStatusChange,
+																										statusChange: PeriodicalStatusChange,
 																										generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
 		if (isStatusChangedFromActiveToInactive(statusChange) &&
 			periodicalToSaveHasActiveSubscriptions(periodicalToSave))

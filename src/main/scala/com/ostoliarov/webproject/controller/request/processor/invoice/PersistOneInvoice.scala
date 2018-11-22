@@ -4,8 +4,10 @@ import java.time.Instant
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.DispatchType._
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.utils.HttpUtils.addGeneralMessagesToSession
 import com.ostoliarov.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.User
@@ -28,7 +30,7 @@ object PersistOneInvoice extends RequestProcessor {
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val periodicalId = java.lang.Long.parseLong(request.getParameter(PERIODICAL_ID_PARAM_NAME))
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
@@ -42,7 +44,7 @@ object PersistOneInvoice extends RequestProcessor {
 
 		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
 
-		REDIRECT + redirectUri(periodicalId)
+		ResourceRequest(REDIRECT, AbstractViewName(redirectUri(periodicalId)))
 	}
 
 	private def isPeriodicalValid(periodicalInDb: Periodical,

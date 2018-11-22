@@ -7,6 +7,8 @@ import java.util.{NoSuchElementException, List => JavaList}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.FrontendMessage
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, ResourceRequest}
 import com.ostoliarov.webproject.controller.security.AccessDeniedException
 import com.ostoliarov.webproject.dao.exception.DaoException
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
@@ -99,12 +101,16 @@ object HttpUtils extends HttpUtilsTrait {
 	/**
 		* Returns an appropriate view name for this exception.
 		*/
-	def errorViewNameAndOriginalMessage(exception: Throwable): (String, String) =
+	def errorViewNameAndOriginalMessage(exception: Exception): (ResourceRequest, String) =
 		exception match {
-			case DaoException(message, _) => (STORAGE_EXCEPTION_PAGE_VIEW_NAME, message)
-			case AccessDeniedException(message) => (ACCESS_DENIED_PAGE_VIEW_NAME, message)
-			case _: NoSuchElementException => (PAGE_404_VIEW_NAME, PAGE_404_ERROR_MESSAGE)
-			case _ => (GENERAL_ERROR_PAGE_VIEW_NAME, GENERAL_ERROR_MESSAGE)
+			case DaoException(message, _) =>
+				(ResourceRequest(REDIRECT, AbstractViewName(STORAGE_EXCEPTION_PAGE_VIEW_NAME)), message)
+			case AccessDeniedException(message) =>
+				(ResourceRequest(REDIRECT, AbstractViewName(ACCESS_DENIED_PAGE_VIEW_NAME)), message)
+			case _: NoSuchElementException =>
+				(ResourceRequest(REDIRECT, AbstractViewName(PAGE_404_VIEW_NAME)), PAGE_404_ERROR_MESSAGE)
+			case _ =>
+				(ResourceRequest(REDIRECT, AbstractViewName(GENERAL_ERROR_PAGE_VIEW_NAME)), GENERAL_ERROR_MESSAGE)
 		}
 
 	/**

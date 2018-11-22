@@ -3,7 +3,8 @@ package com.ostoliarov.webproject.controller
 import java.io.IOException
 
 import com.ostoliarov.webproject.controller.ApplicationResources.ERROR_MESSAGE_ATTR_NAME
-import com.ostoliarov.webproject.controller.request.processor.{DispatchException, RequestProviderImpl}
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.{DispatchType => _, _}
+import com.ostoliarov.webproject.controller.request.processor._
 import com.ostoliarov.webproject.controller.utils.HttpUtils
 import com.ostoliarov.webproject.view.JspViewResolver
 import javax.servlet.ServletException
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory
 class FrontController extends HttpServlet {
 	private val LOGGER = LoggerFactory.getLogger(classOf[FrontController])
 	private val DISPATCHING_TO_VIEW_NAME = "Dispatching to the viewName = '%s'."
-	private val INCORRECT_DISPATCH_TYPE = "Incorrect the dispatch type of the abstractViewName: %s"
+	private val INCORRECT_DISPATCH_TYPE = "Incorrect the dispatch type of the resource request: %s"
 	private val requestProvider = RequestProviderImpl
 	private val viewResolver = JspViewResolver
 
@@ -35,11 +36,14 @@ class FrontController extends HttpServlet {
 	@throws[IOException]
 	private def processRequest(request: HttpServletRequest, response: HttpServletResponse): Unit =
 		tryToProcessRequestAndDispatchResponse(request, response) {
-			request.getSession.removeAttribute(ERROR_MESSAGE_ATTR_NAME)
+			removeTempAttributesFromSession(request)
 
-			val abstractViewName = requestProvider.requestProcessor(request).process(request, response)
-			dispatch(abstractViewName, request, response)
+			val resourceRequest = requestProvider.requestProcessor(request).process(request, response)
+			dispatch(resourceRequest, request, response)
 		}
+
+	private def removeTempAttributesFromSession(request: HttpServletRequest): Unit =
+		request.getSession.removeAttribute(ERROR_MESSAGE_ATTR_NAME)
 
 	private def tryToProcessRequestAndDispatchResponse(request: HttpServletRequest, response: HttpServletResponse)
 																										(block: => Unit): Unit =
@@ -50,23 +54,18 @@ class FrontController extends HttpServlet {
 				logExceptionAndRedirectToErrorPage(request, response, e)
 		}
 
-	private def dispatch(abstractViewName: String,
+	private def dispatch(resourceRequest: ResourceRequest,
 											 request: HttpServletRequest,
-											 response: HttpServletResponse): Unit = {
-		val viewNameParts = abstractViewName.split(":")
-		val dispatchType = viewNameParts(0)
-		val viewName = viewNameParts(1)
-
-		dispatchType match {
-			case "forward" =>
+											 response: HttpServletResponse): Unit =
+		resourceRequest match {
+			case ResourceRequest(FORWARD, AbstractViewName(viewName)) =>
 				sendForward(request, response, viewName)
-			case "redirect" =>
+			case ResourceRequest(REDIRECT, AbstractViewName(viewName)) =>
 				HttpUtils.tryToSendRedirect(request, response, viewName)
-			case "noAction" => ()
+			case ResourceRequest(NO_ACTION, _) => ()
 			case _ =>
-				throw new IllegalArgumentException(INCORRECT_DISPATCH_TYPE.format(abstractViewName))
+				throw new IllegalArgumentException(INCORRECT_DISPATCH_TYPE.format(resourceRequest))
 		}
-	}
 
 	def sendForward(request: HttpServletRequest, response: HttpServletResponse, viewName: String): Unit =
 		try {
@@ -84,14 +83,12 @@ class FrontController extends HttpServlet {
 			s"by a user with id = ${HttpUtils.userIdFromSession(request)} ", e)
 
 		HttpUtils.errorViewNameAndOriginalMessage(e) match {
-			case (viewName, errorMessage) =>
+			case (ResourceRequest(REDIRECT, AbstractViewName(viewName)), errorMessage) =>
+				// add it to the session since we redirect to the error page
+				// and request attributes won't survive redirect;
 				request.getSession.setAttribute(ERROR_MESSAGE_ATTR_NAME, errorMessage)
 
-				HttpUtils.tryToSendRedirect(
-					request,
-					response,
-					viewResolver.resolvePublicViewName(viewName)
-				)
+				HttpUtils.tryToSendRedirect(request, response, viewResolver.resolvePublicViewName(viewName))
 		}
 	}
 }

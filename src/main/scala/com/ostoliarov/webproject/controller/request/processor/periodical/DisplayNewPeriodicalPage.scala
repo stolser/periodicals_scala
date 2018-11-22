@@ -4,7 +4,8 @@ import java.util.{Map => JavaMap}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.FrontendMessage
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.DispatchType._
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalOperationType, PeriodicalStatus}
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
@@ -14,11 +15,11 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 	*/
 object DisplayNewPeriodicalPage extends RequestProcessor {
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		request.getSession.removeAttribute(PERIODICAL_ATTR_NAME)
 		setRequestAttributes(request)
 
-		FORWARD + CREATE_EDIT_PERIODICAL_VIEW_NAME
+		ResourceRequest(FORWARD, AbstractViewName(CREATE_EDIT_PERIODICAL_VIEW_NAME))
 	}
 
 	private def setRequestAttributes(request: HttpServletRequest): Unit = {

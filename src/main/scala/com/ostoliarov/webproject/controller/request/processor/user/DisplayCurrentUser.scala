@@ -3,8 +3,9 @@ package com.ostoliarov.webproject.controller.request.processor.user
 import java.time.Instant
 
 import com.ostoliarov.webproject.controller.ApplicationResources.{ONE_USER_INFO_VIEW_NAME, USER_INVOICES_PARAM_NAME, USER_SUBSCRIPTIONS_PARAM_NAME}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
 import com.ostoliarov.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.ostoliarov.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.ostoliarov.webproject.service.impl.mysql.{InvoiceServiceMysqlImpl, PeriodicalServiceMysqlImpl, SubscriptionServiceMysqlImpl}
@@ -23,7 +24,7 @@ object DisplayCurrentUser extends RequestProcessor {
 	private val periodicalService = PeriodicalServiceMysqlImpl
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val currentUserId: Long = HttpUtils.userIdFromSession(request)
 		val invoices = mutable.Buffer(invoiceService.findAllByUserId(currentUserId): _*)
 		val subscriptions = mutable.Buffer(subscriptionService.findAllByUserId(currentUserId): _*)
@@ -49,7 +50,7 @@ object DisplayCurrentUser extends RequestProcessor {
 				sortSubscriptions(subscriptions).asJava
 			)
 
-		FORWARD + ONE_USER_INFO_VIEW_NAME
+		ResourceRequest(FORWARD, AbstractViewName(ONE_USER_INFO_VIEW_NAME))
 	}
 
 	private def sortInvoices(invoices: mutable.Buffer[Invoice]) =

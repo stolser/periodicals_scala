@@ -2,7 +2,8 @@ package com.ostoliarov.webproject.controller.request.processor.periodical
 
 import com.ostoliarov.webproject.controller.ApplicationResources.{MSG_NO_PERIODICALS_TO_DELETE, MSG_PERIODICALS_DELETED_SUCCESS, PERIODICAL_LIST_URI}
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.service.PeriodicalService
 import com.ostoliarov.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
@@ -19,7 +20,7 @@ object DeleteDiscardedPeriodicals extends RequestProcessor {
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 
 		persistPeriodicalsToDeleteAndRelatedData()
@@ -30,7 +31,7 @@ object DeleteDiscardedPeriodicals extends RequestProcessor {
 
 		addGeneralMessagesToSession(request, generalMessages)
 
-		REDIRECT + PERIODICAL_LIST_URI
+		ResourceRequest(REDIRECT, AbstractViewName(PERIODICAL_LIST_URI))
 	}
 
 	private def addDeleteResultMessage(generalMessages: mutable.ListBuffer[FrontendMessage],

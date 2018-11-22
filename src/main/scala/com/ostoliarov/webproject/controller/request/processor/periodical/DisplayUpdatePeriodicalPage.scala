@@ -3,8 +3,9 @@ package com.ostoliarov.webproject.controller.request.processor.periodical
 import java.util.NoSuchElementException
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalOperationType, PeriodicalStatus}
 import com.ostoliarov.webproject.service.PeriodicalService
 import com.ostoliarov.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
@@ -18,7 +19,7 @@ object DisplayUpdatePeriodicalPage extends RequestProcessor {
 	private val periodicalService: PeriodicalService = PeriodicalServiceMysqlImpl
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val periodicalId = HttpUtils.firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
@@ -27,7 +28,7 @@ object DisplayUpdatePeriodicalPage extends RequestProcessor {
 			case Some(periodical) =>
 				setRequestAttributes(request, periodical)
 
-				FORWARD + CREATE_EDIT_PERIODICAL_VIEW_NAME
+				ResourceRequest(FORWARD, AbstractViewName(CREATE_EDIT_PERIODICAL_VIEW_NAME))
 		}
 	}
 

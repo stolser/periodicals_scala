@@ -4,8 +4,9 @@ import java.util.Objects.nonNull
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -22,7 +23,8 @@ object SignIn extends RequestProcessor {
 	private val userService = UserServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
-	override def process(request: HttpServletRequest, response: HttpServletResponse): String = {
+	override def process(request: HttpServletRequest,
+											 response: HttpServletResponse): ResourceRequest = {
 		val messages = mutable.Map[String, FrontendMessage]()
 		val redirectUri =
 			if (isCredentialCorrect(request))
@@ -34,7 +36,7 @@ object SignIn extends RequestProcessor {
 
 		setSessionAttributes(request, messages)
 
-		REDIRECT + redirectUri
+		ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
 	}
 
 	private def isCredentialCorrect(request: HttpServletRequest) =

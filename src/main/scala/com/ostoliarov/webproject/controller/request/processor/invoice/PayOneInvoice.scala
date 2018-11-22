@@ -2,8 +2,10 @@ package com.ostoliarov.webproject.controller.request.processor.invoice
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message._
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.DispatchType._
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.utils.HttpUtils.addGeneralMessagesToSession
 import com.ostoliarov.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus
 import com.ostoliarov.webproject.service.impl.mysql.{InvoiceServiceMysqlImpl, PeriodicalServiceMysqlImpl}
@@ -26,7 +28,7 @@ object PayOneInvoice extends RequestProcessor {
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val invoiceIdFromRequest = HttpUtils.firstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
 		val invoiceInDb = invoiceService.findOneById(invoiceIdFromRequest.toLong)
@@ -40,13 +42,13 @@ object PayOneInvoice extends RequestProcessor {
 
 		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
 
-		REDIRECT + CURRENT_USER_ACCOUNT_URI
+		ResourceRequest(REDIRECT, AbstractViewName(CURRENT_USER_ACCOUNT_URI))
 	}
 
 	private def isInvoiceValid(invoiceInDb: Invoice,
 														 generalMessages: mutable.ListBuffer[FrontendMessage]): Boolean = {
 
-		def isInvoiceNew() =
+		def isInvoiceNew =
 			if (InvoiceStatus.NEW != invoiceInDb.status) {
 				generalMessages += messageFactory.error(MSG_VALIDATION_INVOICE_IS_NOT_NEW)
 				false
@@ -60,13 +62,13 @@ object PayOneInvoice extends RequestProcessor {
 					throw new RuntimeException(s"Periodical corresponding to invoice = $invoiceInDb does not exist, but must.")
 			}
 
-		def isPeriodicalVisible() =
+		def isPeriodicalVisible =
 			if (!isPeriodicalActive) {
 				generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NOT_VISIBLE)
 				false
 			} else true
 
-		isInvoiceNew() && isPeriodicalVisible()
+		isInvoiceNew && isPeriodicalVisible
 	}
 
 	private def tryToPayInvoice(invoiceInDb: Invoice,

@@ -5,8 +5,9 @@ import java.util.Objects.nonNull
 import java.util.{Locale, ResourceBundle}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.view.SystemLocale
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.NO_ACTION
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
 import org.json.{JSONException, JSONObject}
 import org.slf4j.LoggerFactory
@@ -25,7 +26,7 @@ object AjaxFormValidation extends RequestProcessor {
 	private val EXCEPTION_DURING_VALIDATION = "Exception during validation."
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val session = request.getSession
 		val paramName = request.getParameter(PARAM_NAME)
 		val paramValue = request.getParameter(PARAM_VALUE)
@@ -43,7 +44,7 @@ object AjaxFormValidation extends RequestProcessor {
 			)
 		}
 
-		NO_ACTION
+		ResourceRequest(NO_ACTION, AbstractViewName(""))
 	}
 
 	private def tryToValidateRequest(block: => Unit): Unit =

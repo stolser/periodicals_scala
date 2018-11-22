@@ -2,9 +2,10 @@ package com.ostoliarov.webproject.controller.request.processor.periodical
 
 import com.ostoliarov.webproject.FunSuiteMockitoScalaBase
 import com.ostoliarov.webproject.controller.ApplicationResources._
-import com.ostoliarov.webproject.controller.request.processor.periodical.DisplayOnePeriodical.FORWARD
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, ResourceRequest}
 import com.ostoliarov.webproject.controller.security.AccessDeniedException
 import com.ostoliarov.webproject.controller.utils.HttpUtilsTrait
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import com.ostoliarov.webproject.service.PeriodicalService
@@ -51,7 +52,7 @@ class DisplayOnePeriodicalTest extends FunSuiteMockitoScalaBase {
 
 		verify(requestMock) setAttribute(PERIODICAL_ATTR_NAME, activePeriodical.get)
 
-		assert((FORWARD + ONE_PERIODICAL_VIEW_NAME) === actualUri)
+		assert(ResourceRequest(FORWARD, AbstractViewName(ONE_PERIODICAL_VIEW_NAME)) === actualUri)
 	}
 
 	test("process() Should allow 'ADMIN' to see a 'DISCARDED' periodical") {
@@ -66,7 +67,7 @@ class DisplayOnePeriodicalTest extends FunSuiteMockitoScalaBase {
 
 		verify(requestMock) setAttribute(PERIODICAL_ATTR_NAME, discardedPeriodical.get)
 
-		assert((FORWARD + ONE_PERIODICAL_VIEW_NAME) === actualUri)
+		assert(ResourceRequest(FORWARD, AbstractViewName(ONE_PERIODICAL_VIEW_NAME)) === actualUri)
 	}
 
 	test("process() Should throw 'AccessDeniedException' if periodical is 'INACTIVE' and user is 'SUBSCRIBER'") {

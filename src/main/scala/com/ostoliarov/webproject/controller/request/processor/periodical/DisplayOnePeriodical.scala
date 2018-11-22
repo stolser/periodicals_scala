@@ -3,9 +3,10 @@ package com.ostoliarov.webproject.controller.request.processor.periodical
 import java.util.NoSuchElementException
 
 import com.ostoliarov.webproject.controller.ApplicationResources.{ONE_PERIODICAL_VIEW_NAME, PERIODICAL_ATTR_NAME}
-import com.ostoliarov.webproject.controller.request.processor.RequestProcessor
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.security.AccessDeniedException
 import com.ostoliarov.webproject.controller.security.AuthorizationFilter._
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
 import com.ostoliarov.webproject.controller.utils.{HttpUtils, HttpUtilsTrait}
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
@@ -22,7 +23,7 @@ object DisplayOnePeriodical extends RequestProcessor {
 	private[periodical] var httpUtils: HttpUtilsTrait = HttpUtils
 
 	override def process(request: HttpServletRequest,
-											 response: HttpServletResponse): String = {
+											 response: HttpServletResponse): ResourceRequest = {
 		val periodicalId = httpUtils.firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
@@ -40,11 +41,11 @@ object DisplayOnePeriodical extends RequestProcessor {
 
 	private def checkPermissionsAndGetUri(request: HttpServletRequest,
 																				periodicalInDb: Periodical,
-																				user: User): String = {
+																				user: User): ResourceRequest = {
 		if (hasUserEnoughPermissions(user, periodicalInDb)) {
 			request.setAttribute(PERIODICAL_ATTR_NAME, periodicalInDb)
 
-			FORWARD + ONE_PERIODICAL_VIEW_NAME
+			ResourceRequest(FORWARD, AbstractViewName(ONE_PERIODICAL_VIEW_NAME))
 		} else
 			throw AccessDeniedException(ACCESS_DENIED_FOR_USER.format(user.toString, request.getRequestURI))
 	}
