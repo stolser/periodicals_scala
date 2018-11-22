@@ -4,8 +4,8 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.Temporal
-import java.util.Date
 import java.util.Objects.{isNull, nonNull}
+import java.util.{Date => JavaDate}
 
 import javax.servlet.jsp.tagext.{Tag, TagSupport}
 import javax.servlet.jsp.{JspException, JspTagException, PageContext}
@@ -37,7 +37,7 @@ class FormatDatetimeTag extends TagSupport() {
 		}
 
 		val instant = Instant.from(value)
-		val formatted: String = new SimpleDateFormat(pattern).format(Date.from(instant))
+		val formatted: String = new SimpleDateFormat(pattern).format(JavaDate.from(instant))
 
 		if (nonNull(`var`))
 			pageContext.setAttribute(`var`, formatted, _scope)

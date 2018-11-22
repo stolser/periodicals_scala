@@ -11,7 +11,6 @@ object JspViewResolver extends ViewResolver {
 	override def resolvePrivateViewName(viewName: String): String =
 		JSP_PRIVATE_RESOURCE_PATH_PATTERN.format(viewName)
 
-
 	override def resolvePublicViewName(viewName: String): String =
 		JSP_PUBLIC_RESOURCE_PATH_PATTERN.format(viewName)
 }

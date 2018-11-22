@@ -1,9 +1,8 @@
 package com.ostoliarov.webproject.dao.impl.mysql
 
-import java.sql
-import java.sql._
-import java.util.Date
+import java.sql.{Date => SqlDate, _}
 import java.util.Objects.nonNull
+import java.util.{Date => JavaDate}
 
 import com.ostoliarov.webproject._
 import com.ostoliarov.webproject.dao.UserDao
@@ -126,11 +125,11 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 		)
 
 	@throws[SQLException]
-	private def getBirthdayFromRs(rs: ResultSet) = {
+	private def getBirthdayFromRs(rs: ResultSet): Option[JavaDate] = {
 		val birthday = rs.getDate(DB_USERS_BIRTHDAY)
 
 		if (nonNull(birthday))
-			Some(new Date(birthday.getTime))
+			Some(new JavaDate(birthday.getTime))
 		else
 			None
 	}
@@ -179,12 +178,11 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 			}
 		}
 
-	private def getBirthdayFromUser(user: User): sql.Date =
+	private def getBirthdayFromUser(user: User): SqlDate =
 		user.birthday match {
-			case Some(date) => new sql.Date(date.getTime)
+			case Some(date) => new SqlDate(date.getTime)
 			case None => null
 		}
 
-	override def update(entity: User) =
-		throw new UnsupportedOperationException
+	override def update(entity: User) = throw new UnsupportedOperationException
 }

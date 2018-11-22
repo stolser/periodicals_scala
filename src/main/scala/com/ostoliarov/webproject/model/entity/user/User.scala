@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.model.entity.user
 
-import java.util.Date
+import java.util.{Date => JavaDate, Set => JavaSet}
 
 import com.google.common.base.Preconditions.checkNotNull
 
@@ -17,7 +17,7 @@ case class User private(@BeanProperty id: Long = 0,
 												@BeanProperty userName: String = "",
 												@BeanProperty firstName: Option[String] = None,
 												@BeanProperty lastName: Option[String] = None,
-												@BeanProperty birthday: Option[Date] = None,
+												@BeanProperty birthday: Option[JavaDate] = None,
 												@BeanProperty email: String = "",
 												@BeanProperty address: Option[String] = None,
 												@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
@@ -39,9 +39,9 @@ case class User private(@BeanProperty id: Long = 0,
 
 	@BeanProperty val firstNameAsString: String = firstName.getOrElse("") // used by JSP tags;
 	@BeanProperty val lastNameAsString: String = lastName.getOrElse("") // used by JSP tags;
-	@BeanProperty val birthdayAsDate: Date = birthday.orNull // used by JSP tags;
+	@BeanProperty val birthdayAsDate: JavaDate = birthday.orNull // used by JSP tags;
 	@BeanProperty val addressAsString: String = address.getOrElse("") // used by JSP tags;
-	@BeanProperty val rolesAsJavaCollection: java.util.Set[UserRole.Value] = roles.asJava // used by JSP tags;
+	@BeanProperty val rolesAsJavaCollection: JavaSet[UserRole.Value] = roles.asJava // used by JSP tags;
 }
 
 object UserStatus extends Enumeration {

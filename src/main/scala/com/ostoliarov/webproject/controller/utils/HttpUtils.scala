@@ -2,9 +2,8 @@ package com.ostoliarov.webproject.controller.utils
 
 import java.io.IOException
 import java.security.MessageDigest
-import java.util
-import java.util.NoSuchElementException
 import java.util.Objects.nonNull
+import java.util.{NoSuchElementException, List => JavaList}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.FrontendMessage
@@ -71,7 +70,7 @@ object HttpUtils extends HttpUtilsTrait {
 		* Sets a session scoped attribute 'messages'.
 		*/
 	def addMessagesToSession(request: HttpServletRequest,
-													 frontMessageMap: Map[String, util.List[FrontendMessage]]): Unit =
+													 frontMessageMap: Map[String, JavaList[FrontendMessage]]): Unit =
 		request.getSession.setAttribute(MESSAGES_ATTR_NAME, frontMessageMap.asJava)
 
 	/**

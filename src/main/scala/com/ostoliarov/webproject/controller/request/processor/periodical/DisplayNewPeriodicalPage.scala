@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor.periodical
 
-import java.util
+import java.util.{Map => JavaMap}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.FrontendMessage
@@ -44,6 +44,6 @@ object DisplayNewPeriodicalPage extends RequestProcessor {
 		Option(request.getSession.getAttribute(PERIODICAL_ATTR_NAME).asInstanceOf[Periodical])
 
 	@SuppressWarnings(Array("unchecked"))
-	private def getMessagesFromSession(request: HttpServletRequest): util.Map[String, FrontendMessage] =
-		request.getSession.getAttribute(MESSAGES_ATTR_NAME).asInstanceOf[util.Map[String, FrontendMessage]]
+	private def getMessagesFromSession(request: HttpServletRequest): JavaMap[String, FrontendMessage] =
+		request.getSession.getAttribute(MESSAGES_ATTR_NAME).asInstanceOf[JavaMap[String, FrontendMessage]]
 }
