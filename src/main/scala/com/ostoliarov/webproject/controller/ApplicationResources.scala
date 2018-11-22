@@ -21,6 +21,7 @@ object ApplicationResources {
 	val LANGUAGE_ATTR_NAME = "language"
 	val PERIODICAL_STATISTICS_ATTR_NAME = "periodicalStatistics"
 	val FINANCIAL_STATISTICS_ATTR_NAME = "financialStatistics"
+	val ERROR_MESSAGE_ATTR_NAME = "errorMessage"
 
 	val PARAM_NAME = "paramName"
 	val PARAM_VALUE = "paramValue"

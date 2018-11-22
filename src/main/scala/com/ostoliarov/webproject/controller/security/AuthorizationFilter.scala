@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.controller.security
 
-import com.ostoliarov.webproject.controller.ApplicationResources.{ACCESS_DENIED_PAGE_VIEW_NAME, CURRENT_USER_ATTR_NAME}
+import com.ostoliarov.webproject.controller.ApplicationResources._
+import com.ostoliarov.webproject.controller.security.AuthorizationFilter.ACCESS_DENIED_FOR_USER
 import com.ostoliarov.webproject.model.entity.user.User
 import com.ostoliarov.webproject.view.JspViewResolver
 import javax.servlet._
@@ -11,9 +12,12 @@ import org.slf4j.LoggerFactory
 	* Created by Oleg Stoliarov on 10/12/18.
 	* Checks whether a current user has enough permissions to get a requested resource or perform an operation.
 	*/
+object AuthorizationFilter {
+	val ACCESS_DENIED_FOR_USER = "Access denied for user '%s' to '%s'!!!"
+}
+
 class AuthorizationFilter extends Filter {
 	private val LOGGER = LoggerFactory.getLogger(classOf[AuthorizationFilter])
-	private val ACCESS_DENIED_FOR_USER = "Access denied for user '%s' to '%s'!!!%n"
 	private val viewResolver = JspViewResolver
 
 	override def init(filterConfig: FilterConfig): Unit = {}
@@ -31,13 +35,16 @@ class AuthorizationFilter extends Filter {
 		if (isRequestAuthorized(request))
 			filterChain.doFilter(request, response)
 		else {
-			logAccessDeniedMessage(request)
-			response.sendRedirect(viewResolver.resolvePublicViewName(ACCESS_DENIED_PAGE_VIEW_NAME))
+			logErrorAndRedirectToErrorPage(request, response)
 		}
 	}
 
-	private def logAccessDeniedMessage(request: HttpServletRequest): Unit = {
-		LOGGER.error(ACCESS_DENIED_FOR_USER.format(getUserNameFromSession(request), request.getRequestURI))
+	private def logErrorAndRedirectToErrorPage(request: HttpServletRequest,
+																						 response: HttpServletResponse): Unit = {
+		val errorMessage = ACCESS_DENIED_FOR_USER.format(getUserNameFromSession(request), request.getRequestURI)
+		LOGGER.error(errorMessage)
+		request.getSession.setAttribute(ERROR_MESSAGE_ATTR_NAME, errorMessage)
+		response.sendRedirect(viewResolver.resolvePublicViewName(ACCESS_DENIED_PAGE_VIEW_NAME))
 	}
 
 	private def getUserNameFromSession(request: HttpServletRequest) =

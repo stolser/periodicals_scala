@@ -10,6 +10,9 @@
                 <fmt:param value="${sessionScope.currentUser.lastName}"/>
             </fmt:message>
         </p>
+        <p>
+            <label class="messages error">${sessionScope.errorMessage}</label>
+        </p>
     </div>
 </div>
 

@@ -2,6 +2,7 @@ package com.ostoliarov.webproject.controller
 
 import java.io.IOException
 
+import com.ostoliarov.webproject.controller.ApplicationResources.ERROR_MESSAGE_ATTR_NAME
 import com.ostoliarov.webproject.controller.request.processor.{DispatchException, RequestProviderImpl}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
 import com.ostoliarov.webproject.view.JspViewResolver
@@ -15,8 +16,8 @@ import org.slf4j.LoggerFactory
 	*/
 class FrontController extends HttpServlet {
 	private val LOGGER = LoggerFactory.getLogger(classOf[FrontController])
-	private val DISPATCHING_TO_THE_VIEW_NAME = "Dispatching to the viewName = '%s'."
-	private val INCORRECT_THE_DISPATCH_TYPE = "Incorrect the dispatch type of the abstractViewName: %s"
+	private val DISPATCHING_TO_VIEW_NAME = "Dispatching to the viewName = '%s'."
+	private val INCORRECT_DISPATCH_TYPE = "Incorrect the dispatch type of the abstractViewName: %s"
 	private val requestProvider = RequestProviderImpl
 	private val viewResolver = JspViewResolver
 
@@ -34,6 +35,8 @@ class FrontController extends HttpServlet {
 	@throws[IOException]
 	private def processRequest(request: HttpServletRequest, response: HttpServletResponse): Unit =
 		tryToProcessRequestAndDispatchResponse(request, response) {
+			request.getSession.removeAttribute(ERROR_MESSAGE_ATTR_NAME)
+
 			val abstractViewName = requestProvider.requestProcessor(request).process(request, response)
 			dispatch(abstractViewName, request, response)
 		}
@@ -61,7 +64,7 @@ class FrontController extends HttpServlet {
 				HttpUtils.tryToSendRedirect(request, response, viewName)
 			case "noAction" => ()
 			case _ =>
-				throw new IllegalArgumentException(INCORRECT_THE_DISPATCH_TYPE.format(abstractViewName))
+				throw new IllegalArgumentException(INCORRECT_DISPATCH_TYPE.format(abstractViewName))
 		}
 	}
 
@@ -71,13 +74,24 @@ class FrontController extends HttpServlet {
 			dispatcher.forward(request, response)
 		} catch {
 			case e@(_: ServletException | _: IOException) =>
-				throw DispatchException(DISPATCHING_TO_THE_VIEW_NAME.format(viewName), e)
+				throw DispatchException(DISPATCHING_TO_VIEW_NAME.format(viewName), e)
 		}
 
 	private def logExceptionAndRedirectToErrorPage(request: HttpServletRequest,
 																								 response: HttpServletResponse,
 																								 e: RuntimeException): Unit = {
-		LOGGER.error(s"User id = ${HttpUtils.userIdFromSession(request)}. requestURI = ${request.getRequestURI}", e)
-		HttpUtils.tryToSendRedirect(request, response, viewResolver.resolvePublicViewName(HttpUtils.errorViewName(e)))
+		LOGGER.error(s"Exception during requesting URI = ${request.getRequestURI} " +
+			s"by a user with id = ${HttpUtils.userIdFromSession(request)} ", e)
+
+		HttpUtils.errorViewNameAndOriginalMessage(e) match {
+			case (viewName, errorMessage) =>
+				request.getSession.setAttribute(ERROR_MESSAGE_ATTR_NAME, errorMessage)
+
+				HttpUtils.tryToSendRedirect(
+					request,
+					response,
+					viewResolver.resolvePublicViewName(viewName)
+				)
+		}
 	}
 }

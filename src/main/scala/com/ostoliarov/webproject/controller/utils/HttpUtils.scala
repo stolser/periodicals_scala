@@ -21,6 +21,8 @@ import scala.collection.mutable
 	* Created by Oleg Stoliarov on 10/13/18.
 	*/
 object HttpUtils extends HttpUtilsTrait {
+	private val PAGE_404_ERROR_MESSAGE = "There is no a requested resource in the system."
+	private val GENERAL_ERROR_MESSAGE = "Something went wrong :( Please, repeat your action a bit later."
 	private val ALGORITHM_NAME = "MD5"
 	private val URI_MUST_CONTAIN_ID_TEXT = "Uri (%s) must contain id."
 	private val NUMBER_REGEX = "\\d+"
@@ -97,12 +99,12 @@ object HttpUtils extends HttpUtilsTrait {
 	/**
 		* Returns an appropriate view name for this exception.
 		*/
-	def errorViewName(exception: Throwable): String =
+	def errorViewNameAndOriginalMessage(exception: Throwable): (String, String) =
 		exception match {
-			case _: DaoException => STORAGE_EXCEPTION_PAGE_VIEW_NAME
-			case _: NoSuchElementException => PAGE_404_VIEW_NAME
-			case _: AccessDeniedException => ACCESS_DENIED_PAGE_VIEW_NAME
-			case _ => GENERAL_ERROR_PAGE_VIEW_NAME
+			case DaoException(message, _) => (STORAGE_EXCEPTION_PAGE_VIEW_NAME, message)
+			case AccessDeniedException(message) => (ACCESS_DENIED_PAGE_VIEW_NAME, message)
+			case _: NoSuchElementException => (PAGE_404_VIEW_NAME, PAGE_404_ERROR_MESSAGE)
+			case _ => (GENERAL_ERROR_PAGE_VIEW_NAME, GENERAL_ERROR_MESSAGE)
 		}
 
 	/**
