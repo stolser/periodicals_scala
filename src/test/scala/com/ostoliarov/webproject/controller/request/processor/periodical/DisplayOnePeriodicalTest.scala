@@ -1,11 +1,11 @@
 package com.ostoliarov.webproject.controller.request.processor.periodical
 
-import com.ostoliarov.webproject.FunSuiteMockitoScalaBase
+import com.ostoliarov.webproject.FunSuiteWithMockitoScalaBase
 import com.ostoliarov.webproject.controller.ApplicationResources._
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, ResourceRequest}
 import com.ostoliarov.webproject.controller.security.AccessDeniedException
 import com.ostoliarov.webproject.controller.utils.HttpUtilsTrait
-import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import com.ostoliarov.webproject.service.PeriodicalService
@@ -15,7 +15,7 @@ import org.mockito.ArgumentMatchers._
 /**
 	* Created by Oleg Stoliarov on 11/6/18.
 	*/
-class DisplayOnePeriodicalTest extends FunSuiteMockitoScalaBase {
+class DisplayOnePeriodicalTest extends FunSuiteWithMockitoScalaBase {
 	private var requestMock: HttpServletRequest = _
 	private var responseMock: HttpServletResponse = _
 	private var periodicalServiceMock: PeriodicalService = _

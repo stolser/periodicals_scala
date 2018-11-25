@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.form.validator.user
 
-import com.ostoliarov.webproject.FlatSpecScalaMockBase
+import com.ostoliarov.webproject.FlatSpecWithScalaMockBase
 import com.ostoliarov.webproject.controller.ApplicationResources.{MSG_SUCCESS, MSG_USER_PASSWORD_ERROR, STATUS_CODE_SUCCESS, STATUS_CODE_VALIDATION_FAILED}
 import com.ostoliarov.webproject.controller.form.validator.ValidationResult
 import javax.servlet.http.HttpServletRequest
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 /**
 	* Created by Oleg Stoliarov on 11/17/18.
 	*/
-class UserPasswordValidatorTest extends FlatSpecScalaMockBase {
+class UserPasswordValidatorTest extends FlatSpecWithScalaMockBase {
 	private val successResult = ValidationResult(
 		statusCode = STATUS_CODE_SUCCESS,
 		messageKey = MSG_SUCCESS

@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.security
 
-import com.ostoliarov.webproject.FunSuiteMockitoScalaBase
+import com.ostoliarov.webproject.FunSuiteWithMockitoScalaBase
 import com.ostoliarov.webproject.TestResources._
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
@@ -9,7 +9,7 @@ import javax.servlet.http.{HttpServletRequest, HttpSession}
 /**
 	* Created by Oleg Stoliarov on 11/5/18.
 	*/
-class AuthorizationTest extends FunSuiteMockitoScalaBase {
+class AuthorizationTest extends FunSuiteWithMockitoScalaBase {
 	private var sessionMock: HttpSession = _
 	private var requestMock: HttpServletRequest = _
 	private val admin = User(roles = Set(UserRole.ADMIN))

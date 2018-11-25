@@ -2,7 +2,7 @@ package com.ostoliarov.webproject.dao.impl.mysql
 
 import java.sql.{Connection, PreparedStatement, ResultSet}
 
-import com.ostoliarov.webproject.FunSuiteMockitoScalaBase
+import com.ostoliarov.webproject.FunSuiteWithMockitoScalaBase
 import com.ostoliarov.webproject.controller.utils.DaoUtilsTrait
 import com.ostoliarov.webproject.dao.impl.mysql.MysqlPeriodicalDao._
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus._
@@ -11,7 +11,7 @@ import com.ostoliarov.webproject.model.entity.periodical.{Periodical, Periodical
 /**
 	* Created by Oleg Stoliarov on 11/6/18.
 	*/
-class MysqlPeriodicalDaoTest extends FunSuiteMockitoScalaBase {
+class MysqlPeriodicalDaoTest extends FunSuiteWithMockitoScalaBase {
 	var connMock: Connection = _
 	var statementMock: PreparedStatement = _
 	var resultSetMock: ResultSet = _

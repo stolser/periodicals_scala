@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.form.validator.periodical
 
-import com.ostoliarov.webproject.FlatSpecScalaMockBase
+import com.ostoliarov.webproject.FlatSpecWithScalaMockBase
 import com.ostoliarov.webproject.controller.ApplicationResources.{MSG_PERIODICAL_CATEGORY_ERROR, MSG_SUCCESS, STATUS_CODE_SUCCESS, STATUS_CODE_VALIDATION_FAILED}
 import com.ostoliarov.webproject.controller.form.validator.ValidationResult
 import javax.servlet.http.HttpServletRequest
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest
 /**
 	* Created by Oleg Stoliarov on 11/15/18.
 	*/
-class PeriodicalCategoryValidatorTest extends FlatSpecScalaMockBase {
+class PeriodicalCategoryValidatorTest extends FlatSpecWithScalaMockBase {
 	private val successResult = ValidationResult(
 		statusCode = STATUS_CODE_SUCCESS,
 		messageKey = MSG_SUCCESS

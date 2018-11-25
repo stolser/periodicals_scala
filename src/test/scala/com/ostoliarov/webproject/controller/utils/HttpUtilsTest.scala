@@ -4,13 +4,13 @@ import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.utils.HttpUtils.{firstIdFromUri, periodicalFromRequest, userIdFromSession}
 import com.ostoliarov.webproject.model.entity.periodical.{PeriodicalCategory, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.User
-import com.ostoliarov.webproject.{FunSuiteMockitoScalaBase, TestResources}
+import com.ostoliarov.webproject.{FunSuiteWithMockitoScalaBase, TestResources}
 import javax.servlet.http.{HttpServletRequest, HttpSession}
 
 /**
 	* Created by Oleg Stoliarov on 11/4/18.
 	*/
-class HttpUtilsTest extends FunSuiteMockitoScalaBase {
+class HttpUtilsTest extends FunSuiteWithMockitoScalaBase {
 	private val USER_ID = 2
 	private var sessionMock: HttpSession = _
 	private var requestMock: HttpServletRequest = _

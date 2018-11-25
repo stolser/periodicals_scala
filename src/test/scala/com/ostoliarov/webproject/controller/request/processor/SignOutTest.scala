@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor
 
-import com.ostoliarov.webproject.FunSuiteMockitoScalaBase
+import com.ostoliarov.webproject.FunSuiteWithMockitoScalaBase
 import com.ostoliarov.webproject.controller.ApplicationResources.CURRENT_USER_ATTR_NAME
 import com.ostoliarov.webproject.controller.request.processor.sign._
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
@@ -8,7 +8,7 @@ import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
 /**
 	* Created by Oleg Stoliarov on 11/6/18.
 	*/
-class SignOutTest extends FunSuiteMockitoScalaBase {
+class SignOutTest extends FunSuiteWithMockitoScalaBase {
 	private var sessionMock: HttpSession = _
 	private var requestMock: HttpServletRequest = _
 	private var responseMock: HttpServletResponse = _

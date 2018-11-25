@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.form.validator.periodical
 
-import com.ostoliarov.webproject.FlatSpecScalaMockBase
+import com.ostoliarov.webproject.FlatSpecWithScalaMockBase
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.{ValidationProcessorException, ValidationResult}
 import com.ostoliarov.webproject.model.entity.periodical.Periodical
@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest
 /**
 	* Created by Oleg Stoliarov on 11/17/18.
 	*/
-class PeriodicalNameValidatorTest extends FlatSpecScalaMockBase {
+class PeriodicalNameValidatorTest extends FlatSpecWithScalaMockBase {
 	private val successResult = ValidationResult(
 		statusCode = STATUS_CODE_SUCCESS,
 		messageKey = MSG_SUCCESS

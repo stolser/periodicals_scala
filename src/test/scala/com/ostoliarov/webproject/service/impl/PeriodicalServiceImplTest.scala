@@ -2,7 +2,7 @@ package com.ostoliarov.webproject.service.impl
 
 import java.util.NoSuchElementException
 
-import com.ostoliarov.webproject.FunSuiteMockitoScalaBase
+import com.ostoliarov.webproject.FunSuiteWithMockitoScalaBase
 import com.ostoliarov.webproject.connection.AbstractConnection
 import com.ostoliarov.webproject.connection.pool.ConnectionPool
 import com.ostoliarov.webproject.dao._
@@ -14,7 +14,7 @@ import com.ostoliarov.webproject.service.PeriodicalService
 /**
 	* Created by Oleg Stoliarov on 11/7/18.
 	*/
-class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
+class PeriodicalServiceImplTest extends FunSuiteWithMockitoScalaBase {
 	private var daoFactoryMock: DaoFactory = _
 	private var connectionPoolMock: ConnectionPool = _
 	private var connMock: AbstractConnection = _
@@ -50,9 +50,10 @@ class PeriodicalServiceImplTest extends FunSuiteMockitoScalaBase {
 	}
 
 	test("save() Should create a new periodical if id == 0") {
+		val zeroId = 0
 		val periodicalName = "Periodical A"
 		val newPeriodicalIdInDb = 7
-		val periodicalToSave = Periodical(id = 0, name = periodicalName)
+		val periodicalToSave = Periodical(id = zeroId, name = periodicalName)
 		val savedPeriodical = Some(Periodical(id = newPeriodicalIdInDb, name = periodicalName))
 
 		when(connectionPoolMock.connection) thenReturn connMock

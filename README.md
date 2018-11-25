@@ -59,7 +59,7 @@ to get a requested resource or perform an operation.
 
 ## Used technologies:
 * Scala 2.12.7, Enumeratum
-* ScalaTest (FunSuite, FlatSpec styles), Mockito Scala, ScalaMock
+* ScalaTest (FunSuite, FlatSpec, WordSpec styles), <br/> Mockito Scala, ScalaMock
 * sbt
 * Java EE 7: Servlets, JSP, JSTL (with custom tags)
 * JDBC, MySQL

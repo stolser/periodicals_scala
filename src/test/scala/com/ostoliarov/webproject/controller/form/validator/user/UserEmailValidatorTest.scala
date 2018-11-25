@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.form.validator.user
 
-import com.ostoliarov.webproject.FlatSpecScalaMockBase
+import com.ostoliarov.webproject.FlatSpecWithScalaMockBase
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidationResult
 import com.ostoliarov.webproject.service.UserService
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest
 /**
 	* Created by Oleg Stoliarov on 11/17/18.
 	*/
-class UserEmailValidatorTest extends FlatSpecScalaMockBase {
+class UserEmailValidatorTest extends FlatSpecWithScalaMockBase {
 	private val successResult = ValidationResult(
 		statusCode = STATUS_CODE_SUCCESS,
 		messageKey = MSG_SUCCESS
