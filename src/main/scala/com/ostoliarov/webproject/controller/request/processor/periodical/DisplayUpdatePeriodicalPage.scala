@@ -3,9 +3,9 @@ package com.ostoliarov.webproject.controller.request.processor.periodical
 import java.util.NoSuchElementException
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
-import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
-import com.ostoliarov.webproject.controller.utils.HttpUtils
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.FORWARD
+import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalOperationType, PeriodicalStatus}
 import com.ostoliarov.webproject.service.PeriodicalService
 import com.ostoliarov.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
@@ -20,7 +20,7 @@ object DisplayUpdatePeriodicalPage extends RequestProcessor {
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): ResourceRequest = {
-		val periodicalId = HttpUtils.firstIdFromUri(request.getRequestURI)
+		val periodicalId = firstIdFromUri(request.getRequestURI)
 		val periodicalInDb = periodicalService.findOneById(periodicalId)
 
 		periodicalInDb match {

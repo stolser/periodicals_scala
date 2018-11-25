@@ -38,7 +38,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 			"JOIN credentials ON (users.id = credentials.user_id) " +
 			"WHERE users.id = ?"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_FINDING_USER_BY_ID.format(id)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_FINDING_USER_BY_ID.format(id)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, id)
@@ -46,7 +46,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next)
-								Some(getUserFromResults(rs))
+								Some(getUserFromRs(rs))
 							else None
 					}
 				}
@@ -59,7 +59,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 			"INNER JOIN users ON (credentials.user_id = users.id) " +
 			"WHERE credentials.user_name = ?"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_FINDING_USER_BY_NAME.format(userName)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_FINDING_USER_BY_NAME.format(userName)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setString(1, userName)
@@ -67,7 +67,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next)
-								Some(getUserFromResults(rs))
+								Some(getUserFromRs(rs))
 							else None
 					}
 				}
@@ -76,7 +76,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 	}
 
 	override def emailExistsInDb(email: String): Boolean =
-		tryAndCatchSqlException() { () =>
+		tryAndCatchSqlException() {
 			withResources(conn.prepareStatement(SELECT_COUNT_FROM_USERS_WHERE_EMAIL)) {
 				st: PreparedStatement => {
 					st.setString(1, email)
@@ -93,7 +93,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 		val sqlStatement = "SELECT * FROM credentials " +
 			"RIGHT OUTER JOIN users ON (credentials.user_id = users.id)"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_FINDING_ALL_USERS) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_FINDING_ALL_USERS) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					withResources(st.executeQuery()) {
@@ -101,7 +101,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 							val users = mutable.Buffer[User]()
 
 							while (rs.next)
-								users += getUserFromResults(rs)
+								users += getUserFromRs(rs)
 
 							users.toList
 					}
@@ -111,7 +111,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 	}
 
 	@throws[SQLException]
-	private def getUserFromResults(rs: ResultSet) =
+	private def getUserFromRs(rs: ResultSet) =
 		User(
 			id = rs.getLong(DB_USERS_ID),
 			userName = rs.getString(MysqlCredentialDao.DB_CREDENTIALS_USER_NAME),
@@ -136,12 +136,12 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 			"(first_name, last_name, birthday, email, address, status) " +
 			"VALUES (?, ?, ?, ?, ?, ?)"
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
 				st: PreparedStatement => {
 					st.setString(1, user.firstName.getOrElse(""))
 					st.setString(2, user.lastName.getOrElse(""))
-					st.setDate(3, getBirthdayFromUser(user))
+					st.setDate(3, birthday(user))
 					st.setString(4, user.email)
 					st.setString(5, user.address.getOrElse(""))
 					st.setString(6, user.status.toString.toLowerCase)
@@ -174,7 +174,7 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 			}
 		}
 
-	private def getBirthdayFromUser(user: User): SqlDate =
+	private def birthday(user: User): SqlDate =
 		user.birthday match {
 			case Some(date) => new SqlDate(date.getTime)
 			case None => null

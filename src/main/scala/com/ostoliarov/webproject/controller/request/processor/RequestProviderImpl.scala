@@ -19,31 +19,32 @@ import scala.collection.mutable
 	* Provides mapping request uri to classes that will perform actual request processing.
 	*/
 object RequestProviderImpl extends RequestProvider {
-	val GET_BACKEND_REQUEST_PATTERN: String = "GET:/backend/?"
-	val GET_ADMIN_PANEL_REQUEST_PATTERN: String = "GET:" + ADMIN_PANEL_URI + "/?"
-	val GET_ALL_USERS_REQUEST_PATTERN: String = "GET:" + USERS_LIST_URI + "/?"
-	val GET_CURRENT_USER_REQUEST_PATTERN: String = "GET:" + CURRENT_USER_ACCOUNT_URI + "/?"
-	val POST_SIGN_IN_REQUEST_PATTERN: String = "POST:" + SIGN_IN_URI + "/?"
-	val POST_PERSIST_INVOICE_REQUEST_PATTERN: String = "POST:" + USERS_LIST_URI + "/\\d+/invoices/?"
-	val POST_PAY_INVOICE_REQUEST_PATTERN: String = "POST:" + USERS_LIST_URI + "/\\d+/invoices/\\d+/pay/?"
-	val GET_ONE_PERIODICAL_REQUEST_PATTERN: String = "GET:" + PERIODICAL_LIST_URI + "/\\d+"
-	val GET_ALL_PERIODICALS_REQUEST_PATTERN: String = "GET:" + PERIODICAL_LIST_URI + "/?"
-	val POST_PERSIST_PERIODICAL_REQUEST_PATTERN: String = "POST:" + PERIODICAL_LIST_URI + "/?"
-	val GET_CREATE_PERIODICAL_REQUEST_PATTERN: String = "GET:" + PERIODICAL_LIST_URI + "/createNew/?"
-	val GET_UPDATE_PERIODICAL_REQUEST_PATTERN: String = "GET:" + PERIODICAL_LIST_URI + "/\\d+/update/?"
-	val POST_DELETE_PERIODICALS_REQUEST_PATTERN: String = "POST:" + PERIODICAL_LIST_URI + "/discarded/?"
-	val GET_SIGN_OUT_REQUEST_PATTERN: String = "GET:" + SIGN_OUT_URI + "/?"
-	val POST_SIGN_UP_REQUEST_PATTERN: String = "POST:" + SIGN_UP_URI + "/?"
-	val GET_SIGN_UP_REQUEST_PATTERN: String = "GET:" + SIGN_UP_URI + "/?"
-	val POST_AJAX_FORM_VALIDATOR_REQUEST_PATTERN: String = "POST:/backend/validation"
+	private type RequestUriPattern = String
+	val GET_BACKEND_REQUEST_PATTERN: RequestUriPattern = "GET:/backend/?"
+	val GET_ADMIN_PANEL_REQUEST_PATTERN: RequestUriPattern = "GET:" + ADMIN_PANEL_URI + "/?"
+	val GET_ALL_USERS_REQUEST_PATTERN: RequestUriPattern = "GET:" + USERS_LIST_URI + "/?"
+	val GET_CURRENT_USER_REQUEST_PATTERN: RequestUriPattern = "GET:" + CURRENT_USER_ACCOUNT_URI + "/?"
+	val POST_SIGN_IN_REQUEST_PATTERN: RequestUriPattern = "POST:" + SIGN_IN_URI + "/?"
+	val POST_PERSIST_INVOICE_REQUEST_PATTERN: RequestUriPattern = "POST:" + USERS_LIST_URI + "/\\d+/invoices/?"
+	val POST_PAY_INVOICE_REQUEST_PATTERN: RequestUriPattern = "POST:" + USERS_LIST_URI + "/\\d+/invoices/\\d+/pay/?"
+	val GET_ONE_PERIODICAL_REQUEST_PATTERN: RequestUriPattern = "GET:" + PERIODICAL_LIST_URI + "/\\d+"
+	val GET_ALL_PERIODICALS_REQUEST_PATTERN: RequestUriPattern = "GET:" + PERIODICAL_LIST_URI + "/?"
+	val POST_PERSIST_PERIODICAL_REQUEST_PATTERN: RequestUriPattern = "POST:" + PERIODICAL_LIST_URI + "/?"
+	val GET_CREATE_PERIODICAL_REQUEST_PATTERN: RequestUriPattern = "GET:" + PERIODICAL_LIST_URI + "/createNew/?"
+	val GET_UPDATE_PERIODICAL_REQUEST_PATTERN: RequestUriPattern = "GET:" + PERIODICAL_LIST_URI + "/\\d+/update/?"
+	val POST_DELETE_PERIODICALS_REQUEST_PATTERN: RequestUriPattern = "POST:" + PERIODICAL_LIST_URI + "/discarded/?"
+	val GET_SIGN_OUT_REQUEST_PATTERN: RequestUriPattern = "GET:" + SIGN_OUT_URI + "/?"
+	val POST_SIGN_UP_REQUEST_PATTERN: RequestUriPattern = "POST:" + SIGN_UP_URI + "/?"
+	val GET_SIGN_UP_REQUEST_PATTERN: RequestUriPattern = "GET:" + SIGN_UP_URI + "/?"
+	val POST_AJAX_FORM_VALIDATOR_REQUEST_PATTERN: RequestUriPattern = "POST:/backend/validation"
 
 	private val NO_MAPPING_FOR_SUCH_REQUEST: String = "There no mapping for such a request: '%s'."
-	private val requestMapping: mutable.Map[String, RequestProcessor] = mutable.Map()
+	private val requestMapping: mutable.Map[RequestUriPattern, RequestProcessor] = mutable.Map()
 
 	initializeRequestMapping
 
 	override def requestProcessor(request: HttpServletRequest): RequestProcessor = {
-		val currentMapping = requestMapping.filterKeys((key: String) => filterRequestByHttpMethod(request, key))
+		val currentMapping = requestMapping.filterKeys((key: RequestUriPattern) => filterRequestByHttpMethod(request, key))
 			.filterKeys(filterRequestByUri(request, _))
 			.headOption
 

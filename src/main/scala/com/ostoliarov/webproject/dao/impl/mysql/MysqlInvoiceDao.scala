@@ -38,7 +38,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 		val sqlStatement: String = "SELECT * FROM invoices WHERE id = ?"
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_STATEMENT_FOR_INVOICE_ID.format(sqlStatement, invoiceId)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, invoiceId)
@@ -62,7 +62,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			"WHERE users.id = ?"
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_STATEMENT_FOR_USER_ID.format(sqlStatement, userId)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			executeAndGetInvoicesFromRs(sqlStatement, userId)
 		}
 	}
@@ -73,7 +73,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			"WHERE periodicals.id = ?"
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_FOR_PERIODICAL_ID.format(sqlStatement, periodicalId)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			executeAndGetInvoicesFromRs(sqlStatement, periodicalId)
 		}
 	}
@@ -103,7 +103,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			"WHERE creation_date >= ? AND creation_date <= ?"
 		val exceptionMessage = EXCEPTION_DURING_GETTING_INVOICE_SUM.format(sqlStatement, since, until)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setTimestamp(1, new Timestamp(since.toEpochMilli))
@@ -125,7 +125,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			"WHERE payment_date >= ? AND payment_date <= ? AND status = ?"
 		val exceptionMessage = EXCEPTION_DURING_GETTING_INVOICE_SUM.format(sqlStatement, since, until)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setTimestamp(1, new Timestamp(since.toEpochMilli))
@@ -150,7 +150,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			"VALUES (?, ?, ?, ?, ?, ?, ?)"
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_STATEMENT_FOR_INVOICE.format(sqlStatement, invoice)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setCreateUpdateStatementFromInvoice(st, invoice)
@@ -166,7 +166,7 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			"payment_date=?, status=? WHERE id=?"
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_STATEMENT_FOR_INVOICE.format(sqlStatement, invoice)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setCreateUpdateStatementFromInvoice(st, invoice)
@@ -193,18 +193,18 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 			periodical = periodical,
 			subscriptionPeriod = rs.getInt(DB_INVOICES_PERIOD),
 			totalSum = rs.getLong(DB_INVOICES_TOTAL_SUM),
-			creationDate = getCreationDateFromResults(rs),
-			paymentDate = getPaymentDateFromResults(rs),
+			creationDate = getCreationDateFromRs(rs),
+			paymentDate = getPaymentDateFromRs(rs),
 			status = InvoiceStatus.withName(rs.getString(DB_INVOICES_STATUS).toUpperCase)
 		)
 	}
 
 	@throws[SQLException]
-	private def getCreationDateFromResults(rs: ResultSet): Option[Instant] =
+	private def getCreationDateFromRs(rs: ResultSet): Option[Instant] =
 		Option(Instant.ofEpochMilli(rs.getTimestamp(DB_INVOICES_CREATION_DATE).getTime))
 
 	@throws[SQLException]
-	private def getPaymentDateFromResults(rs: ResultSet): Option[Instant] =
+	private def getPaymentDateFromRs(rs: ResultSet): Option[Instant] =
 		rs.getTimestamp(DB_INVOICES_PAYMENT_DATE) match {
 			case timestamp: Timestamp => Some(Instant.ofEpochMilli(timestamp.getTime))
 			case _ => None
@@ -217,18 +217,18 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 		st.setLong(2, invoice.periodical.id)
 		st.setInt(3, invoice.subscriptionPeriod)
 		st.setDouble(4, invoice.totalSum)
-		st.setTimestamp(5, getCreationDate(invoice))
-		st.setTimestamp(6, getPaymentDate(invoice))
+		st.setTimestamp(5, creationDate(invoice))
+		st.setTimestamp(6, paymentDate(invoice))
 		st.setString(7, invoice.status.toString.toLowerCase)
 	}
 
-	private def getCreationDate(invoice: Invoice): Timestamp =
+	private def creationDate(invoice: Invoice): Timestamp =
 		invoice.creationDate match {
 			case Some(creationDate) => new Timestamp(creationDate.toEpochMilli)
 			case None => null
 		}
 
-	private def getPaymentDate(invoice: Invoice): Timestamp =
+	private def paymentDate(invoice: Invoice): Timestamp =
 		invoice.paymentDate match {
 			case Some(paymentDate) => new Timestamp(paymentDate.toEpochMilli)
 			case None => null

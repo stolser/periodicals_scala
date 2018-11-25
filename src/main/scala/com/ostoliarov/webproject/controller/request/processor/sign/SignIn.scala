@@ -4,7 +4,7 @@ import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
-import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -18,12 +18,13 @@ import scala.collection.mutable
 	* this user is active (not blocked) and if everything is OK, adds this user into the session.
 	*/
 object SignIn extends RequestProcessor {
+	private type ParamName = String
 	private val userService = UserServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): ResourceRequest = {
-		val messages = mutable.Map[String, FrontendMessage]()
+		val messages = mutable.Map[ParamName, FrontendMessage]()
 		val redirectUri =
 			if (isCredentialCorrect(request))
 				signInIfUserIsActive(request, messages)
@@ -49,12 +50,12 @@ object SignIn extends RequestProcessor {
 	private def isPasswordCorrect(password: String,
 																credentialOpt: Option[Credential]) =
 		credentialOpt match {
-			case Some(credential) => HttpUtils.passwordHash(password) == credential.passwordHash
+			case Some(credential) => passwordHash(password) == credential.passwordHash
 			case None => false
 		}
 
 	private def signInIfUserIsActive(request: HttpServletRequest,
-																	 messages: mutable.Map[String, FrontendMessage]) = {
+																	 messages: mutable.Map[ParamName, FrontendMessage]) = {
 		val currentUser = userService.findOneByName(
 			userName = request.getParameter(SIGN_IN_USERNAME_PARAM_NAME)
 		)
@@ -82,7 +83,7 @@ object SignIn extends RequestProcessor {
 		redirectUri(request, currentUser)
 	}
 
-	private def addSignInErrorMessages(messages: mutable.Map[String, FrontendMessage]): Unit = {
+	private def addSignInErrorMessages(messages: mutable.Map[ParamName, FrontendMessage]): Unit = {
 		messages.put(SIGN_IN_USERNAME_PARAM_NAME, messageFactory.error(MSG_CREDENTIALS_ARE_NOT_CORRECT))
 		messages.put(USER_PASSWORD_PARAM_NAME, messageFactory.error(MSG_CREDENTIALS_ARE_NOT_CORRECT))
 	}
@@ -101,7 +102,7 @@ object SignIn extends RequestProcessor {
 	}
 
 	private def setSessionAttributes(request: HttpServletRequest,
-																	 messages: mutable.Map[String, FrontendMessage]): Unit = {
+																	 messages: mutable.Map[ParamName, FrontendMessage]): Unit = {
 		val session = request.getSession
 		val username = request.getParameter(SIGN_IN_USERNAME_PARAM_NAME)
 		session.setAttribute(USERNAME_ATTR_NAME, username)

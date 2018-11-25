@@ -23,27 +23,27 @@ class AbstractConnectionImpl private[connection](val connection: Connection)
 	private var transactionCommitted = false
 
 	override def beginTransaction(): Unit =
-		tryAndCatchSqlException(CAN_NOT_BEGIN_TRANSACTION) { () =>
+		tryAndCatchSqlException(CAN_NOT_BEGIN_TRANSACTION) {
 			connection.setAutoCommit(false)
 			transactionBegun = true
 		}
 
 	override def commitTransaction(): Unit =
-		tryAndCatchSqlException(CAN_NOT_COMMIT_TRANSACTION) { () =>
+		tryAndCatchSqlException(CAN_NOT_COMMIT_TRANSACTION) {
 			connection.commit()
 			connection.setAutoCommit(true)
 			transactionCommitted = true
 		}
 
 	override def rollbackTransaction(): Unit =
-		tryAndCatchSqlException(CAN_NOT_ROLLBACK_TRANSACTION) { () =>
+		tryAndCatchSqlException(CAN_NOT_ROLLBACK_TRANSACTION) {
 			connection.rollback()
 			connection.setAutoCommit(true)
 			transactionCommitted = true
 		}
 
 	override def close(): Unit =
-		tryAndCatchSqlException(CAN_NOT_CLOSE_CONNECTION) { () =>
+		tryAndCatchSqlException(CAN_NOT_CLOSE_CONNECTION) {
 			if (transactionBegun && !transactionCommitted)
 				rollbackTransaction()
 			connection.close()

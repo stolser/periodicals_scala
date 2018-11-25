@@ -6,8 +6,7 @@ import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType._
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
-import com.ostoliarov.webproject.controller.utils.HttpUtils
-import com.ostoliarov.webproject.controller.utils.HttpUtils.addGeneralMessagesToSession
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.User
@@ -37,12 +36,12 @@ object PersistOneInvoice extends RequestProcessor {
 
 		periodicalInDb match {
 			case Some(periodical) if isPeriodicalValid(periodical, request, generalMessages) =>
-				tryToPersistNewInvoice(getNewInvoice(periodical, request), generalMessages)
+				tryToPersistNewInvoice(newInvoice(periodical, request), generalMessages)
 			case None =>
 				generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NULL)
 		}
 
-		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
+		addGeneralMessagesToSession(request, generalMessages)
 
 		ResourceRequest(REDIRECT, AbstractViewName(redirectUri(periodicalId)))
 	}
@@ -78,12 +77,12 @@ object PersistOneInvoice extends RequestProcessor {
 		}
 	}
 
-	private def getNewInvoice(periodicalInDb: Periodical,
-														request: HttpServletRequest) = {
+	private def newInvoice(periodicalInDb: Periodical,
+												 request: HttpServletRequest) = {
 		val subscriptionPeriod = request.getParameter(SUBSCRIPTION_PERIOD_PARAM_NAME).toInt
 
 		val totalSum = subscriptionPeriod * periodicalInDb.oneMonthCost
-		val userIdFromUri = HttpUtils.firstIdFromUri(request.getRequestURI)
+		val userIdFromUri = firstIdFromUri(request.getRequestURI)
 		val user = User(id = userIdFromUri)
 
 		Invoice(

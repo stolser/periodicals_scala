@@ -38,7 +38,7 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 			"WHERE user_id = ? AND periodical_id = ?"
 		val exceptionMessage = EXCEPTION_MSG_FINDING_ALL_PERIODICALS_BY_USER_ID.format(userId, periodicalId)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, userId)
@@ -61,7 +61,7 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 			"JOIN periodicals ON (subscriptions.periodical_id = periodicals.id) " +
 			"WHERE periodicals.id = ? AND subscriptions.status = ?"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_FINDING_ALL_BY_ID.format(periodicalId, status)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_FINDING_ALL_BY_ID.format(periodicalId, status)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, periodicalId)
@@ -107,7 +107,7 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 			"JOIN periodicals ON (subscriptions.periodical_id = periodicals.id) " +
 			"WHERE users.id = ?"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_RETRIEVING_SUBSCRIPTIONS_FOR_USER.format(user)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_RETRIEVING_SUBSCRIPTIONS_FOR_USER.format(user)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, user.id)
@@ -137,7 +137,7 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 			"(user_id, periodical_id, delivery_address, end_date, status) " +
 			"VALUES (?, ?, ?, ?, ?)"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_CREATING_SUBSCRIPTION.format(subscription)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_CREATING_SUBSCRIPTION.format(subscription)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setSubscriptionForInsertUpdateStatement(st, subscription)
@@ -154,11 +154,11 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 		st.setLong(1, subscription.user.id)
 		st.setLong(2, subscription.periodical.id)
 		st.setString(3, subscription.deliveryAddress)
-		st.setTimestamp(4, getEndDate(subscription))
+		st.setTimestamp(4, endDate(subscription))
 		st.setString(5, subscription.status.toString.toLowerCase)
 	}
 
-	private def getEndDate(subscription: Subscription) =
+	private def endDate(subscription: Subscription) =
 		subscription.endDate match {
 			case Some(date) => new Timestamp(date.toEpochMilli)
 			case None => null
@@ -169,7 +169,7 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 			"SET user_id=?, periodical_id=?, delivery_address=?, end_date=?, status=? " +
 			"WHERE id=?"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_UPDATING.format(subscription)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_MSG_UPDATING.format(subscription)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setSubscriptionForInsertUpdateStatement(st, subscription)

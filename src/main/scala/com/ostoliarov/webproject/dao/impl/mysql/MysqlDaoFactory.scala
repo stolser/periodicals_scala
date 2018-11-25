@@ -14,32 +14,32 @@ object MysqlDaoFactory extends DaoFactory {
 
 	override def periodicalDao(conn: AbstractConnection): PeriodicalDao = {
 		checkConnection(conn)
-		new MysqlPeriodicalDao(getSqlConnection(conn))
+		new MysqlPeriodicalDao(sqlConnection(conn))
 	}
 
 	override def credentialDao(conn: AbstractConnection): CredentialDao = {
 		checkConnection(conn)
-		new MysqlCredentialDao(getSqlConnection(conn))
+		new MysqlCredentialDao(sqlConnection(conn))
 	}
 
 	override def userDao(conn: AbstractConnection): UserDao = {
 		checkConnection(conn)
-		new MysqlUserDao(getSqlConnection(conn))
+		new MysqlUserDao(sqlConnection(conn))
 	}
 
 	override def roleDao(conn: AbstractConnection): RoleDao = {
 		checkConnection(conn)
-		new MysqlRoleDao(getSqlConnection(conn))
+		new MysqlRoleDao(sqlConnection(conn))
 	}
 
 	override def subscriptionDao(conn: AbstractConnection): SubscriptionDao = {
 		checkConnection(conn)
-		new MysqlSubscriptionDao(getSqlConnection(conn))
+		new MysqlSubscriptionDao(sqlConnection(conn))
 	}
 
 	override def invoiceDao(conn: AbstractConnection): InvoiceDao = {
 		checkConnection(conn)
-		new MysqlInvoiceDao(getSqlConnection(conn))
+		new MysqlInvoiceDao(sqlConnection(conn))
 	}
 
 	private def checkConnection(conn: AbstractConnection): Unit = {
@@ -49,6 +49,6 @@ object MysqlDaoFactory extends DaoFactory {
 			throw DaoException(CONNECTION_IS_NOT_AN_ABSTRACT_CONNECTION_IMPL_FOR_JDBC)
 	}
 
-	private def getSqlConnection(conn: AbstractConnection) =
+	private def sqlConnection(conn: AbstractConnection) =
 		conn.asInstanceOf[AbstractConnectionImpl].connection
 }

@@ -5,7 +5,7 @@ import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
-import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
@@ -15,15 +15,16 @@ import scala.collection.JavaConverters._
 import scala.collection.mutable
 
 /**
-  * Created by Oleg Stoliarov on 10/11/18.
-  */
+	* Created by Oleg Stoliarov on 10/11/18.
+	*/
 object CreateUser extends RequestProcessor {
+	private type ParamName = String
 	private val userService = UserServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
 
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): ResourceRequest = {
-		val formMessages = mutable.Map[String, FrontendMessage]()
+		val formMessages = mutable.Map[ParamName, FrontendMessage]()
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
 		val session: HttpSession = request.getSession
 		var redirectUri: String = SIGN_UP_URI
@@ -45,7 +46,8 @@ object CreateUser extends RequestProcessor {
 		}
 
 		if (SIGN_UP_URI == redirectUri) {
-			HttpUtils.addGeneralMessagesToSession(request, generalMessages)
+			addGeneralMessagesToSession(request, generalMessages)
+
 			session.setAttribute(USERNAME_ATTR_NAME, username)
 			session.setAttribute(USER_ROLE_ATTR_NAME, userRole)
 			session.setAttribute(USER_EMAIL_ATTR_NAME, userEmail)
@@ -65,13 +67,13 @@ object CreateUser extends RequestProcessor {
 				email = userEmail),
 			Credential(
 				userName = username,
-				passwordHash = HttpUtils.passwordHash(password)),
+				passwordHash = passwordHash(password)),
 			userRole)
 
 	private def arePasswordsValidAndEqual(password: String, repeatPassword: String) = {
 		val validationResult = ValidatorFactory.userPasswordValidator.validate(password, null).statusCode
-		(validationResult == STATUS_CODE_SUCCESS) &&
-			(password == repeatPassword)
+		((validationResult == STATUS_CODE_SUCCESS)
+			&& (password == repeatPassword))
 	}
 
 	private def usernameExistsInDb(username: String) = userService.findOneCredentialByUserName(username).nonEmpty

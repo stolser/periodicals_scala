@@ -5,7 +5,7 @@ import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
-import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalOperationType.{CREATE, UPDATE}
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType}
@@ -22,6 +22,7 @@ import scala.collection.mutable
 	* { @code update} operations by analysing { @code periodicalOperationType} request parameter.
 	*/
 object PersistOnePeriodical extends RequestProcessor {
+	private type ParamName = String
 	private val LOGGER = LoggerFactory.getLogger(PersistOnePeriodical.getClass)
 	private val periodicalService = PeriodicalServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
@@ -29,7 +30,7 @@ object PersistOnePeriodical extends RequestProcessor {
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): ResourceRequest = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
-		val periodicalToSave = HttpUtils.periodicalFromRequest(request)
+		val periodicalToSave = periodicalFromRequest(request)
 		val redirectUri = getRedirectUriByOperationType(request, periodicalToSave)
 
 		request.getSession.setAttribute(PERIODICAL_ATTR_NAME, periodicalToSave)
@@ -70,7 +71,7 @@ object PersistOnePeriodical extends RequestProcessor {
 															generalMessages: mutable.ListBuffer[FrontendMessage],
 															request: HttpServletRequest): Unit = {
 		generalMessages += messageFactory.error(message)
-		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
+		addGeneralMessagesToSession(request, generalMessages)
 	}
 
 	private def periodicalToSaveHasActiveSubscriptions(periodicalToSave: Periodical) =
@@ -84,8 +85,8 @@ object PersistOnePeriodical extends RequestProcessor {
 	private def checkPeriodicalForActiveSubscriptions(periodicalToSave: Periodical,
 																										statusChange: PeriodicalStatusChange,
 																										generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
-		if (isStatusChangedFromActiveToInactive(statusChange) &&
-			periodicalToSaveHasActiveSubscriptions(periodicalToSave))
+		if (isStatusChangedFromActiveToInactive(statusChange)
+			&& periodicalToSaveHasActiveSubscriptions(periodicalToSave))
 			generalMessages += messageFactory.warning(MSG_PERIODICAL_HAS_ACTIVE_SUBSCRIPTIONS_WARNING)
 	}
 
@@ -100,20 +101,20 @@ object PersistOnePeriodical extends RequestProcessor {
 				throw new IllegalArgumentException(INCORRECT_OPERATION_DURING_PERSISTING_A_PERIODICAL)
 		}
 
-		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
+		addGeneralMessagesToSession(request, generalMessages)
 	}
 
 	private def isStatusChangedFromActiveOrInactiveToDiscarded(statusChange: PeriodicalStatusChange) = {
 		val oldStatus = statusChange.oldStatus
 		val newStatus = statusChange.newStatus
 
-		(ACTIVE == oldStatus || INACTIVE == oldStatus) &&
-			(DISCARDED == newStatus)
+		((ACTIVE == oldStatus || INACTIVE == oldStatus)
+			&& (DISCARDED == newStatus))
 	}
 
 	private def isStatusChangedFromActiveToInactive(statusChange: PeriodicalStatusChange) =
-		(ACTIVE == statusChange.oldStatus) &&
-			(INACTIVE == statusChange.newStatus)
+		((ACTIVE == statusChange.oldStatus)
+			&& (INACTIVE == statusChange.newStatus))
 
 	private def getRedirectUriByOperationType(request: HttpServletRequest, periodicalToSave: Periodical) =
 		getOperationTypeFromRequest(request) match {
@@ -124,7 +125,7 @@ object PersistOnePeriodical extends RequestProcessor {
 		}
 
 	private def isPeriodicalToSaveValid(periodicalToSave: Periodical, request: HttpServletRequest) = {
-		val messages = mutable.Map[String, FrontendMessage]()
+		val messages = mutable.Map[ParamName, FrontendMessage]()
 		validateName(periodicalToSave, request, messages)
 		validateCategory(periodicalToSave, request, messages)
 		validatePublisher(periodicalToSave, request, messages)
@@ -138,7 +139,7 @@ object PersistOnePeriodical extends RequestProcessor {
 
 	private def validateName(periodicalToSave: Periodical,
 													 request: HttpServletRequest,
-													 messages: mutable.Map[String, FrontendMessage]): Unit = {
+													 messages: mutable.Map[ParamName, FrontendMessage]): Unit = {
 		val result = ValidatorFactory.periodicalNameValidator.validate(periodicalToSave.name, request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.error(result.messageKey))
@@ -146,7 +147,7 @@ object PersistOnePeriodical extends RequestProcessor {
 
 	private def validateCategory(periodicalToSave: Periodical,
 															 request: HttpServletRequest,
-															 messages: mutable.Map[String, FrontendMessage]): Unit = {
+															 messages: mutable.Map[ParamName, FrontendMessage]): Unit = {
 		val result = ValidatorFactory.periodicalCategoryValidator.validate(periodicalToSave.category.toString, request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_NAME_PARAM_NAME, messageFactory.error(result.messageKey))
@@ -154,7 +155,7 @@ object PersistOnePeriodical extends RequestProcessor {
 
 	private def validatePublisher(periodicalToSave: Periodical,
 																request: HttpServletRequest,
-																messages: mutable.Map[String, FrontendMessage]): Unit = {
+																messages: mutable.Map[ParamName, FrontendMessage]): Unit = {
 		val result = ValidatorFactory.periodicalPublisherValidator.validate(periodicalToSave.publisher, request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_PUBLISHER_PARAM_NAME, messageFactory.error(result.messageKey))
@@ -162,14 +163,14 @@ object PersistOnePeriodical extends RequestProcessor {
 
 	private def validateCost(periodicalToSave: Periodical,
 													 request: HttpServletRequest,
-													 messages: mutable.Map[String, FrontendMessage]): Unit = {
+													 messages: mutable.Map[ParamName, FrontendMessage]): Unit = {
 		val result = ValidatorFactory.periodicalCostValidator.validate(String.valueOf(periodicalToSave.oneMonthCost), request)
 		if (result.statusCode != STATUS_CODE_SUCCESS)
 			messages.put(PERIODICAL_COST_PARAM_NAME, messageFactory.error(result.messageKey))
 	}
 
 	private object PeriodicalStatusChange {
-		private val cache = mutable.Map[String, PeriodicalStatusChange]()
+		private val cache = mutable.Map[ParamName, PeriodicalStatusChange]()
 
 		private[periodical] def instance(periodicalToSave: Periodical) = {
 			val oldStatus = periodicalService.findOneById(periodicalToSave.id) match {
@@ -178,15 +179,15 @@ object PersistOnePeriodical extends RequestProcessor {
 			}
 
 			val newStatus = Option(periodicalToSave.status)
-			val cacheKey = getCacheKey(oldStatus, newStatus)
+			val cacheKey = convertStatusesToCacheKey(oldStatus, newStatus)
 			if (!cache.contains(cacheKey))
 				cache.put(cacheKey, new PersistOnePeriodical.PeriodicalStatusChange(oldStatus.orNull, newStatus.orNull))
 
 			cache(cacheKey)
 		}
 
-		private def getCacheKey(oldStatusOpt: Option[PeriodicalStatus],
-														newStatusOpt: Option[PeriodicalStatus]) =
+		private def convertStatusesToCacheKey(oldStatusOpt: Option[PeriodicalStatus],
+																					newStatusOpt: Option[PeriodicalStatus]) =
 			(oldStatusOpt, newStatusOpt) match {
 				case (Some(oldStatus), Some(newStatus)) => oldStatus.toString + newStatus.toString
 				case (Some(oldStatus), None) => oldStatus.toString + "null"

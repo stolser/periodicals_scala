@@ -74,7 +74,7 @@ object AjaxFormValidation extends RequestProcessor {
 													 session: HttpSession) = {
 		val jsonResponse = new JSONObject
 		jsonResponse.put(STATUS_CODE_JSON_RESPONSE, validationResult.statusCode)
-		jsonResponse.put(VALIDATION_MESSAGE_JSON_RESPONSE, getLocalizedMessage(session, validationResult))
+		jsonResponse.put(VALIDATION_MESSAGE_JSON_RESPONSE, localizedMessage(session, validationResult))
 	}
 
 	@throws[IOException]
@@ -93,7 +93,7 @@ object AjaxFormValidation extends RequestProcessor {
 		}
 	}
 
-	private def getLocalizedMessage(session: HttpSession, result: ValidationResult) =
+	private def localizedMessage(session: HttpSession, result: ValidationResult) =
 		ResourceBundle.getBundle(VALIDATION_BUNDLE_PATH, getLocaleFromSession(session))
 			.getString(result.messageKey)
 }

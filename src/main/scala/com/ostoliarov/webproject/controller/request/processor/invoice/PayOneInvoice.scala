@@ -4,8 +4,7 @@ import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message._
 import com.ostoliarov.webproject.controller.request.processor.DispatchType._
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
-import com.ostoliarov.webproject.controller.utils.HttpUtils
-import com.ostoliarov.webproject.controller.utils.HttpUtils.addGeneralMessagesToSession
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus
 import com.ostoliarov.webproject.service.impl.mysql.{InvoiceServiceMysqlImpl, PeriodicalServiceMysqlImpl}
@@ -30,7 +29,7 @@ object PayOneInvoice extends RequestProcessor {
 	override def process(request: HttpServletRequest,
 											 response: HttpServletResponse): ResourceRequest = {
 		val generalMessages = mutable.ListBuffer[FrontendMessage]()
-		val invoiceIdFromRequest = HttpUtils.firstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
+		val invoiceIdFromRequest = firstIdFromUri(request.getRequestURI.replaceFirst("/backend/users/\\d+/", ""))
 		val invoiceInDb = invoiceService.findOneById(invoiceIdFromRequest.toLong)
 
 		invoiceInDb match {
@@ -40,7 +39,7 @@ object PayOneInvoice extends RequestProcessor {
 				generalMessages += messageFactory.error(MSG_VALIDATION_NO_SUCH_INVOICE)
 		}
 
-		HttpUtils.addGeneralMessagesToSession(request, generalMessages)
+		addGeneralMessagesToSession(request, generalMessages)
 
 		ResourceRequest(REDIRECT, AbstractViewName(CURRENT_USER_ACCOUNT_URI))
 	}
@@ -82,7 +81,7 @@ object PayOneInvoice extends RequestProcessor {
 			generalMessages += messageFactory.success(resultMessage)
 		} catch {
 			case e: RuntimeException =>
-				LOGGER.error(s"User id = ${HttpUtils.userIdFromSession(request)}. Exception during paying invoice $invoiceInDb.", e)
+				LOGGER.error(s"User id = ${userIdFromSession(request)}. Exception during paying invoice $invoiceInDb.", e)
 				generalMessages += messageFactory.error(MSG_INVOICE_PAYMENT_ERROR)
 		}
 	}

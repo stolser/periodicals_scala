@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.controller.utils
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
+import com.ostoliarov.webproject.controller.utils.HttpUtils.{firstIdFromUri, periodicalFromRequest, userIdFromSession}
 import com.ostoliarov.webproject.model.entity.periodical.{PeriodicalCategory, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.user.User
 import com.ostoliarov.webproject.{FunSuiteMockitoScalaBase, TestResources}
@@ -25,20 +26,20 @@ class HttpUtilsTest extends FunSuiteMockitoScalaBase {
 	test("firstIdFromUri() Should return a correct id") {
 		val uri = TestResources.USER_2_INVOICE_10_PAYMENT_URI
 		val expected = 2
-		val actual = HttpUtils.firstIdFromUri(uri)
+		val actual = firstIdFromUri(uri)
 
 		assert(expected === actual)
 	}
 
 	test("firstIdFromUri() Should throw IllegalArgumentException") {
 		assertThrows[IllegalArgumentException] {
-			HttpUtils.firstIdFromUri(TestResources.ALL_USERS_URI)
+			firstIdFromUri(TestResources.ALL_USERS_URI)
 		}
 	}
 
 	test("userIdFromSession() Should return a correct id") {
 		val expected = 2
-		val actual = HttpUtils.userIdFromSession(requestMock)
+		val actual = userIdFromSession(requestMock)
 
 		assert(expected === actual)
 	}
@@ -53,7 +54,7 @@ class HttpUtilsTest extends FunSuiteMockitoScalaBase {
 		when(requestMock.getParameter(PERIODICAL_COST_PARAM_NAME)) thenReturn "99"
 		when(requestMock.getParameter(PERIODICAL_STATUS_PARAM_NAME)) thenReturn "active"
 
-		val periodical = HttpUtils.periodicalFromRequest(requestMock)
+		val periodical = periodicalFromRequest(requestMock)
 
 		assert(periodical.getId == 10)
 		assert(periodical.getName == "Test Name")

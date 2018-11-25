@@ -11,9 +11,9 @@ import scala.util.control.NonFatal
 	*/
 package object webproject {
 	def tryAndCatchSqlException[A](exceptionMessage: String = null)
-																(block: () => A): A = {
+																(block: => A): A = {
 		try {
-			block()
+			block
 		} catch {
 			case e: SQLException =>
 				throw DaoException(exceptionMessage, e)

@@ -10,26 +10,27 @@ import scala.collection.mutable
 	* Implements the Flyweight Design Pattern.
 	*/
 object FrontMessageFactory {
-	private val messagesSuccess = mutable.Map[String, FrontendMessage]()
-	private val messagesInfo = mutable.Map[String, FrontendMessage]()
-	private val messagesWarning = mutable.Map[String, FrontendMessage]()
-	private val messagesError = mutable.Map[String, FrontendMessage]()
+	private type MessageKey = String
+	private val messagesSuccess = mutable.Map[MessageKey, FrontendMessage]()
+	private val messagesInfo = mutable.Map[MessageKey, FrontendMessage]()
+	private val messagesWarning = mutable.Map[MessageKey, FrontendMessage]()
+	private val messagesError = mutable.Map[MessageKey, FrontendMessage]()
 
-	def success(messageKey: String): FrontendMessage =
+	def success(messageKey: MessageKey): FrontendMessage =
 		updateCacheAndGetMessageFromCache(cache = messagesSuccess, messageType = SUCCESS, messageKey)
 
-	def info(messageKey: String): FrontendMessage =
+	def info(messageKey: MessageKey): FrontendMessage =
 		updateCacheAndGetMessageFromCache(cache = messagesInfo, messageType = INFO, messageKey)
 
-	def warning(messageKey: String): FrontendMessage =
+	def warning(messageKey: MessageKey): FrontendMessage =
 		updateCacheAndGetMessageFromCache(cache = messagesWarning, messageType = WARNING, messageKey)
 
-	def error(messageKey: String): FrontendMessage =
+	def error(messageKey: MessageKey): FrontendMessage =
 		updateCacheAndGetMessageFromCache(cache = messagesError, messageType = ERROR, messageKey)
 
-	private def updateCacheAndGetMessageFromCache(cache: mutable.Map[String, FrontendMessage],
+	private def updateCacheAndGetMessageFromCache(cache: mutable.Map[MessageKey, FrontendMessage],
 																								messageType: MessageType.MessageType,
-																								messageKey: String): FrontendMessage = {
+																								messageKey: MessageKey): FrontendMessage = {
 		if (!cache.contains(messageKey))
 			cache += (messageKey -> FrontendMessage(messageKey, messageType))
 

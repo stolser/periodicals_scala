@@ -6,8 +6,8 @@ import java.util.Properties
 import org.slf4j.LoggerFactory
 
 /**
-  * Reads database configuration data and creates a connection pool.
-  */
+	* Reads database configuration data and creates a connection pool.
+	*/
 object ConnectionPoolProvider {
 	private val LOGGER = LoggerFactory.getLogger(ConnectionPoolProvider.getClass)
 	private val DB_CONFIG_FILENAME = "webproject/config/dbConfig.properties"

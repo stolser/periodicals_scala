@@ -75,9 +75,9 @@ abstract class InvoiceServiceImpl extends InvoiceService {
 																				 subscriptionDao: SubscriptionDao): Unit = {
 		val newEndDate =
 			if (SubscriptionStatus.INACTIVE == subscriptionInDb.status)
-				getEndDate(Some(Instant.now), subscriptionPeriod)
+				endDate(Some(Instant.now), subscriptionPeriod)
 			else
-				getEndDate(subscriptionInDb.endDate, subscriptionPeriod)
+				endDate(subscriptionInDb.endDate, subscriptionPeriod)
 
 		subscriptionInDb.endDate = newEndDate
 		subscriptionInDb.status = SubscriptionStatus.ACTIVE
@@ -92,12 +92,12 @@ abstract class InvoiceServiceImpl extends InvoiceService {
 			user = userInDb,
 			periodical = periodical,
 			deliveryAddress = userInDb.address.getOrElse(""),
-			endDate = getEndDate(Some(Instant.now), subscriptionPeriod),
+			endDate = endDate(Some(Instant.now), subscriptionPeriod),
 			status = SubscriptionStatus.ACTIVE
 		))
 
-	private def getEndDate(startDate: Option[Instant],
-												 subscriptionPeriod: Int) =
+	private def endDate(startDate: Option[Instant],
+											subscriptionPeriod: Int) =
 		startDate match {
 			case Some(date) =>
 				val endDate = LocalDateTime.ofInstant(date, ZoneId.systemDefault)

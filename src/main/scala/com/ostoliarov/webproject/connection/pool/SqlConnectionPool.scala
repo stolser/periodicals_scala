@@ -14,7 +14,7 @@ class SqlConnectionPool private(val builder: Builder) extends ConnectionPool {
 	private val description = builder.url + builder.dbName
 
 	override def connection: AbstractConnection =
-		tryAndCatchSqlException(CONNECTION_EXCEPTION_TEXT) { () =>
+		tryAndCatchSqlException(CONNECTION_EXCEPTION_TEXT) {
 			new AbstractConnectionImpl(dataSource.getConnection)
 		}
 

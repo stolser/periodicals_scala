@@ -55,7 +55,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 	private def getPeriodicalFromDb(sqlStatement: String,
 																	fieldValue: Any,
 																	fieldName: String): Option[Periodical] =
-		tryAndCatchSqlException(EXCEPTION_DURING_RETRIEVING_PERIODICAL.format(fieldName, fieldValue)) { () =>
+		tryAndCatchSqlException(EXCEPTION_DURING_RETRIEVING_PERIODICAL.format(fieldName, fieldValue)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setFieldValue(st, fieldName, fieldValue)
@@ -84,7 +84,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 	}
 
 	override def findAll: List[Periodical] =
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_RETRIEVING_ALL_PERIODICALS) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_RETRIEVING_ALL_PERIODICALS) {
 			withResources(conn.prepareStatement(SELECT_ALL_PERIODICALS)) {
 				st: PreparedStatement => {
 
@@ -103,7 +103,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 		}
 
 	override def findAllByStatus(status: PeriodicalStatus): List[Periodical] =
-		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ALL_BY_STATUS.format(status)) { () =>
+		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ALL_BY_STATUS.format(status)) {
 			withResources(conn.prepareStatement(SELECT_ALL_BY_STATUS)) {
 				st: PreparedStatement => {
 					st.setString(1, status.toString.toLowerCase)
@@ -127,7 +127,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 		val sqlStatement: String = "SELECT COUNT(id) FROM periodicals " +
 			"WHERE category = ? AND status = ?"
 
-		tryAndCatchSqlException(EXCEPTION_DURING_GETTING_NUMBER_OF_PERIODICALS.format(category, status)) { () =>
+		tryAndCatchSqlException(EXCEPTION_DURING_GETTING_NUMBER_OF_PERIODICALS.format(category, status)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setString(1, category.toString.toLowerCase)
@@ -145,7 +145,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 	}
 
 	override def createNew(periodical: Periodical): Long =
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_INSERTING.format(periodical)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_INSERTING.format(periodical)) {
 			withResources(conn.prepareStatement(INSERT_INTO_PERIODICALS_VALUES)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
@@ -171,7 +171,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 			"SET name=?, category=?, publisher=?, description=?, one_month_cost=?, status=? " +
 			"WHERE id=?"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_UPDATING.format(periodical)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_UPDATING.format(periodical)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
@@ -189,7 +189,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 			"WHERE id=? AND 0 = (SELECT count(*) FROM subscriptions AS s " +
 			"WHERE s.periodical_id = p.id AND s.status = ?)"
 
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_UPDATING.format(periodical)) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_UPDATING.format(periodical)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
@@ -203,7 +203,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 	}
 
 	override def deleteAllDiscarded(): Int =
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_DELETING_DISCARDED_PERIODICALS) { () =>
+		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_DELETING_DISCARDED_PERIODICALS) {
 			withResources(conn.prepareStatement(DELETE_FROM_PERIODICALS_BY_STATUS)) {
 				st: PreparedStatement => {
 					st.setString(1, PeriodicalStatus.DISCARDED.toString)

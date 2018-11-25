@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.view.jsp.tag
 
-import com.ostoliarov.webproject.controller.ApplicationResources
+import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.jsp.JspException
@@ -32,7 +32,7 @@ class AuthorizationTag extends TagSupport {
 		}
 
 	private def userFromSession =
-		Option(pageContext.getSession.getAttribute(ApplicationResources.CURRENT_USER_ATTR_NAME).asInstanceOf[User])
+		Option(pageContext.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User])
 
 	private def hasUserLegitRoles: Boolean =
 		mustHaveRoles match {

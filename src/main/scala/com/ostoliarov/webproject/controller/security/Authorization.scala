@@ -2,8 +2,7 @@ package com.ostoliarov.webproject.controller.security
 
 import com.ostoliarov.webproject.controller.ApplicationResources.CURRENT_USER_ATTR_NAME
 import com.ostoliarov.webproject.controller.request.processor.RequestProviderImpl._
-import com.ostoliarov.webproject.controller.utils.HttpUtils
-import com.ostoliarov.webproject.controller.utils.HttpUtils.{filterRequestByHttpMethod, filterRequestByUri}
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.http.{HttpServletRequest, HttpSession}
@@ -13,11 +12,12 @@ import javax.servlet.http.{HttpServletRequest, HttpSession}
 	* Encapsulates information about resource access permissions of each type of roles.
 	*/
 object Authorization {
+	private type RequestUriPattern = String
 	private val USERS_URI_WITH_ID = "/backend/users/\\d+"
 	private val admin = Set[UserRole](
 		UserRole.ADMIN
 	)
-	private val permissionMapping = Map[String, Set[UserRole]](
+	private val permissionMapping = Map[RequestUriPattern, Set[UserRole]](
 		GET_ALL_USERS_REQUEST_PATTERN -> admin,
 		GET_CREATE_PERIODICAL_REQUEST_PATTERN -> admin,
 		GET_UPDATE_PERIODICAL_REQUEST_PATTERN -> admin,
@@ -38,7 +38,7 @@ object Authorization {
 		if (!isUserIdInUriValid(request))
 			return false
 
-		getPermissionMapping(request) match {
+		permissionMappingForRequest(request) match {
 			case Some(accessRestriction) => isPermissionGranted(accessRestriction, request)
 			case None => true
 		}
@@ -48,26 +48,25 @@ object Authorization {
 		val requestUri = request.getRequestURI
 		val userIdPattern = USERS_URI_WITH_ID.r
 		if (userIdPattern.findFirstIn(requestUri).isDefined) {
-			val userIdFromUri = HttpUtils.firstIdFromUri(requestUri)
-			val userIdFromSession = HttpUtils.userIdFromSession(request)
-			userIdFromUri == userIdFromSession
+			val userIdFromUri = firstIdFromUri(requestUri)
+			userIdFromUri == userIdFromSession(request)
 		} else true
 	}
 
-	private def getPermissionMapping(request: HttpServletRequest): Option[(String, Set[UserRole])] =
+	private def permissionMappingForRequest(request: HttpServletRequest): Option[(RequestUriPattern, Set[UserRole])] =
 		permissionMapping
 			.filterKeys(filterRequestByHttpMethod(request, _))
 			.filterKeys(filterRequestByUri(request, _))
 			.headOption
 
-	private def isPermissionGranted(permissionMapping: (String, Set[UserRole]),
+	private def isPermissionGranted(permissionMapping: (RequestUriPattern, Set[UserRole]),
 																	request: HttpServletRequest) =
 		hasUserLegitRole(
-			userRoles = getUserRolesFromSession(request.getSession),
+			userRoles = userRolesFromSession(request.getSession),
 			legitRoles = permissionMapping._2
 		)
 
-	private def getUserRolesFromSession(session: HttpSession) =
+	private def userRolesFromSession(session: HttpSession) =
 		session.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].roles
 
 	private def hasUserLegitRole(userRoles: Set[UserRole],

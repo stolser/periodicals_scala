@@ -5,7 +5,7 @@ import java.io.IOException
 import com.ostoliarov.webproject.controller.ApplicationResources.ERROR_MESSAGE_ATTR_NAME
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.{DispatchType => _, _}
 import com.ostoliarov.webproject.controller.request.processor._
-import com.ostoliarov.webproject.controller.utils.HttpUtils
+import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.view.JspViewResolver
 import javax.servlet.ServletException
 import javax.servlet.http.{HttpServlet, HttpServletRequest, HttpServletResponse}
@@ -61,7 +61,7 @@ class FrontController extends HttpServlet {
 			case ResourceRequest(FORWARD, AbstractViewName(viewName)) =>
 				sendForward(request, response, viewName)
 			case ResourceRequest(REDIRECT, AbstractViewName(viewName)) =>
-				HttpUtils.tryToSendRedirect(request, response, viewName)
+				tryToSendRedirect(request, response, viewName)
 			case ResourceRequest(NO_ACTION, _) => ()
 			case _ =>
 				throw new IllegalArgumentException(INCORRECT_DISPATCH_TYPE.format(resourceRequest))
@@ -80,15 +80,15 @@ class FrontController extends HttpServlet {
 																								 response: HttpServletResponse,
 																								 e: RuntimeException): Unit = {
 		LOGGER.error(s"Exception during requesting URI = ${request.getRequestURI} " +
-			s"by a user with id = ${HttpUtils.userIdFromSession(request)} ", e)
+			s"by a user with id = ${userIdFromSession(request)} ", e)
 
-		HttpUtils.errorViewNameAndOriginalMessage(e) match {
+		errorViewNameAndOriginalMessage(e) match {
 			case (ResourceRequest(REDIRECT, AbstractViewName(viewName)), errorMessage) =>
 				// add it to the session since we redirect to the error page
 				// and request attributes won't survive redirect;
 				request.getSession.setAttribute(ERROR_MESSAGE_ATTR_NAME, errorMessage)
 
-				HttpUtils.tryToSendRedirect(request, response, viewResolver.resolvePublicViewName(viewName))
+				tryToSendRedirect(request, response, viewResolver.resolvePublicViewName(viewName))
 		}
 	}
 }

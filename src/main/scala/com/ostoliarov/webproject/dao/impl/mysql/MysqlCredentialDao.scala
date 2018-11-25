@@ -24,7 +24,7 @@ class MysqlCredentialDao private[mysql](conn: Connection) extends CredentialDao 
 		val sqlStatement = "SELECT * FROM credentials WHERE user_name = ?"
 		val exceptionMessage = s"Exception during execution statement '$sqlStatement' for userName = $userName."
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setString(1, userName)
@@ -32,7 +32,7 @@ class MysqlCredentialDao private[mysql](conn: Connection) extends CredentialDao 
 					withResources(st.executeQuery()) {
 						rs: ResultSet =>
 							if (rs.next())
-								Some(getCredentialFromResultSet(rs))
+								Some(getCredentialFromRs(rs))
 							else None
 					}
 				}
@@ -40,7 +40,7 @@ class MysqlCredentialDao private[mysql](conn: Connection) extends CredentialDao 
 		}
 	}
 
-	private def getCredentialFromResultSet(rs: ResultSet): Credential =
+	private def getCredentialFromRs(rs: ResultSet): Credential =
 		Credential(
 			id = rs.getLong(DB_CREDENTIALS_ID),
 			userName = rs.getString(DB_CREDENTIALS_USER_NAME),
@@ -51,7 +51,7 @@ class MysqlCredentialDao private[mysql](conn: Connection) extends CredentialDao 
 		val sqlStatement = "INSERT INTO credentials (user_name, password_hash, user_id) " +
 			"VALUES (?, ?, ?)"
 
-		tryAndCatchSqlException(EXCEPTION_DURING_CREATING_CREDENTIAL) { () =>
+		tryAndCatchSqlException(EXCEPTION_DURING_CREATING_CREDENTIAL) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setString(1, credential.userName)

@@ -30,7 +30,7 @@ class MysqlRoleDao private[mysql](conn: Connection) extends RoleDao {
 			"ON (credentials.user_id = users.id) " +
 			"WHERE credentials.user_name = ?"
 
-		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ROLES_FOR_USER.format(userName)) { () =>
+		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ROLES_FOR_USER.format(userName)) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setString(1, userName)
@@ -52,7 +52,7 @@ class MysqlRoleDao private[mysql](conn: Connection) extends RoleDao {
 		val sqlStatement = "INSERT INTO user_roles (user_id, name) VALUES (?, ?)"
 		val exceptionMessage = EXCEPTION_DURING_INSERTING_ROLE.format(sqlStatement, userId)
 
-		tryAndCatchSqlException(exceptionMessage) { () =>
+		tryAndCatchSqlException(exceptionMessage) {
 			withResources(conn.prepareStatement(sqlStatement)) {
 				st: PreparedStatement => {
 					st.setLong(1, userId)
