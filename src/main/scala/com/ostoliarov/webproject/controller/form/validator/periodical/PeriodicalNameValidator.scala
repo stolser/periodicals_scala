@@ -3,6 +3,7 @@ package com.ostoliarov.webproject.controller.form.validator.periodical
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.{AbstractValidator, ValidationProcessorException, ValidationResult}
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalOperationType
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalOperationType.PeriodicalOperationType
 import com.ostoliarov.webproject.service.PeriodicalService
 import com.ostoliarov.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.HttpServletRequest
@@ -35,10 +36,10 @@ object PeriodicalNameValidator extends AbstractValidator {
 	private def isNameNotUnique(request: HttpServletRequest,
 															periodicalName: String) = {
 
-		def isOperationCreate(periodicalOperationType: PeriodicalOperationType.Value) =
+		def isOperationCreate(periodicalOperationType: PeriodicalOperationType) =
 			PeriodicalOperationType.CREATE == periodicalOperationType
 
-		def isOperationUpdate(periodicalOperationType: PeriodicalOperationType.Value) =
+		def isOperationUpdate(periodicalOperationType: PeriodicalOperationType) =
 			PeriodicalOperationType.UPDATE == periodicalOperationType
 
 		periodicalServiceImpl.findOneByName(periodicalName) match {

@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.view.jsp.tag
 
 import com.ostoliarov.webproject.controller.ApplicationResources
+import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.jsp.JspException
 import javax.servlet.jsp.tagext.{Tag, TagSupport}
@@ -45,7 +46,7 @@ class AuthorizationTag extends TagSupport {
 			case _ => (user.roles intersect parseUserRoles(mustNotHaveRoles)).isEmpty
 		}
 
-	private def parseUserRoles(userRoles: String): Set[UserRole.Value] =
+	private def parseUserRoles(userRoles: String): Set[UserRole] =
 		userRoles match {
 			case roles: String => roles.split(" ")
 				.map((roleStr: String) => UserRole.withName(roleStr.toUpperCase()))

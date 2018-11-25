@@ -6,7 +6,7 @@ import com.ostoliarov.webproject.controller.form.validator.ValidationProcessorEx
   * Created by Oleg Stoliarov on 10/7/18.
   */
 case class ValidationProcessorException private(message: String = null, cause: Throwable = null)
-	extends RuntimeException(defaultMessage(message, cause), cause) {}
+	extends RuntimeException(defaultMessage(message, cause), cause)
 
 object ValidationProcessorException {
 	private def defaultMessage(message: String, cause: Throwable): String =

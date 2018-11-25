@@ -3,6 +3,8 @@ package com.ostoliarov.webproject.model.entity.user
 import java.util.{Date => JavaDate, Set => JavaSet}
 
 import com.google.common.base.Preconditions.checkNotNull
+import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
+import com.ostoliarov.webproject.model.entity.user.UserStatus.UserStatus
 
 import scala.beans.BeanProperty
 import scala.collection.JavaConverters._
@@ -20,8 +22,8 @@ case class User private(@BeanProperty id: Long = 0,
 												@BeanProperty birthday: Option[JavaDate] = None,
 												@BeanProperty email: String = "",
 												@BeanProperty address: Option[String] = None,
-												@BeanProperty status: UserStatus.Value = UserStatus.BLOCKED,
-												@BeanProperty var roles: Set[UserRole.Value] = Set()) {
+												@BeanProperty status: UserStatus = UserStatus.BLOCKED,
+												@BeanProperty var roles: Set[UserRole] = Set()) {
 
 	checkNotNull(userName)
 	checkNotNull(email)
@@ -31,7 +33,7 @@ case class User private(@BeanProperty id: Long = 0,
 	override def toString: String = s"User{id=$id, userName='$userName', firstName='$firstName', lastName='$lastName', " +
 		s"birthday='$birthday', email='$email', address='$address', status='$status', roles='$roles'}"
 
-	def hasRole(role: UserRole.Value): Boolean =
+	def hasRole(role: UserRole): Boolean =
 		roles contains role
 
 	def hasRole(role: String): Boolean =
@@ -41,15 +43,7 @@ case class User private(@BeanProperty id: Long = 0,
 	@BeanProperty val lastNameAsString: String = lastName.getOrElse("") // used by JSP tags;
 	@BeanProperty val birthdayAsDate: JavaDate = birthday.orNull // used by JSP tags;
 	@BeanProperty val addressAsString: String = address.getOrElse("") // used by JSP tags;
-	@BeanProperty val rolesAsJavaCollection: JavaSet[UserRole.Value] = roles.asJava // used by JSP tags;
-}
-
-object UserStatus extends Enumeration {
-	val ACTIVE, BLOCKED = Value
-}
-
-object UserRole extends Enumeration {
-	val ADMIN, SUBSCRIBER = Value
+	@BeanProperty val rolesAsJavaCollection: JavaSet[UserRole] = roles.asJava // used by JSP tags;
 }
 
 object User {

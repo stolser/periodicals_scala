@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.service
 
-import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalStatus}
+import com.ostoliarov.webproject.model.entity.periodical.Periodical
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.PeriodicalStatus
 import com.ostoliarov.webproject.model.entity.statistics.PeriodicalNumberByCategory
 
 /**
@@ -13,7 +14,7 @@ trait PeriodicalService {
 
 	def findAll: List[Periodical]
 
-	def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical]
+	def findAllByStatus(status: PeriodicalStatus): List[Periodical]
 
 	/**
 		* If the id of this periodical is 0, creates a new one. Otherwise tries to update

@@ -6,6 +6,7 @@ import com.ostoliarov.webproject._
 import com.ostoliarov.webproject.controller.utils.{DaoUtils, DaoUtilsTrait}
 import com.ostoliarov.webproject.dao.PeriodicalDao
 import com.ostoliarov.webproject.dao.impl.mysql.MysqlPeriodicalDao._
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.PeriodicalStatus
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.subscription.SubscriptionStatus
 
@@ -101,7 +102,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 			}
 		}
 
-	override def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical] =
+	override def findAllByStatus(status: PeriodicalStatus): List[Periodical] =
 		tryAndCatchSqlException(exceptionMessage = RETRIEVING_ALL_BY_STATUS.format(status)) { () =>
 			withResources(conn.prepareStatement(SELECT_ALL_BY_STATUS)) {
 				st: PreparedStatement => {
@@ -122,7 +123,7 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 		}
 
 	override def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory,
-																														status: PeriodicalStatus.Value): Int = {
+																														status: PeriodicalStatus): Int = {
 		val sqlStatement: String = "SELECT COUNT(id) FROM periodicals " +
 			"WHERE category = ? AND status = ?"
 

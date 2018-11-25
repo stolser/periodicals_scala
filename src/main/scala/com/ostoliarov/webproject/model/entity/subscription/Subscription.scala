@@ -4,6 +4,7 @@ import java.time.Instant
 
 import com.google.common.base.Preconditions.checkNotNull
 import com.ostoliarov.webproject.model.entity.periodical.Periodical
+import com.ostoliarov.webproject.model.entity.subscription.SubscriptionStatus.SubscriptionStatus
 import com.ostoliarov.webproject.model.entity.user.User
 
 import scala.beans.BeanProperty
@@ -23,7 +24,7 @@ case class Subscription private(@BeanProperty id: Long = 0,
 																@BeanProperty periodical: Periodical = Periodical(),
 																@BeanProperty deliveryAddress: String = "",
 																@BeanProperty var endDate: Option[Instant] = None,
-																@BeanProperty var status: SubscriptionStatus.Value = SubscriptionStatus.INACTIVE) {
+																@BeanProperty var status: SubscriptionStatus = SubscriptionStatus.INACTIVE) {
 
 	require(id >= 0)
 	checkNotNull(user, "The user cannot be null. Use User() instead!": Any)
@@ -35,10 +36,6 @@ case class Subscription private(@BeanProperty id: Long = 0,
 		s"deliveryAddress='$deliveryAddress', endDate='$endDate', status='$status'}"
 
 	@BeanProperty val endDateAsInstant: Instant = endDate.orNull // used by JSP tags;
-}
-
-object SubscriptionStatus extends Enumeration {
-	val ACTIVE, INACTIVE = Value
 }
 
 object Subscription {

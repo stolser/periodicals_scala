@@ -7,4 +7,4 @@ package com.ostoliarov.webproject.controller.form.validator
 	*                   Otherwise - validation failed.
 	* @param messageKey An i18n message key.
 	*/
-case class ValidationResult private(statusCode: Int, messageKey: String) {}
+case class ValidationResult private(statusCode: Int, messageKey: String)

@@ -5,7 +5,7 @@ import com.ostoliarov.webproject.controller.request.processor.DispatchException.
   * Created by Oleg Stoliarov on 10/10/18.
   */
 case class DispatchException private(message: String = null, cause: Throwable = null)
-	extends RuntimeException(defaultMessage(message, cause), cause) {}
+	extends RuntimeException(defaultMessage(message, cause), cause)
 
 object DispatchException {
 	def defaultMessage(message: String, cause: Throwable): String =

@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.dao
 
-import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.PeriodicalStatus
+import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory}
 
 /**
 	* Created by Oleg Stoliarov on 10/13/18.
@@ -8,10 +9,10 @@ import com.ostoliarov.webproject.model.entity.periodical.{Periodical, Periodical
 trait PeriodicalDao extends GenericDao[Periodical] {
 	def findOneByName(name: String): Option[Periodical]
 
-	def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical]
+	def findAllByStatus(status: PeriodicalStatus): List[Periodical]
 
 	def findNumberOfPeriodicalsWithCategoryAndStatus(category: PeriodicalCategory,
-																									 status: PeriodicalStatus.Value): Int
+																									 status: PeriodicalStatus): Int
 
 	/**
 		* Updates a periodical and sets a new status 'discarded' only if there is no active subscriptions

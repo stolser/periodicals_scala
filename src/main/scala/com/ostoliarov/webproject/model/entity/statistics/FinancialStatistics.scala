@@ -9,4 +9,4 @@ import scala.beans.BeanProperty
 	* @param paidInvoiceSum  The sum of all invoices that have been paid.
 	*/
 case class FinancialStatistics(@BeanProperty totalInvoiceSum: Long,
-															 @BeanProperty paidInvoiceSum: Long) {}
+															 @BeanProperty paidInvoiceSum: Long)

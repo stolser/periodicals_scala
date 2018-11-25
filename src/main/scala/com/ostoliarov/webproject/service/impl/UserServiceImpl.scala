@@ -1,14 +1,23 @@
 package com.ostoliarov.webproject.service.impl
 
 import com.ostoliarov.webproject.connection.AbstractConnection
-import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole}
+import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
+import com.ostoliarov.webproject.model.entity.user.{Credential, User}
 import com.ostoliarov.webproject.service.{UserService, _}
 
 /**
 	* Created by Oleg Stoliarov on 11/21/18.
 	*/
+
 abstract class UserServiceImpl extends UserService {
 	this: ServiceDependency =>
+
+	private object UserParameterName extends Enumeration {
+		type UserParameterName = Value
+		val ID, NAME = Value
+	}
+
+	import UserParameterName._
 
 	override def findOneById(id: Long): Option[User] =
 		findOneUserBy(UserParameterName.ID, id)
@@ -16,11 +25,7 @@ abstract class UserServiceImpl extends UserService {
 	override def findOneByName(userName: String): Option[User] =
 		findOneUserBy(UserParameterName.NAME, userName)
 
-	private object UserParameterName extends Enumeration {
-		val ID, NAME = Value
-	}
-
-	private def findOneUserBy(paramName: UserParameterName.Value,
+	private def findOneUserBy(paramName: UserParameterName,
 														paramValue: Any): Option[User] = {
 		withConnection { conn =>
 			val userInDb = paramName match {
@@ -62,7 +67,7 @@ abstract class UserServiceImpl extends UserService {
 
 	override def createNewUser(user: User,
 														 credential: Credential,
-														 userRole: UserRole.Value): Boolean = {
+														 userRole: UserRole): Boolean = {
 		require(user != null)
 		require(credential != null)
 		require(userRole != null)

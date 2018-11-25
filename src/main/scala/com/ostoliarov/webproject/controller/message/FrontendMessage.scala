@@ -1,5 +1,7 @@
 package com.ostoliarov.webproject.controller.message
 
+import com.ostoliarov.webproject.controller.message.MessageType.MessageType
+
 import scala.beans.BeanProperty
 
 /**
@@ -7,13 +9,4 @@ import scala.beans.BeanProperty
 	* Encapsulates data about a message displayed on the frontend.
 	*/
 case class FrontendMessage private(@BeanProperty messageKey: String,
-																	 @BeanProperty messageType: FrontendMessage.MessageType.Value) {}
-
-object FrontendMessage {
-
-	object MessageType extends Enumeration {
-		val SUCCESS, INFO, WARNING, ERROR = Value
-	}
-
-}
-
+																	 @BeanProperty messageType: MessageType)

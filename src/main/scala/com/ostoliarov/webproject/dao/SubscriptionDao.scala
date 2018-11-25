@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.dao
 
-import com.ostoliarov.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
+import com.ostoliarov.webproject.model.entity.subscription.Subscription
+import com.ostoliarov.webproject.model.entity.subscription.SubscriptionStatus.SubscriptionStatus
 import com.ostoliarov.webproject.model.entity.user.User
 
 /**
@@ -16,5 +17,5 @@ trait SubscriptionDao extends GenericDao[Subscription] {
 	def findAllByUser(user: User): List[Subscription]
 
 	def findAllByPeriodicalIdAndStatus(periodicalId: Long,
-																		 status: SubscriptionStatus.Value): List[Subscription]
+																		 status: SubscriptionStatus): List[Subscription]
 }

@@ -4,6 +4,7 @@ import com.ostoliarov.webproject.controller.ApplicationResources.CURRENT_USER_AT
 import com.ostoliarov.webproject.controller.request.processor.RequestProviderImpl._
 import com.ostoliarov.webproject.controller.utils.HttpUtils
 import com.ostoliarov.webproject.controller.utils.HttpUtils.{filterRequestByHttpMethod, filterRequestByUri}
+import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.http.{HttpServletRequest, HttpSession}
 
@@ -13,10 +14,10 @@ import javax.servlet.http.{HttpServletRequest, HttpSession}
 	*/
 object Authorization {
 	private val USERS_URI_WITH_ID = "/backend/users/\\d+"
-	private val admin = Set[UserRole.Value](
+	private val admin = Set[UserRole](
 		UserRole.ADMIN
 	)
-	private val permissionMapping = Map[String, Set[UserRole.Value]](
+	private val permissionMapping = Map[String, Set[UserRole]](
 		GET_ALL_USERS_REQUEST_PATTERN -> admin,
 		GET_CREATE_PERIODICAL_REQUEST_PATTERN -> admin,
 		GET_UPDATE_PERIODICAL_REQUEST_PATTERN -> admin,
@@ -53,13 +54,13 @@ object Authorization {
 		} else true
 	}
 
-	private def getPermissionMapping(request: HttpServletRequest): Option[(String, Set[UserRole.Value])] =
+	private def getPermissionMapping(request: HttpServletRequest): Option[(String, Set[UserRole])] =
 		permissionMapping
 			.filterKeys(filterRequestByHttpMethod(request, _))
 			.filterKeys(filterRequestByUri(request, _))
 			.headOption
 
-	private def isPermissionGranted(permissionMapping: (String, Set[UserRole.Value]),
+	private def isPermissionGranted(permissionMapping: (String, Set[UserRole]),
 																	request: HttpServletRequest) =
 		hasUserLegitRole(
 			userRoles = getUserRolesFromSession(request.getSession),
@@ -69,7 +70,7 @@ object Authorization {
 	private def getUserRolesFromSession(session: HttpSession) =
 		session.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User].roles
 
-	private def hasUserLegitRole(userRoles: Set[UserRole.Value],
-															 legitRoles: Set[UserRole.Value]) =
+	private def hasUserLegitRole(userRoles: Set[UserRole],
+															 legitRoles: Set[UserRole]) =
 		(userRoles intersect legitRoles).nonEmpty
 }

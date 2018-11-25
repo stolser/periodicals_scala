@@ -3,9 +3,10 @@ package com.ostoliarov.webproject.controller.request.processor.user
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
-import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
+import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
@@ -31,7 +32,7 @@ object CreateUser extends RequestProcessor {
 		val userEmail: String = request.getParameter(USER_EMAIL_PARAM_NAME)
 		val password: String = request.getParameter(USER_PASSWORD_PARAM_NAME)
 		val repeatPassword: String = request.getParameter(USER_REPEAT_PASSWORD_PARAM_NAME)
-		val userRole: UserRole.Value = UserRole.withName(request.getParameter(USER_ROLE_PARAM_NAME).toUpperCase)
+		val userRole: UserRole = UserRole.withName(request.getParameter(USER_ROLE_PARAM_NAME).toUpperCase)
 
 		if (!arePasswordsValidAndEqual(password, repeatPassword))
 			formMessages.put(USER_PASSWORD_PARAM_NAME, messageFactory.error(MSG_VALIDATION_PASSWORDS_ARE_NOT_EQUAL))
@@ -57,7 +58,7 @@ object CreateUser extends RequestProcessor {
 	private def createUser(username: String,
 												 userEmail: String,
 												 password: String,
-												 userRole: UserRole.Value) =
+												 userRole: UserRole) =
 		userService.createNewUser(
 			User(
 				status = UserStatus.ACTIVE,

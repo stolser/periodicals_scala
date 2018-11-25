@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.message
 
-import com.ostoliarov.webproject.controller.message.FrontendMessage.MessageType._
+import com.ostoliarov.webproject.controller.message.MessageType._
 
 import scala.collection.mutable
 
@@ -28,7 +28,7 @@ object FrontMessageFactory {
 		updateCacheAndGetMessageFromCache(cache = messagesError, messageType = ERROR, messageKey)
 
 	private def updateCacheAndGetMessageFromCache(cache: mutable.Map[String, FrontendMessage],
-																								messageType: FrontendMessage.MessageType.Value,
+																								messageType: MessageType.MessageType,
 																								messageKey: String): FrontendMessage = {
 		if (!cache.contains(messageKey))
 			cache += (messageKey -> FrontendMessage(messageKey, messageType))

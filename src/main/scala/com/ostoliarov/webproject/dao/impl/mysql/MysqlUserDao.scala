@@ -156,11 +156,11 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 
 	@throws[SQLException]
 	private def tryExecuteUpdate(st: PreparedStatement,
-															 exceptionMessage: String): Unit = {
-		val affectedRows = st.executeUpdate
-		if (affectedRows == 0)
-			throw DaoException(exceptionMessage)
-	}
+															 exceptionMessage: String): Unit =
+		st.executeUpdate match {
+			case 0 => throw DaoException(exceptionMessage)
+			case _ => ()
+		}
 
 	@throws[SQLException]
 	private def tryRetrieveId(st: PreparedStatement,

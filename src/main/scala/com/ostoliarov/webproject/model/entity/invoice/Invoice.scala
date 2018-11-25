@@ -3,6 +3,7 @@ package com.ostoliarov.webproject.model.entity.invoice
 import java.time.Instant
 
 import com.google.common.base.Preconditions._
+import com.ostoliarov.webproject.model.entity.invoice.InvoiceStatus.InvoiceStatus
 import com.ostoliarov.webproject.model.entity.periodical.Periodical
 import com.ostoliarov.webproject.model.entity.user.User
 
@@ -18,7 +19,7 @@ case class Invoice private(@BeanProperty id: Long = 0L,
 													 @BeanProperty totalSum: Long = 0,
 													 @BeanProperty creationDate: Option[Instant] = None,
 													 @BeanProperty var paymentDate: Option[Instant] = None,
-													 @BeanProperty var status: InvoiceStatus.Value = InvoiceStatus.NEW) {
+													 @BeanProperty var status: InvoiceStatus = InvoiceStatus.NEW) {
 
 	require(id >= 0)
 	require((0 to 12).contains(subscriptionPeriod))
@@ -33,10 +34,6 @@ case class Invoice private(@BeanProperty id: Long = 0L,
 
 	@BeanProperty val creationDateAsInstant: Instant = creationDate.orNull // used by JSP tags;
 	@BeanProperty val paymentDateAsInstant: Instant = paymentDate.orNull // used by JSP tags;
-}
-
-object InvoiceStatus extends Enumeration {
-	val NEW, PAID = Value
 }
 
 object Invoice {

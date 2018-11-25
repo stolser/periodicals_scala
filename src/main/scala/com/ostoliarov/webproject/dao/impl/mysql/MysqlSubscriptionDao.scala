@@ -7,6 +7,7 @@ import com.ostoliarov.webproject.controller.utils.DaoUtils
 import com.ostoliarov.webproject.dao.SubscriptionDao
 import com.ostoliarov.webproject.dao.impl.mysql.MysqlSubscriptionDao._
 import com.ostoliarov.webproject.model.entity.periodical.Periodical
+import com.ostoliarov.webproject.model.entity.subscription.SubscriptionStatus.SubscriptionStatus
 import com.ostoliarov.webproject.model.entity.subscription.{Subscription, SubscriptionStatus}
 import com.ostoliarov.webproject.model.entity.user.User
 
@@ -55,7 +56,7 @@ class MysqlSubscriptionDao private[mysql](conn: Connection) extends Subscription
 	}
 
 	override def findAllByPeriodicalIdAndStatus(periodicalId: Long,
-																							status: SubscriptionStatus.Value): List[Subscription] = {
+																							status: SubscriptionStatus): List[Subscription] = {
 		val sqlStatement = "SELECT * FROM subscriptions " +
 			"JOIN periodicals ON (subscriptions.periodical_id = periodicals.id) " +
 			"WHERE periodicals.id = ? AND subscriptions.status = ?"

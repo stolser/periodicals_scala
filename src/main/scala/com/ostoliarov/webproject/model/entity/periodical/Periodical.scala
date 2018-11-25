@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.model.entity.periodical
 
 import com.google.common.base.Preconditions._
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.PeriodicalStatus
 
 import scala.beans.BeanProperty
 
@@ -13,7 +14,7 @@ case class Periodical private(@BeanProperty id: Long = 0,
 															@BeanProperty publisher: String = "",
 															@BeanProperty description: Option[String] = None,
 															@BeanProperty oneMonthCost: Long = 0,
-															@BeanProperty status: PeriodicalStatus.Value = PeriodicalStatus.ACTIVE) {
+															@BeanProperty status: PeriodicalStatus = PeriodicalStatus.ACTIVE) {
 
 	require(id >= 0)
 	require(oneMonthCost >= 0)
@@ -37,15 +38,6 @@ case class Periodical private(@BeanProperty id: Long = 0,
 	}
 
 	@BeanProperty val descriptionAsString: String = description.getOrElse("") // used by JSP tags;
-}
-
-object PeriodicalStatus extends Enumeration {
-	type PeriodicalStatus = Value
-	val ACTIVE, INACTIVE, DISCARDED = Value
-}
-
-object PeriodicalOperationType extends Enumeration {
-	val CREATE, UPDATE = Value
 }
 
 object Periodical {

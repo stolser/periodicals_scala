@@ -3,6 +3,7 @@ package com.ostoliarov.webproject.service.impl
 import java.util.NoSuchElementException
 
 import com.ostoliarov.webproject.connection.AbstractConnection
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.PeriodicalStatus
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.statistics.PeriodicalNumberByCategory
 import com.ostoliarov.webproject.model.entity.subscription.SubscriptionStatus
@@ -31,7 +32,7 @@ abstract class PeriodicalServiceImpl extends PeriodicalService {
 			daoFactory.periodicalDao(conn).findAll
 		}
 
-	override def findAllByStatus(status: PeriodicalStatus.Value): List[Periodical] =
+	override def findAllByStatus(status: PeriodicalStatus): List[Periodical] =
 		withConnection { conn =>
 			daoFactory.periodicalDao(conn).findAllByStatus(status)
 		}

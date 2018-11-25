@@ -1,6 +1,7 @@
 package com.ostoliarov.webproject.service
 
-import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole}
+import com.ostoliarov.webproject.model.entity.user.UserRole.UserRole
+import com.ostoliarov.webproject.model.entity.user.{Credential, User}
 
 /**
 	* Created by Oleg Stoliarov on 10/15/18.
@@ -26,7 +27,7 @@ trait UserService {
 	@throws[IllegalArgumentException]
 	def createNewUser(user: User,
 										credential: Credential,
-										userRole: UserRole.Value): Boolean
+										userRole: UserRole): Boolean
 
 	def emailExistsInDb(email: String): Boolean
 }
