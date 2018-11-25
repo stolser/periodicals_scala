@@ -1,12 +1,10 @@
 package com.ostoliarov.webproject.controller.request.processor.sign
 
-import java.util.Objects.nonNull
-
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
-import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
@@ -91,17 +89,15 @@ object SignIn extends RequestProcessor {
 
 	private def redirectUri(request: HttpServletRequest,
 													currentUser: User) = {
-		val originalUri = request.getSession.getAttribute(ORIGINAL_URI_ATTR_NAME).asInstanceOf[String]
-		val defaultUri =
-			if (currentUser.hasRole(UserRole.ADMIN))
+		val originalUriOpt = Option(request.getSession.getAttribute(ORIGINAL_URI_ATTR_NAME).asInstanceOf[String])
+
+		originalUriOpt match {
+			case Some(originalUri) if SIGN_OUT_URI != originalUri => originalUri
+			case None => if (currentUser.hasRole(UserRole.ADMIN))
 				ADMIN_PANEL_URI
 			else
 				CURRENT_USER_ACCOUNT_URI
-
-		if (nonNull(originalUri) && SIGN_OUT_URI != originalUri)
-			originalUri
-		else
-			defaultUri
+		}
 	}
 
 	private def setSessionAttributes(request: HttpServletRequest,

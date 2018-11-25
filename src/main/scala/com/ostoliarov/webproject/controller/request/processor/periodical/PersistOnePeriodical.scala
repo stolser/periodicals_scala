@@ -1,17 +1,14 @@
 package com.ostoliarov.webproject.controller.request.processor.periodical
 
-import java.util.Objects.nonNull
-
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.controller.utils.HttpUtils
-import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
-import com.ostoliarov.webproject.controller.utils.HttpUtils.addGeneralMessagesToSession
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalOperationType.{CREATE, UPDATE}
-import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE}
-import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType, PeriodicalStatus}
+import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.{ACTIVE, DISCARDED, INACTIVE, PeriodicalStatus}
+import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalOperationType}
 import com.ostoliarov.webproject.service.impl.mysql.PeriodicalServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.slf4j.LoggerFactory
@@ -175,27 +172,31 @@ object PersistOnePeriodical extends RequestProcessor {
 		private val cache = mutable.Map[String, PeriodicalStatusChange]()
 
 		private[periodical] def instance(periodicalToSave: Periodical) = {
-			val periodicalInDb = PeriodicalServiceMysqlImpl.findOneById(periodicalToSave.id)
-			val oldStatus =
-				if (periodicalInDb.isDefined)
-					periodicalInDb.get.status
-				else null
-			val newStatus = periodicalToSave.status
+			val oldStatus = periodicalService.findOneById(periodicalToSave.id) match {
+				case Some(periodical) => Some(periodical.status)
+				case None => None
+			}
+
+			val newStatus = Option(periodicalToSave.status)
 			val cacheKey = getCacheKey(oldStatus, newStatus)
 			if (!cache.contains(cacheKey))
-				cache.put(cacheKey, new PersistOnePeriodical.PeriodicalStatusChange(oldStatus, newStatus))
+				cache.put(cacheKey, new PersistOnePeriodical.PeriodicalStatusChange(oldStatus.orNull, newStatus.orNull))
 
 			cache(cacheKey)
 		}
 
-		private def getCacheKey(oldStatus: PeriodicalStatus.Value,
-														newStatus: PeriodicalStatus.Value) =
-			(if (nonNull(oldStatus)) oldStatus.toString else "null") +
-				(if (nonNull(newStatus)) newStatus.toString else "null")
+		private def getCacheKey(oldStatusOpt: Option[PeriodicalStatus],
+														newStatusOpt: Option[PeriodicalStatus]) =
+			(oldStatusOpt, newStatusOpt) match {
+				case (Some(oldStatus), Some(newStatus)) => oldStatus.toString + newStatus.toString
+				case (Some(oldStatus), None) => oldStatus.toString + "null"
+				case (None, Some(newStatus)) => "null" + newStatus.toString
+				case (None, None) => "null" + "null"
+			}
 	}
 
-	final private class PeriodicalStatusChange private(var _oldStatus: PeriodicalStatus.Value,
-																										 var _newStatus: PeriodicalStatus.Value) {
+	final private class PeriodicalStatusChange private(var _oldStatus: PeriodicalStatus,
+																										 var _newStatus: PeriodicalStatus) {
 		private[periodical] def oldStatus = _oldStatus
 
 		private[periodical] def newStatus = _newStatus

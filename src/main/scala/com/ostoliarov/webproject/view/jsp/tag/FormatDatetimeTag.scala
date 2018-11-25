@@ -4,7 +4,6 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.temporal.Temporal
-import java.util.Objects.{isNull, nonNull}
 import java.util.{Date => JavaDate}
 
 import javax.servlet.jsp.tagext.{Tag, TagSupport}
@@ -18,40 +17,48 @@ import scala.beans.BeanProperty
 	* Displays formatted date.
 	*/
 class FormatDatetimeTag extends TagSupport() {
-	@BeanProperty var value: Temporal = _
-	@BeanProperty var pattern: String = "dd.MM.YYYY HH:mm:ss"
-	private var `var`: String = _
+	@BeanProperty
+	var pattern: String = "dd.MM.YYYY HH:mm:ss"
+
+	private var _value: Option[Temporal] = None
+	private var `var`: Option[String] = None
 	private var _scope: Int = PageContext.PAGE_SCOPE
 
-	def setVar(`var`: String): Unit =
-		this.`var` = `var`
+	def setValue(value: Temporal): Unit = _value = Option(value)
 
-	def setScope(scope: String): Unit =
-		this._scope = Util.getScope(scope)
+	def getValue: Temporal = _value.orNull
+
+	def setVar(`var`: String): Unit = this.`var` = Option(`var`)
+
+	def setScope(scope: String): Unit = this._scope = Util.getScope(scope)
 
 	@throws[JspException]
-	override def doEndTag(): Int = {
-		if (isNull(value)) {
-			if (nonNull(`var`)) pageContext.removeAttribute(`var`, _scope)
-			return Tag.EVAL_PAGE
+	override def doEndTag(): Int =
+		_value match {
+			case None =>
+				if (`var`.isDefined) pageContext.removeAttribute(`var`.get, _scope)
+				Tag.EVAL_PAGE
+
+			case Some(someValue) =>
+				`var` match {
+					case Some(someVar) => pageContext.setAttribute(someVar, formattedDate(someValue), _scope)
+					case None =>
+						tryToPrintFormattedDate {
+							pageContext.getOut.print(formattedDate(someValue))
+						}
+				}
+
+				Tag.EVAL_PAGE
 		}
 
-		val instant = Instant.from(value)
-		val formatted: String = new SimpleDateFormat(pattern).format(JavaDate.from(instant))
+	private def formattedDate(value: Temporal) =
+		new SimpleDateFormat(pattern).format(JavaDate.from(Instant.from(value)))
 
-		if (nonNull(`var`))
-			pageContext.setAttribute(`var`, formatted, _scope)
-		else
-			try
-				pageContext.getOut.print(formatted)
-			catch {
-				case ioe: IOException =>
-					throw new JspTagException(ioe.toString, ioe)
-			}
-
-		Tag.EVAL_PAGE
-	}
-
-	override def release(): Unit =
-		value = null
+	private def tryToPrintFormattedDate(block: => Unit): Unit =
+		try
+			block
+		catch {
+			case ioe: IOException =>
+				throw new JspTagException(ioe.toString, ioe)
+		}
 }

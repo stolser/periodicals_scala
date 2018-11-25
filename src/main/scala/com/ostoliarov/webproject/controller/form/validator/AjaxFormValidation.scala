@@ -1,16 +1,17 @@
 package com.ostoliarov.webproject.controller.form.validator
 
 import java.io.IOException
-import java.util.Objects.nonNull
 import java.util.{Locale, ResourceBundle}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
+import com.ostoliarov.webproject.controller.request.processor.DispatchType.NO_ACTION
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}
 import com.ostoliarov.webproject.view.SystemLocale
-import com.ostoliarov.webproject.controller.request.processor.DispatchType.NO_ACTION
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse, HttpSession}
 import org.json.{JSONException, JSONObject}
 import org.slf4j.LoggerFactory
+
+import scala.collection.mutable
 
 /**
 	* Created by Oleg Stoliarov on 10/7/18.
@@ -59,9 +60,9 @@ object AjaxFormValidation extends RequestProcessor {
 		}
 
 	private def removeMessagesForCurrentParam(session: HttpSession, paramName: String): Unit = {
-		var frontEndMessages: Map[String, _] = session.getAttribute(MESSAGES_ATTR_NAME).asInstanceOf[Map[String, _]]
-		if (nonNull(frontEndMessages))
-			frontEndMessages -= paramName
+		val frontEndMessages = Option(session.getAttribute(MESSAGES_ATTR_NAME).asInstanceOf[mutable.Map[String, _]])
+		if (frontEndMessages.isDefined)
+			frontEndMessages.get -= paramName
 	}
 
 	private def customizeResponse(response: HttpServletResponse): Unit = {

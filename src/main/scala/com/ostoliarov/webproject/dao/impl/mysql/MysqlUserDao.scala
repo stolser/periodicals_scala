@@ -1,7 +1,6 @@
 package com.ostoliarov.webproject.dao.impl.mysql
 
 import java.sql.{Date => SqlDate, _}
-import java.util.Objects.nonNull
 import java.util.{Date => JavaDate}
 
 import com.ostoliarov.webproject._
@@ -118,21 +117,18 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 			userName = rs.getString(MysqlCredentialDao.DB_CREDENTIALS_USER_NAME),
 			firstName = Option(rs.getString(DB_USERS_FIRST_NAME)),
 			lastName = Option(rs.getString(DB_USERS_LAST_NAME)),
-			birthday = getBirthdayFromRs(rs),
+			birthday = birthdayFromResultSet(rs),
 			email = rs.getString(DB_USERS_EMAIL),
 			address = Option(rs.getString(DB_USERS_ADDRESS)),
 			status = UserStatus.withName(rs.getString(DB_USERS_STATUS).toUpperCase)
 		)
 
 	@throws[SQLException]
-	private def getBirthdayFromRs(rs: ResultSet): Option[JavaDate] = {
-		val birthday = rs.getDate(DB_USERS_BIRTHDAY)
-
-		if (nonNull(birthday))
-			Some(new JavaDate(birthday.getTime))
-		else
-			None
-	}
+	private def birthdayFromResultSet(rs: ResultSet): Option[JavaDate] =
+		Option(rs.getDate(DB_USERS_BIRTHDAY)) match {
+			case Some(birthday) => Some(new JavaDate(birthday.getTime))
+			case None => None
+		}
 
 	override def createNew(user: User): Long = {
 		val exceptionMessage = EXCEPTION_DURING_CREATING_NEW_USER.format(user)

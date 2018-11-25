@@ -1,7 +1,5 @@
 package com.ostoliarov.webproject.dao.impl.mysql
 
-import java.util.Objects.isNull
-
 import com.ostoliarov.webproject.connection.{AbstractConnection, AbstractConnectionImpl}
 import com.ostoliarov.webproject.dao._
 import com.ostoliarov.webproject.dao.exception.DaoException
@@ -45,8 +43,7 @@ object MysqlDaoFactory extends DaoFactory {
 	}
 
 	private def checkConnection(conn: AbstractConnection): Unit = {
-		if (isNull(conn))
-			throw DaoException(CONNECTION_CAN_NOT_BE_NULL)
+		require(conn != null, CONNECTION_CAN_NOT_BE_NULL)
 
 		if (!conn.isInstanceOf[AbstractConnectionImpl])
 			throw DaoException(CONNECTION_IS_NOT_AN_ABSTRACT_CONNECTION_IMPL_FOR_JDBC)

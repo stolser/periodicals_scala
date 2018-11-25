@@ -40,6 +40,7 @@ case class Periodical private(@BeanProperty id: Long = 0,
 }
 
 object PeriodicalStatus extends Enumeration {
+	type PeriodicalStatus = Value
 	val ACTIVE, INACTIVE, DISCARDED = Value
 }
 

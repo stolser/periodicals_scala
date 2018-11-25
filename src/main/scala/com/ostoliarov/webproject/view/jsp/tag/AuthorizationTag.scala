@@ -1,7 +1,5 @@
 package com.ostoliarov.webproject.view.jsp.tag
 
-import java.util.Objects.nonNull
-
 import com.ostoliarov.webproject.controller.ApplicationResources
 import com.ostoliarov.webproject.model.entity.user.{User, UserRole}
 import javax.servlet.jsp.JspException
@@ -23,23 +21,28 @@ class AuthorizationTag extends TagSupport {
 	private var user: User = _
 
 	@throws[JspException]
-	override def doStartTag(): Int = {
-		user = getUserFromSession
-		if (nonNull(user)
-			&& hasUserLegitRoles
-			&& hasUserNoProhibitedRoles)
-			Tag.EVAL_BODY_INCLUDE
-		else
-			Tag.SKIP_BODY
-	}
+	override def doStartTag(): Int =
+		userFromSession match {
+			case Some(someUser) =>
+				user = someUser
+				if (hasUserLegitRoles && hasUserNoProhibitedRoles) Tag.EVAL_BODY_INCLUDE
+				else Tag.SKIP_BODY
+			case None => Tag.SKIP_BODY
+		}
 
-	private def getUserFromSession = pageContext.getSession
-		.getAttribute(ApplicationResources.CURRENT_USER_ATTR_NAME).asInstanceOf[User]
+	private def userFromSession =
+		Option(pageContext.getSession.getAttribute(ApplicationResources.CURRENT_USER_ATTR_NAME).asInstanceOf[User])
 
 	private def hasUserLegitRoles: Boolean =
 		mustHaveRoles match {
 			case "*" => true
 			case _ => (user.roles intersect parseUserRoles(mustHaveRoles)).nonEmpty
+		}
+
+	private def hasUserNoProhibitedRoles: Boolean =
+		mustNotHaveRoles match {
+			case "*" => false
+			case _ => (user.roles intersect parseUserRoles(mustNotHaveRoles)).isEmpty
 		}
 
 	private def parseUserRoles(userRoles: String): Set[UserRole.Value] =
@@ -48,11 +51,5 @@ class AuthorizationTag extends TagSupport {
 				.map((roleStr: String) => UserRole.withName(roleStr.toUpperCase()))
 				.toSet
 			case _ => Set()
-		}
-
-	private def hasUserNoProhibitedRoles: Boolean =
-		mustNotHaveRoles match {
-			case "*" => false
-			case _ => (user.roles intersect parseUserRoles(mustNotHaveRoles)).isEmpty
 		}
 }

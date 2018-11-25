@@ -2,7 +2,6 @@ package com.ostoliarov.webproject.controller.utils
 
 import java.io.IOException
 import java.security.MessageDigest
-import java.util.Objects.nonNull
 import java.util.{NoSuchElementException, List => JavaList}
 
 import com.ostoliarov.webproject.controller.ApplicationResources._
@@ -36,9 +35,9 @@ object HttpUtils extends HttpUtilsTrait {
 		* @return id of the current signed in user or 0 if a user has not been authenticated yet
 		*/
 	override def userIdFromSession(request: HttpServletRequest): Long = {
-		val user: User = request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User]
-		if (nonNull(user)) user.id
-		else 0
+		val currentUserFromSession = Option(request.getSession.getAttribute(CURRENT_USER_ATTR_NAME).asInstanceOf[User])
+
+		currentUserFromSession.getOrElse(User()).id
 	}
 
 	/**
@@ -129,9 +128,9 @@ object HttpUtils extends HttpUtilsTrait {
 
 	def filterRequestByHttpMethod(request: HttpServletRequest, mapping: String): Boolean = {
 		val methodPattern: String = mapping.split(METHODS_URI_SEPARATOR)(0)
-		val methods: Array[String] = methodPattern.split(METHOD_METHOD_SEPARATOR)
+		val httpMethods: Array[String] = methodPattern.split(METHOD_METHOD_SEPARATOR)
 		val requestMethod: String = request.getMethod.toUpperCase
-		methods.contains(requestMethod)
+		httpMethods.contains(requestMethod)
 	}
 
 	def filterRequestByUri(request: HttpServletRequest, mapping: String): Boolean = {
