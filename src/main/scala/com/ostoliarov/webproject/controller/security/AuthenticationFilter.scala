@@ -15,7 +15,6 @@ class AuthenticationFilter extends Filter {
 	private[security] val httpUtils: HttpUtilsTrait = HttpUtils
 	private val unProtectedUris = Array(
 		"/backend/signIn",
-		"/backend/signUp",
 		"/backend/validation",
 	)
 

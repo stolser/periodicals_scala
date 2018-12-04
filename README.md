@@ -2,6 +2,14 @@
 ## Web UI screenshots
 https://github.com/stolser/periodicals_scala/wiki/Screens
 
+## Used technologies:
+* Scala 2.12.7, Enumeratum
+* ScalaTest (FunSuite, FlatSpec, WordSpec styles), <br/> Mockito Scala, ScalaMock
+* sbt
+* Java EE 7: Servlets, JSP, JSTL (with custom tags)
+* JDBC, MySQL
+* Bootstrap, jQuery
+
 ## Functionality description
 Application users have roles: ADMIN and/or SUBSCRIBER.
 
@@ -15,19 +23,6 @@ An Admin can see all the periodicals in the system and change their statuses.
 
 **_Periodicals are removed from the DB in a two-stage process (the Recycling Bin functionality)_**. First their status must be changed to DISCARDED and only after that, 
 they can be removed permanently from the DB as a separate operation.
-
-## Package Summary
-| Package                              | Description                                                                                                                                                                                                     |
-|--------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| com.ostoliarov.webproject.connection | Contains representation of a connection pool and an abstract connection that wraps a real DB connection. 
-|                                      | Trait AbstractConnection allows managing transactions spanning operations over several different DAOs. |
-| com.ostoliarov.webproject.controller | Contains the Front Controller class, form validation logic, authentication and authorization filters, and classes with request processing logic. 
-|                                      | Represents the Controller layer.                               |
-| com.ostoliarov.webproject.dao        | Contains traits and classes that implements the Data Access Object pattern. 
-|                                      | Represents the DAO layer.                                                                                                           |
-| com.ostoliarov.webproject.model      | Contains case classes representing entities in the system.                                                                                                                                                      |
-| com.ostoliarov.webproject.service    | Contains traits and classes representing the Service layer.                                                                                                                                                     |
-| com.ostoliarov.webproject.view       | Contains JSP view resolver logic, local classes and custom JSP tags.                                                                                                                                            |
 
 ## Architecture, design and implementation details
 The overall application has a 3-tier architecture:
@@ -57,10 +52,15 @@ Otherwise it redirects to the Sing-in page.
 **AuthorizationFilter** makes sure that a current user (specified in the session) has enough permissions (based on user roles) 
 to get a requested resource or perform an operation.
 
-## Used technologies:
-* Scala 2.12.7, Enumeratum
-* ScalaTest (FunSuite, FlatSpec, WordSpec styles), <br/> Mockito Scala, ScalaMock
-* sbt
-* Java EE 7: Servlets, JSP, JSTL (with custom tags)
-* JDBC, MySQL
-* Bootstrap, jQuery
+## Package Summary
+| Package                                  | Description                                                                                                                                                                                                     |
+|------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| com.ostoliarov.webproject.**connection** | Contains representation of a connection pool and an abstract connection that wraps a real DB connection. 
+|                                          | Trait AbstractConnection allows managing transactions spanning operations over several different DAOs. |
+| com.ostoliarov.webproject.**controller** | Contains the Front Controller class, form validation logic, authentication and authorization filters, and classes with request processing logic. 
+|                                          | Represents the Controller layer.                               |
+| com.ostoliarov.webproject.**dao**        | Contains traits and classes that implements the Data Access Object pattern. 
+|                                          | Represents the DAO layer.                                                                                                           |
+| com.ostoliarov.webproject.**model**      | Contains case classes representing entities in the system.                                                                                                                                                      |
+| com.ostoliarov.webproject.**service**    | Contains traits and classes representing the Service layer.                                                                                                                                                     |
+| com.ostoliarov.webproject.**view**       | Contains JSP view resolver logic, local classes and custom JSP tags.   

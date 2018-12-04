@@ -1,0 +1,5 @@
+1) Load data from the provided script:
+drop database periodicals;
+source /home/.../periodicals/db_schema/createSchemaWithData.sql;
+
+2) update subscriptions set status='inactive' where end_date < now();

@@ -1,5 +1,6 @@
 /.idea/
 /target/
+/classes/
 /project/target/
 /project/project/target/
 *.iml

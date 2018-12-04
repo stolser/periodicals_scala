@@ -41,7 +41,7 @@ object CreateUser extends RequestProcessor {
 			formMessages.put(SIGN_UP_USERNAME_PARAM_NAME, messageFactory.error(USERNAME_IS_NOT_UNIQUE_TRY_ANOTHER_ONE))
 		else {
 			val isNewUserCreated: Boolean = createUser(username, userEmail, password, userRole)
-			if (isNewUserCreated) redirectUri = LOGIN_PAGE
+			if (isNewUserCreated) redirectUri = USERS_LIST_URI
 			else generalMessages += messageFactory.error(MSG_NEW_USER_WAS_NOT_CREATED_ERROR)
 		}
 

@@ -1,10 +1,15 @@
 <%@include file="../../includes/header.jsp" %>
 <fmt:setBundle basename="webproject.i18n.backend.user" var="langUser"/>
 <fmt:setBundle basename="webproject.i18n.backend.general" var="general"/>
+<fmt:setBundle basename="webproject.i18n.credential.credential" var="credential"/>
 
 <div class="row">
     <div class="col-md-12 table-responsive">
-        <h1><fmt:message key="user.usersList.title" bundle="${langUser}"/></h1>
+        <h1 class="col-md-9"><fmt:message key="user.usersList.title" bundle="${langUser}"/></h1>
+        <div class="col-md-3">
+            <p><a href="${ApplicationResources.SIGN_UP_URI()}">
+                <fmt:message key="signUp.link.label" bundle="${credential}"/></a></p>
+        </div>
         <table class="table table-hover table-bordered table-striped">
             <thead>
             <tr>

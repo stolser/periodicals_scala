@@ -47,8 +47,6 @@
             </div>
 
         </div>
-        <p><a href="${ApplicationResources.SIGN_UP_URI()}">
-            <fmt:message key="signUp.link.label" bundle="${credential}"/></a></p>
 
     </div>
 </div>
