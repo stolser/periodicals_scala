@@ -1,5 +1,10 @@
 package com.ostoliarov.webproject.controller.request.processor.sign
 
+import java.util.concurrent.TimeUnit
+
+import com.ostoliarov.eventsourcing.EventSourcingApp
+import com.ostoliarov.eventsourcing.actor.logger.LoggerManager.{LogEvent, LoggerManagerPath}
+import com.ostoliarov.eventsourcing.model.SignInEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
@@ -8,9 +13,13 @@ import com.ostoliarov.webproject.controller.utils.HttpUtils._
 import com.ostoliarov.webproject.model.entity.user.{Credential, User, UserRole, UserStatus}
 import com.ostoliarov.webproject.service.impl.mysql.UserServiceMysqlImpl
 import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+import org.slf4j.LoggerFactory
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.FiniteDuration
+import scala.util.{Failure, Success}
 
 /**
 	* Created by Oleg Stoliarov on 10/11/18.
@@ -18,6 +27,7 @@ import scala.collection.mutable
 	* this user is active (not blocked) and if everything is OK, adds this user into the session.
 	*/
 object SignIn extends RequestProcessor {
+	private val LOGGER = LoggerFactory.getLogger(SignIn.getClass)
 	private type ParamName = String
 	private val userService = UserServiceMysqlImpl
 	private val messageFactory = FrontMessageFactory
@@ -79,6 +89,17 @@ object SignIn extends RequestProcessor {
 		val session = request.getSession
 		session.setAttribute(CURRENT_USER_ATTR_NAME, currentUser)
 		session.removeAttribute(ORIGINAL_URI_ATTR_NAME)
+
+		implicit val ec: ExecutionContext = ExecutionContext.global
+
+		EventSourcingApp.actorSystem
+			.actorSelection(LoggerManagerPath)
+			.resolveOne(FiniteDuration(500, TimeUnit.MILLISECONDS)).onComplete {
+			case Success(actorRef) =>
+				actorRef ! LogEvent(SignInEvent(currentUser, request.getHeader("User-Agent")))
+			case Failure(_) => LOGGER.error("Unable to look up the Logger Manager actor " +
+				s"with name = '$LoggerManagerPath'")
+		}
 
 		redirectUri(request, currentUser)
 	}
