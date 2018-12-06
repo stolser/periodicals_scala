@@ -1,5 +1,7 @@
 package com.ostoliarov.webproject.controller.request.processor.periodical
 
+import com.ostoliarov.eventsourcing.EventLoggingHelper
+import com.ostoliarov.eventsourcing.model.DeleteDiscardedPeriodicalsEvent
 import com.ostoliarov.webproject.controller.ApplicationResources.{MSG_NO_PERIODICALS_TO_DELETE, MSG_PERIODICALS_DELETED_SUCCESS, PERIODICAL_LIST_URI}
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
@@ -28,6 +30,8 @@ object DeleteDiscardedPeriodicals extends RequestProcessor {
 			generalMessages,
 			deletedPeriodicalsNumber = periodicalService.deleteAllDiscarded()
 		)
+
+		EventLoggingHelper.logEvent(DeleteDiscardedPeriodicalsEvent(userIdFromSession(request)))
 
 		addGeneralMessagesToSession(request, generalMessages)
 

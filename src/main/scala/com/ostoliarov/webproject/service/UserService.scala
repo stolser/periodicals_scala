@@ -27,7 +27,7 @@ trait UserService {
 	@throws[IllegalArgumentException]
 	def createNewUser(user: User,
 										credential: Credential,
-										userRole: UserRole): Boolean
+										userRole: UserRole): Option[User]
 
 	def emailExistsInDb(email: String): Boolean
 }

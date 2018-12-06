@@ -13,7 +13,7 @@ import scala.collection.mutable
 /**
 	* Created by Oleg Stoliarov on 12/5/18.
 	*/
-object LoggerManager {
+private[eventsourcing] object LoggerManager {
 	val LoggerManagerName = "logger-manager"
 	val LoggerManagerPath = s"user/$EventLogSupervisorName/$LoggerManagerName"
 
@@ -28,10 +28,9 @@ object LoggerManager {
 	final case class LogEvent(event: Event)
 
 	final case class LogEventWithRetry(requestId: Long, event: Event)
-
 }
 
-class LoggerManager extends Actor with ActorLogging {
+private[eventsourcing] class LoggerManager extends Actor with ActorLogging {
 
 	import LoggerManager._
 
@@ -57,7 +56,7 @@ class LoggerManager extends Actor with ActorLogging {
 	}
 
 	private def createConsoleLogger() = {
-		val consoleWriter = context.actorOf(ConsoleWriter.props, "console-writer")
+		val consoleWriter = context.actorOf(ConsoleWriter.props(withFailures = true), "console-writer")
 		val consoleLogger = context.actorOf(Logger.props(writer = consoleWriter), "console-logger")
 		loggers += consoleLogger
 	}

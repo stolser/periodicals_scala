@@ -37,15 +37,19 @@ abstract class PeriodicalServiceImpl extends PeriodicalService {
 			daoFactory.periodicalDao(conn).findAllByStatus(status)
 		}
 
-	override def save(periodical: Periodical): Periodical = {
+	override def save(periodical: Periodical): (Periodical, IsPeriodicalNew) = {
 		require(periodical != null)
 
-		if (periodical.id == 0)
-			createNewPeriodical(periodical)
-		else
-			updatePeriodical(periodical)
+		val isPeriodicalNew =
+			if (periodical.id == 0) {
+				createNewPeriodical(periodical)
+				true
+			} else {
+				updatePeriodical(periodical)
+				false
+			}
 
-		getPeriodicalFromDbByName(periodical.name)
+		(getPeriodicalFromDbByName(periodical.name), isPeriodicalNew)
 	}
 
 	private def createNewPeriodical(periodical: Periodical): Unit =

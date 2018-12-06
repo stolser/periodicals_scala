@@ -2,6 +2,8 @@ package com.ostoliarov.webproject.controller.request.processor.invoice
 
 import java.time.Instant
 
+import com.ostoliarov.eventsourcing.EventLoggingHelper
+import com.ostoliarov.eventsourcing.model.PersistOneInvoiceEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType._
@@ -36,7 +38,7 @@ object PersistOneInvoice extends RequestProcessor {
 
 		periodicalInDb match {
 			case Some(periodical) if isPeriodicalValid(periodical, request, generalMessages) =>
-				tryToPersistNewInvoice(newInvoice(periodical, request), generalMessages)
+				tryToPersistInvoice(newInvoice(periodical, request), generalMessages, request)
 			case None =>
 				generalMessages += messageFactory.error(MSG_VALIDATION_PERIODICAL_IS_NULL)
 		}
@@ -95,12 +97,16 @@ object PersistOneInvoice extends RequestProcessor {
 		)
 	}
 
-	private def tryToPersistNewInvoice(invoiceToPersist: Invoice,
-																		 generalMessages: mutable.ListBuffer[FrontendMessage]): Unit = {
+	private def tryToPersistInvoice(invoiceToPersist: Invoice,
+																		 generalMessages: mutable.ListBuffer[FrontendMessage],
+																		 request: HttpServletRequest): Unit = {
 		generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 		try {
 			invoiceService.createNew(invoiceToPersist)
 			generalMessages += messageFactory.success(MSG_INVOICE_CREATION_SUCCESS)
+
+			EventLoggingHelper.logEvent(PersistOneInvoiceEvent(userIdFromSession(request), invoiceToPersist))
+
 		} catch {
 			case e: RuntimeException =>
 				LOGGER.error(EXCEPTION_DURING_PERSISTING_INVOICE.format(invoiceToPersist), e)

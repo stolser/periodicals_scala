@@ -7,7 +7,7 @@ import com.ostoliarov.eventsourcing.actor.logger.LoggerManager.LoggerManagerName
 /**
 	* Created by Oleg Stoliarov on 12/4/18.
 	*/
-object EventLogSupervisor {
+private[eventsourcing] object EventLogSupervisor {
 	val EventLogSupervisorName = "event-log-supervisor"
 
 	def props: Props = Props[EventLogSupervisor]
@@ -16,7 +16,7 @@ object EventLogSupervisor {
 
 }
 
-class EventLogSupervisor extends Actor with ActorLogging {
+private[eventsourcing] class EventLogSupervisor extends Actor with ActorLogging {
 
 	context.actorOf(LoggerManager.props, LoggerManagerName)
 

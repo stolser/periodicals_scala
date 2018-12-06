@@ -67,7 +67,7 @@ abstract class UserServiceImpl extends UserService {
 
 	override def createNewUser(user: User,
 														 credential: Credential,
-														 userRole: UserRole): Boolean = {
+														 userRole: UserRole): Option[User] = {
 		require(user != null)
 		require(credential != null)
 		require(userRole != null)
@@ -75,20 +75,21 @@ abstract class UserServiceImpl extends UserService {
 		withConnection { conn =>
 			conn.beginTransaction()
 
-			val userId = daoFactory.userDao(conn).createNew(user)
-			credential.userId = userId
+			val newUserId = daoFactory.userDao(conn).createNew(user)
+			credential.userId = newUserId
+
 			val isNewCredentialCreated = daoFactory.credentialDao(conn)
 				.createNew(credential)
 
 			if (!isNewCredentialCreated) {
 				conn.rollbackTransaction()
-				return false
+				return None
 			}
 
-			daoFactory.roleDao(conn).addRole(userId, userRole)
+			daoFactory.roleDao(conn).addRole(newUserId, userRole)
 			conn.commitTransaction()
 
-			return true
+			return Some(user.copy(id = newUserId, roles = Set(userRole)))
 		}
 	}
 

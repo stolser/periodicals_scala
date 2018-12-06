@@ -8,7 +8,7 @@ import com.ostoliarov.eventsourcing.actor.EventLogSupervisor.EventLogSupervisorN
 	* Created by Oleg Stoliarov on 12/4/18.
 	*/
 object EventSourcingApp {
-	var actorSystem: ActorSystem = _
+	private[eventsourcing] var actorSystem: ActorSystem = _
 
 	def create(actorSystemName: String): EventSourcingApp[Stopped] =
 		new EventSourcingApp[Stopped](actorSystemName)

@@ -1,5 +1,7 @@
 package com.ostoliarov.webproject.controller.request.processor.user
 
+import com.ostoliarov.eventsourcing.EventLoggingHelper
+import com.ostoliarov.eventsourcing.model.CreateUserEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
@@ -40,9 +42,15 @@ object CreateUser extends RequestProcessor {
 		else if (usernameExistsInDb(username))
 			formMessages.put(SIGN_UP_USERNAME_PARAM_NAME, messageFactory.error(USERNAME_IS_NOT_UNIQUE_TRY_ANOTHER_ONE))
 		else {
-			val isNewUserCreated: Boolean = createUser(username, userEmail, password, userRole)
-			if (isNewUserCreated) redirectUri = USERS_LIST_URI
-			else generalMessages += messageFactory.error(MSG_NEW_USER_WAS_NOT_CREATED_ERROR)
+			val createdUser: Option[User] = createUser(username, userEmail, password, userRole)
+			createdUser match {
+				case Some(newUser) =>
+					redirectUri = USERS_LIST_URI
+
+					EventLoggingHelper.logEvent(CreateUserEvent(userIdFromSession(request), newUser))
+				case None =>
+					generalMessages += messageFactory.error(MSG_NEW_USER_WAS_NOT_CREATED_ERROR)
+			}
 		}
 
 		if (SIGN_UP_URI == redirectUri) {

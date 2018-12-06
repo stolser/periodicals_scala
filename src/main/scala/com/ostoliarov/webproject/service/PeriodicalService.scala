@@ -8,6 +8,8 @@ import com.ostoliarov.webproject.model.entity.statistics.PeriodicalNumberByCateg
 	* Created by Oleg Stoliarov on 10/15/18.
 	*/
 trait PeriodicalService {
+	type IsPeriodicalNew = Boolean
+
 	def findOneById(id: Long): Option[Periodical]
 
 	def findOneByName(name: String): Option[Periodical]
@@ -27,7 +29,7 @@ trait PeriodicalService {
 		* @throws IllegalArgumentException - in case the given periodical is null
 		*/
 	@throws[IllegalArgumentException]
-	def save(periodical: Periodical): Periodical
+	def save(periodical: Periodical): (Periodical, IsPeriodicalNew)
 
 	/**
 		* Updates a periodical and sets a new status 'discarded' only if there is no active subscriptions

@@ -60,7 +60,7 @@ class PeriodicalServiceImplTest extends FunSuiteWithMockitoScalaBase {
 		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDaoMock
 		when(periodicalDaoMock.findOneByName(periodicalName)) thenReturn savedPeriodical
 
-		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)
+		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)._1
 
 		assert(actualPeriodical === savedPeriodical.get)
 
@@ -78,7 +78,7 @@ class PeriodicalServiceImplTest extends FunSuiteWithMockitoScalaBase {
 		when(periodicalDaoMock.findOneByName(periodicalName)) thenReturn periodicalToSave
 		when(periodicalDaoMock.update(periodicalToSave.get)) thenReturn updatedRowsNumber
 
-		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave.get)
+		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave.get)._1
 
 		assert(actualPeriodical === periodicalToSave.get)
 

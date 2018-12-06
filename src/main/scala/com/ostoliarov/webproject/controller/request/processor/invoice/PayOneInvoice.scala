@@ -1,5 +1,7 @@
 package com.ostoliarov.webproject.controller.request.processor.invoice
 
+import com.ostoliarov.eventsourcing.EventLoggingHelper
+import com.ostoliarov.eventsourcing.model.PayOneInvoiceEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message._
 import com.ostoliarov.webproject.controller.request.processor.DispatchType._
@@ -77,8 +79,10 @@ object PayOneInvoice extends RequestProcessor {
 			generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 			val isInvoicePaid = invoiceService.payInvoice(invoiceInDb)
 			val resultMessage = if (isInvoicePaid) MSG_INVOICE_PAYMENT_SUCCESS else MSG_INVOICE_PAYMENT_ERROR
-
 			generalMessages += messageFactory.success(resultMessage)
+
+			if (isInvoicePaid)
+				EventLoggingHelper.logEvent(PayOneInvoiceEvent(userIdFromSession(request), invoiceInDb.id))
 		} catch {
 			case e: RuntimeException =>
 				LOGGER.error(s"User id = ${userIdFromSession(request)}. Exception during paying invoice $invoiceInDb.", e)

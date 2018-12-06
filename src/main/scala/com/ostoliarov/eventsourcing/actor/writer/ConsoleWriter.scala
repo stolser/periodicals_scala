@@ -9,13 +9,14 @@ import scala.util.Random
 /**
 	* Created by Oleg Stoliarov on 12/5/18.
 	*/
-object ConsoleWriter {
-	def props: Props = Props[ConsoleWriter]
+private[eventsourcing] object ConsoleWriter {
+	def props(withFailures: Boolean): Props = Props(new ConsoleWriter(withFailures))
 
 	final case class WriteEvent(requestId: Long, event: Event)
+
 }
 
-class ConsoleWriter extends Actor with ActorLogging {
+private[eventsourcing] class ConsoleWriter(withFailures: Boolean) extends Actor with ActorLogging {
 
 	import ConsoleWriter._
 
@@ -27,7 +28,10 @@ class ConsoleWriter extends Actor with ActorLogging {
 			} else sender ! LogEventFailure(requestId)
 	}
 
-	def isStatusOk(requestId: Long): Boolean = Random.nextBoolean()
+	def isStatusOk(requestId: Long): Boolean =
+		if (withFailures)
+			Random.nextBoolean()
+		else true
 
 	override def preStart(): Unit = log.info(s"Starting ConsoleWriter '${self.path.name}'...")
 

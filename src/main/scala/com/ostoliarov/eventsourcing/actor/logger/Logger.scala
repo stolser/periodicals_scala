@@ -1,7 +1,7 @@
 package com.ostoliarov.eventsourcing.actor.logger
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.ostoliarov.eventsourcing.actor.logger.Logger.{LogEventFailure, LogEventSuccess}
+import com.ostoliarov.eventsourcing.actor.logger.Logger.{LogEventFailure, LogEventSuccess, Stop}
 import com.ostoliarov.eventsourcing.actor.logger.LoggerManager.LogEventWithRetry
 import com.ostoliarov.eventsourcing.actor.writer.ConsoleWriter.WriteEvent
 import com.ostoliarov.eventsourcing.model.Event
@@ -11,7 +11,7 @@ import scala.collection.mutable
 /**
 	* Created by Oleg Stoliarov on 12/5/18.
 	*/
-object Logger {
+private[eventsourcing] object Logger {
 	def props(writer: ActorRef): Props = Props(new Logger(writer))
 
 	final case class LogEventSuccess(requestId: Long)
@@ -19,12 +19,13 @@ object Logger {
 	final case class LogEventFailure(requestId: Long)
 
 	case object Stop
-
 }
 
-class Logger(writer: ActorRef) extends Actor with ActorLogging {
-	private val requestRetries = mutable.Map[Long, Int]()
-	private val requestId2Events = mutable.Map[Long, Event]()
+private[eventsourcing] class Logger(writer: ActorRef) extends Actor with ActorLogging {
+	type RequestId = Long
+	type Retry = Int
+	private val requestRetries = mutable.Map[RequestId, Retry]()
+	private val requestId2Events = mutable.Map[RequestId, Event]()
 	private val RetryNumberLimit = 5
 
 	override def receive: Receive = {
@@ -50,6 +51,8 @@ class Logger(writer: ActorRef) extends Actor with ActorLogging {
 			requestRetries.remove(requestId)
 			requestId2Events.remove(requestId)
 			context.actorSelection("..") ! LogEventSuccess(requestId)
+
+		case Stop => context.stop(self)
 	}
 
 	override def preStart(): Unit = log.info(s"Starting Logger '${self.path.name}' with writer = '$writer'...")

@@ -1,5 +1,7 @@
 package com.ostoliarov.webproject.controller.request.processor.periodical
 
+import com.ostoliarov.eventsourcing.EventLoggingHelper
+import com.ostoliarov.eventsourcing.model.{CreatePeriodicalEvent, UpdatePeriodicalEvent}
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
@@ -47,14 +49,17 @@ object PersistOnePeriodical extends RequestProcessor {
 				generalMessages
 			)
 
-			if (isStatusChangedFromActiveOrInactiveToDiscarded(PeriodicalStatusChange.instance(periodicalToSave))) {
-				val affectedRows: Int = periodicalService.updateAndSetDiscarded(periodicalToSave)
-				if (affectedRows == 0) {
-					addErrorMessage(MSG_PERIODICAL_HAS_ACTIVE_SUBSCRIPTIONS_ERROR, generalMessages, request)
+			val (persistedPeriodical, isNew) =
+				if (isStatusChangedFromActiveOrInactiveToDiscarded(PeriodicalStatusChange.instance(periodicalToSave))) {
+					val affectedRows: Int = periodicalService.updateAndSetDiscarded(periodicalToSave)
+					if (affectedRows == 0) {
+						addErrorMessage(MSG_PERIODICAL_HAS_ACTIVE_SUBSCRIPTIONS_ERROR, generalMessages, request)
 
-					return ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
-				}
-			} else periodicalService.save(periodicalToSave)
+						return ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
+					} else (periodicalToSave, false)
+				} else periodicalService.save(periodicalToSave)
+
+			logPersistPeriodicalEvent(request, persistedPeriodical, isNew)
 
 			addMessagesToSession(request, generalMessages)
 
@@ -66,6 +71,14 @@ object PersistOnePeriodical extends RequestProcessor {
 				return ResourceRequest(REDIRECT, AbstractViewName(redirectUri))
 		}
 	}
+
+	private def logPersistPeriodicalEvent(request: HttpServletRequest,
+																				persistedPeriodical: Periodical,
+																				isNew: Boolean): Unit =
+		if (isNew)
+			EventLoggingHelper.logEvent(CreatePeriodicalEvent(userIdFromSession(request), persistedPeriodical))
+		else
+			EventLoggingHelper.logEvent(UpdatePeriodicalEvent(userIdFromSession(request), persistedPeriodical))
 
 	private def addErrorMessage(message: String,
 															generalMessages: mutable.ListBuffer[FrontendMessage],

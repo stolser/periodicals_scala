@@ -25,34 +25,34 @@ sealed abstract class AbstractEvent extends Event {
 	override def eventMessage: String = s"Event{$uuid;$time;$userId;$productPrefix;$toString"
 }
 
-final case class SignInEvent(user: User, userIp: String) extends AbstractEvent {
-	override val userId: Long = user.id
-
-	override def toString: String = s"{user=$user,userIp=$userIp}"
+final case class SignInEvent(userId: Long, userIp: String) extends AbstractEvent {
+	override def toString: String = s"{userIp=$userIp}"
 }
 
-final case class SignOutEvent(user: User) extends AbstractEvent {
-	override val userId: Long = user.id
-
-	override def toString: String = s"{user=$user}"
+final case class SignOutEvent(userId: Long) extends AbstractEvent {
+	override def toString: String = ""
 }
 
 final case class CreateUserEvent(userId: Long, newUser: User) extends AbstractEvent {
 	override def toString: String = s"{newUser=$newUser}"
 }
 
-final case class PersistOnePeriodicalEvent(userId: Long, periodical: Periodical) extends AbstractEvent {
-	override def toString: String = s"{periodical=$periodical}"
+final case class CreatePeriodicalEvent(userId: Long, newPeriodical: Periodical) extends AbstractEvent {
+	override def toString: String = s"{periodical=$newPeriodical}"
 }
 
-final case class DeleteDiscardedPeriodicalsEvent(userId: Long, periodicals: Set[Periodical]) extends AbstractEvent {
-	override def toString: String = s"{periodicals=$periodicals}"
+final case class UpdatePeriodicalEvent(userId: Long, updatedPeriodical: Periodical) extends AbstractEvent {
+	override def toString: String = s"{periodical=$updatedPeriodical}"
+}
+
+final case class DeleteDiscardedPeriodicalsEvent(userId: Long) extends AbstractEvent {
+	override def toString: String = ""
 }
 
 final case class PersistOneInvoiceEvent(userId: Long, invoice: Invoice) extends AbstractEvent {
 	override def toString: String = s"{invoice=$invoice}"
 }
 
-final case class PayOneInvoiceEvent(userId: Long, invoice: Invoice) extends AbstractEvent {
-	override def toString: String = s"{invoice=$invoice}"
+final case class PayOneInvoiceEvent(userId: Long, invoiceId: Long) extends AbstractEvent {
+	override def toString: String = s"{invoiceId=$invoiceId}"
 }
