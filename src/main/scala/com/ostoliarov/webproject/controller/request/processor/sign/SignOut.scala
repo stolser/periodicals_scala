@@ -1,7 +1,7 @@
 package com.ostoliarov.webproject.controller.request.processor.sign
 
-import com.ostoliarov.eventsourcing.EventLoggingHelper
-import com.ostoliarov.eventsourcing.model.SignOutEvent
+import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.model.SignOutEvent
 import com.ostoliarov.webproject.controller.ApplicationResources.{CURRENT_USER_ATTR_NAME, LOGIN_PAGE}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
 import com.ostoliarov.webproject.controller.request.processor.{AbstractViewName, RequestProcessor, ResourceRequest}

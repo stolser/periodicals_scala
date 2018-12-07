@@ -1,4 +1,4 @@
-package com.ostoliarov.eventsourcing.model
+package com.ostoliarov.eventsourcing.logging.model
 
 import java.time.Instant
 

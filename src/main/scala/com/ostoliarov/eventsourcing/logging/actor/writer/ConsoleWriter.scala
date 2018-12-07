@@ -1,8 +1,9 @@
-package com.ostoliarov.eventsourcing.actor.writer
+package com.ostoliarov.eventsourcing.logging.actor.writer
 
 import akka.actor.{Actor, ActorLogging, Props}
-import com.ostoliarov.eventsourcing.actor.logger.Logger.{LogEventFailure, LogEventSuccess}
-import com.ostoliarov.eventsourcing.model.Event
+import com.ostoliarov.eventsourcing.logging._
+import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.{LogEventFailure, LogEventSuccess}
+import com.ostoliarov.eventsourcing.logging.model.Event
 
 import scala.util.Random
 
@@ -12,7 +13,7 @@ import scala.util.Random
 private[eventsourcing] object ConsoleWriter {
 	def props(withFailures: Boolean): Props = Props(new ConsoleWriter(withFailures))
 
-	final case class WriteEvent(requestId: Long, event: Event)
+	final case class WriteEvent(requestId: RequestId, event: Event)
 
 }
 
@@ -28,10 +29,17 @@ private[eventsourcing] class ConsoleWriter(withFailures: Boolean) extends Actor 
 			} else sender ! LogEventFailure(requestId)
 	}
 
-	def isStatusOk(requestId: Long): Boolean =
-		if (withFailures)
+	def isStatusOk(requestId: RequestId): Boolean = {
+		val requestIdNumber = requestId.split('_')(1).toLong
+		if (withFailures) {
+			if (requestIdNumber % 3 == 0) {
+				throw new RuntimeException(s"Actor '$self' failed due an exception...")
+			}
+			Thread.sleep(1000 * Random.nextInt(5))
 			Random.nextBoolean()
-		else true
+		} else if (requestIdNumber > 0) true
+		else false
+	}
 
 	override def preStart(): Unit = log.info(s"Starting ConsoleWriter '${self.path.name}'...")
 

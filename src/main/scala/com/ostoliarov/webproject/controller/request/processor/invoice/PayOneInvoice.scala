@@ -1,7 +1,7 @@
 package com.ostoliarov.webproject.controller.request.processor.invoice
 
-import com.ostoliarov.eventsourcing.EventLoggingHelper
-import com.ostoliarov.eventsourcing.model.PayOneInvoiceEvent
+import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.model.PayOneInvoiceEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message._
 import com.ostoliarov.webproject.controller.request.processor.DispatchType._

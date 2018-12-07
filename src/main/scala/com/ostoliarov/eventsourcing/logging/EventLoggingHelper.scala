@@ -1,10 +1,10 @@
-package com.ostoliarov.eventsourcing
+package com.ostoliarov.eventsourcing.logging
 
 import java.util.concurrent.TimeUnit
 
 import com.ostoliarov.eventsourcing.EventSourcingApp.actorSystem
-import com.ostoliarov.eventsourcing.actor.logger.LoggerManager.{LogEvent, LoggerManagerPath}
-import com.ostoliarov.eventsourcing.model.Event
+import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.{LogEvent, LoggerManagerPath}
+import com.ostoliarov.eventsourcing.logging.model.Event
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
