@@ -4,7 +4,7 @@ https://github.com/stolser/periodicals_scala/wiki/Screens
 
 ## Used technologies:
 * Scala 2.12.7, Akka 2.5.18, Enumeratum
-* ScalaTest (FunSuite, FlatSpec, WordSpec styles), <br/> Mockito Scala, ScalaMock
+* ScalaTest (FunSuite, FlatSpec, WordSpec), <br/> Mockito Scala, ScalaMock, <br/> Akka TestKit
 * sbt
 * Java EE 7: Servlets, JSP, JSTL (with custom tags)
 * JDBC, MySQL
