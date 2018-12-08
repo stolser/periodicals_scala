@@ -2,7 +2,7 @@ package com.ostoliarov.webproject.controller
 
 import java.io.IOException
 
-import com.ostoliarov.eventsourcing.{EventSourcingApp, Started}
+import com.ostoliarov.eventsourcing.EventSourcingApp
 import com.ostoliarov.webproject.controller.ApplicationResources.ERROR_MESSAGE_ATTR_NAME
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.{DispatchType => _, _}
 import com.ostoliarov.webproject.controller.request.processor._
@@ -22,17 +22,8 @@ class FrontController extends HttpServlet {
 	private val INCORRECT_DISPATCH_TYPE = "Incorrect the dispatch type of the resource request: %s"
 	private val requestProvider = RequestProviderImpl
 	private val viewResolver = JspViewResolver
-	private var eventSourcingApp: EventSourcingApp[Started] = _
 
-	override def init(): Unit = {
-		eventSourcingApp = EventSourcingApp
-			.create(actorSystemName = "periodicals-event-sourcing")
-			.start()
-	}
-
-	override def destroy(): Unit = {
-		eventSourcingApp.stop()
-	}
+	override def destroy(): Unit = EventSourcingApp.stop()
 
 	@throws[ServletException]
 	@throws[IOException]

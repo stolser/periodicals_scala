@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor.user
 
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils
 import com.ostoliarov.eventsourcing.logging.model.CreateUserEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
@@ -47,7 +47,7 @@ object CreateUser extends RequestProcessor {
 				case Some(newUser) =>
 					redirectUri = USERS_LIST_URI
 
-					EventLoggingHelper.logEvent(CreateUserEvent(userIdFromSession(request), newUser))
+					EventLoggingUtils.logEvent(CreateUserEvent(userIdFromSession(request), newUser))
 				case None =>
 					generalMessages += messageFactory.error(MSG_NEW_USER_WAS_NOT_CREATED_ERROR)
 			}

@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor.invoice
 
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils
 import com.ostoliarov.eventsourcing.logging.model.PayOneInvoiceEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message._
@@ -82,7 +82,7 @@ object PayOneInvoice extends RequestProcessor {
 			generalMessages += messageFactory.success(resultMessage)
 
 			if (isInvoicePaid)
-				EventLoggingHelper.logEvent(PayOneInvoiceEvent(userIdFromSession(request), invoiceInDb.id))
+				EventLoggingUtils.logEvent(PayOneInvoiceEvent(userIdFromSession(request), invoiceInDb.id))
 		} catch {
 			case e: RuntimeException =>
 				LOGGER.error(s"User id = ${userIdFromSession(request)}. Exception during paying invoice $invoiceInDb.", e)

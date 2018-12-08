@@ -1,9 +1,11 @@
 package com.ostoliarov.eventsourcing.logging
 
-import java.io.File
+import java.io.{BufferedWriter, File, FileWriter}
 import java.util.concurrent.TimeUnit
 
 import com.ostoliarov.eventsourcing.EventSourcingApp.actorSystem
+import com.ostoliarov.eventsourcing.EventSourcingSettings
+import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager
 import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.{LogEvent, LoggerManagerPath}
 import com.ostoliarov.eventsourcing.logging.model.Event
 import com.ostoliarov.webproject.withResources
@@ -16,10 +18,10 @@ import scala.util.{Failure, Success}
 /**
 	* Created by Oleg Stoliarov on 12/6/18.
 	*/
-object EventLoggingHelper {
+object EventLoggingUtils {
 	implicit private val ec: ExecutionContext = ExecutionContext.global
 	private val finiteDuration = FiniteDuration(500, TimeUnit.MILLISECONDS)
-	val keyValueSeparator = '='
+	private val keyValueSeparator = '='
 
 	def logEvent(event: Event): Unit =
 		actorSystem
@@ -31,7 +33,7 @@ object EventLoggingHelper {
 					s"with name = '$LoggerManagerPath'")
 			}
 
-	def propertiesFromFile(propFile: File): Map[String, String] = withResources(Source.fromFile(propFile)) {
+	def readPropertiesFromFile(propFile: File): Map[String, String] = withResources(Source.fromFile(propFile)) {
 		source => {
 			source.getLines()
 				.filter(_ != "")
@@ -41,5 +43,21 @@ object EventLoggingHelper {
 				})
 				.toMap
 		}
+	}
+
+	def initEventUUID: Int = readPropertiesFromFile(
+		propFile = new File(EventSourcingSettings(actorSystem).pathToLoggerManagerPropFile)
+	)(LoggerManager.initEventUUIDKeyName).toInt
+
+	def writePropertiesToFile(props: Map[String, String]): Unit = {
+		println(s"props=$props")
+		val propsAsString = props.map({ case (key, value) => s"$key$keyValueSeparator$value\n" }).mkString("")
+		//		val lines = for((key, value) <- props) yield s"$key$keyValueSeparator$value\n"
+		//		val propsAsString = lines.mkString("")
+		val file = new File(EventSourcingSettings(actorSystem).pathToLoggerManagerPropFile)
+		val bw = new BufferedWriter(new FileWriter(file))
+
+		bw.write(propsAsString)
+		bw.close()
 	}
 }

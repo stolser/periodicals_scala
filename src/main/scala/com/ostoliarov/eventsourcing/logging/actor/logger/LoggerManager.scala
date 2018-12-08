@@ -4,10 +4,9 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
-import com.ostoliarov.eventsourcing.EventSourcingApp.actorSystem
+import com.ostoliarov.eventsourcing.EventSourcingApp.{actorSystem, eventLogSupervisorName}
 import com.ostoliarov.eventsourcing.EventSourcingSettings
-import com.ostoliarov.eventsourcing.EventSourcingSupervisor.eventLogSupervisorName
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper.propertiesFromFile
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils._
 import com.ostoliarov.eventsourcing.logging._
 import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger
 import com.ostoliarov.eventsourcing.logging.actor.writer.ConsoleWriter
@@ -19,11 +18,11 @@ import scala.collection.mutable
 	* Created by Oleg Stoliarov on 12/5/18.
 	*/
 private[eventsourcing] object LoggerManager {
-	private lazy val properties: Map[String, String] = propertiesFromFile(
+	private var properties: Map[String, String] = readPropertiesFromFile(
 		propFile = new File(EventSourcingSettings(actorSystem).pathToLoggerManagerPropFile)
 	)
 	val initEventUUIDKeyName = "initEventUUID"
-	lazy val nextEventUUID = new AtomicLong(properties(initEventUUIDKeyName).toInt)
+	lazy val nextEventUUID = new AtomicLong(initEventUUID)
 	val LoggerManagerName = "logger-manager"
 	val LoggerManagerPath = s"user/$eventLogSupervisorName/$LoggerManagerName"
 	val ConsoleLoggerName = "console-logger"
@@ -53,10 +52,13 @@ private[logger] class LoggerManager extends Actor
 
 	override def postStop(): Unit = {
 		log.error(s"The ids of the failed logging requests: $failedRequestIds")
-		// todo: get current nextEventUuid, and path to the prop file and persist it;
+		persistCurrentState()
 	}
 
-	override def preStart(): Unit = super.preStart()
+	private def persistCurrentState(): Unit = {
+		properties += (initEventUUIDKeyName -> nextEventUUID.get().toString)
+		writePropertiesToFile(properties)
+	}
 
 	private val consoleLogger: ActorRef = {
 		val consoleWriter = context.actorOf(ConsoleWriter.props(withFailures = false), ConsoleWriterName)

@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor.sign
 
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils
 import com.ostoliarov.eventsourcing.logging.model.SignOutEvent
 import com.ostoliarov.webproject.controller.ApplicationResources.{CURRENT_USER_ATTR_NAME, LOGIN_PAGE}
 import com.ostoliarov.webproject.controller.request.processor.DispatchType.REDIRECT
@@ -20,7 +20,7 @@ object SignOut extends RequestProcessor {
 		request.getSession.removeAttribute(CURRENT_USER_ATTR_NAME)
 		request.getSession.invalidate()
 
-		EventLoggingHelper.logEvent(SignOutEvent(userToSignOut.id))
+		EventLoggingUtils.logEvent(SignOutEvent(userToSignOut.id))
 
 		ResourceRequest(REDIRECT, AbstractViewName(LOGIN_PAGE))
 	}

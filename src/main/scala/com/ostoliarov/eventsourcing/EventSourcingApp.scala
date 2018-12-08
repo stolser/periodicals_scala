@@ -1,42 +1,23 @@
 package com.ostoliarov.eventsourcing
 
 import akka.actor.ActorSystem
-import com.ostoliarov.eventsourcing.EventSourcingSupervisor.eventLogSupervisorName
 
 /**
 	* Created by Oleg Stoliarov on 12/4/18.
 	*/
 object EventSourcingApp {
-	private[eventsourcing] var actorSystem: ActorSystem = _
+	val actorSystemName = "periodicals-event-sourcing"
+	val eventLogSupervisorName = "top-supervisor"
 
-	def create(actorSystemName: String): EventSourcingApp[Stopped] =
-		new EventSourcingApp[Stopped](actorSystemName)
-}
+	println(s"------- Starting actor system '$actorSystemName'...")
 
-class EventSourcingApp[State <: EventSourcingAppState] private(actorSystemName: String) {
+	private[eventsourcing] val actorSystem: ActorSystem = ActorSystem(actorSystemName)
 
-	import EventSourcingApp._
+	actorSystem.actorOf(EventSourcingSupervisor.props, name = eventLogSupervisorName)
 
-	def start[T >: State <: Stopped](): EventSourcingApp[Started] = {
-		println(s"Starting actor system '$actorSystemName'...")
-		actorSystem = ActorSystem(actorSystemName)
-
-		actorSystem.actorOf(EventSourcingSupervisor.props, name = eventLogSupervisorName)
-
-		this.asInstanceOf[EventSourcingApp[Started]]
-	}
-
-	def stop[T >: State <: Started](): EventSourcingApp[Stopped] = {
-		println(s"Terminating actor system '$actorSystemName'...")
+	def stop(): Unit = {
+		println(s"------- Terminating actor system '$actorSystemName'...")
 
 		actorSystem.terminate()
-
-		this.asInstanceOf[EventSourcingApp[Stopped]]
 	}
 }
-
-sealed trait EventSourcingAppState
-
-final class Started extends EventSourcingAppState
-
-final class Stopped extends EventSourcingAppState

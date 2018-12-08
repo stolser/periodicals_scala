@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor.periodical
 
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils
 import com.ostoliarov.eventsourcing.logging.model.{CreatePeriodicalEvent, UpdatePeriodicalEvent}
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.form.validator.ValidatorFactory
@@ -76,9 +76,9 @@ object PersistOnePeriodical extends RequestProcessor {
 																				persistedPeriodical: Periodical,
 																				isNew: Boolean): Unit =
 		if (isNew)
-			EventLoggingHelper.logEvent(CreatePeriodicalEvent(userIdFromSession(request), persistedPeriodical))
+			EventLoggingUtils.logEvent(CreatePeriodicalEvent(userIdFromSession(request), persistedPeriodical))
 		else
-			EventLoggingHelper.logEvent(UpdatePeriodicalEvent(userIdFromSession(request), persistedPeriodical))
+			EventLoggingUtils.logEvent(UpdatePeriodicalEvent(userIdFromSession(request), persistedPeriodical))
 
 	private def addErrorMessage(message: String,
 															generalMessages: mutable.ListBuffer[FrontendMessage],

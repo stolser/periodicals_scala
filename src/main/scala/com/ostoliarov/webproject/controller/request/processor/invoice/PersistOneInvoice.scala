@@ -2,7 +2,7 @@ package com.ostoliarov.webproject.controller.request.processor.invoice
 
 import java.time.Instant
 
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils
 import com.ostoliarov.eventsourcing.logging.model.PersistOneInvoiceEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
@@ -105,7 +105,7 @@ object PersistOneInvoice extends RequestProcessor {
 			invoiceService.createNew(invoiceToPersist)
 			generalMessages += messageFactory.success(MSG_INVOICE_CREATION_SUCCESS)
 
-			EventLoggingHelper.logEvent(PersistOneInvoiceEvent(userIdFromSession(request), invoiceToPersist))
+			EventLoggingUtils.logEvent(PersistOneInvoiceEvent(userIdFromSession(request), invoiceToPersist))
 
 		} catch {
 			case e: RuntimeException =>

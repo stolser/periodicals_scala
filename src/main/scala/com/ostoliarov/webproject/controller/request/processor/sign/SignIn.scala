@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.controller.request.processor.sign
 
-import com.ostoliarov.eventsourcing.logging.EventLoggingHelper
+import com.ostoliarov.eventsourcing.logging.EventLoggingUtils
 import com.ostoliarov.eventsourcing.logging.model.SignInEvent
 import com.ostoliarov.webproject.controller.ApplicationResources._
 import com.ostoliarov.webproject.controller.message.{FrontMessageFactory, FrontendMessage}
@@ -84,7 +84,7 @@ object SignIn extends RequestProcessor {
 		session.setAttribute(CURRENT_USER_ATTR_NAME, currentUser)
 		session.removeAttribute(ORIGINAL_URI_ATTR_NAME)
 
-		EventLoggingHelper.logEvent(SignInEvent(currentUser.id, request.getHeader("User-Agent")))
+		EventLoggingUtils.logEvent(SignInEvent(currentUser.id, request.getHeader("User-Agent")))
 
 		redirectUri(request, currentUser)
 	}

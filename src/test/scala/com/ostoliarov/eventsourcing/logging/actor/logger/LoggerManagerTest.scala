@@ -1,14 +1,12 @@
 package com.ostoliarov.eventsourcing.logging.actor.logger
 
-import java.util.concurrent.atomic.AtomicLong
-
 import akka.actor.{Actor, ActorRef, Props}
 import akka.testkit.{TestKit, TestProbe}
-import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.{LogEventFailure, Stop}
-import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.{LogEvent, LogEventWithRetry, StopAllLoggers}
-import com.ostoliarov.eventsourcing.logging.model.SignInEvent
 import com.ostoliarov.eventsourcing.WordSpecAkkaTestKit
 import com.ostoliarov.eventsourcing.logging._
+import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.{LogEvent, LogEventWithRetry, StopAllLoggers}
+import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.{LogEventFailure, Stop}
+import com.ostoliarov.eventsourcing.logging.model.SignInEvent
 
 import scala.collection.mutable
 
@@ -19,7 +17,7 @@ import scala.collection.mutable
 class LoggerManagerTest extends WordSpecAkkaTestKit {
 	val loggerName = "logger-test"
 	val signInEvent = SignInEvent(userId = 1, userIp = "1.2.3.4")
-	val initRequestIdNumber = 10
+	val initRequestIdNumber: Int = EventLoggingUtils.initEventUUID
 
 	override def afterAll: Unit = {
 		TestKit.shutdownActorSystem(system)
@@ -46,31 +44,6 @@ class LoggerManagerTest extends WordSpecAkkaTestKit {
 				f.loggerManager.tell(LogEvent(signInEvent), testActor)
 
 				f.loggerTestProbes.foreach(_.expectMsgType[LogEventWithRetry])
-			}
-		}
-	}
-
-	"LoggerManager" when {
-		"receiving LogEvent(event)" should {
-			val f = fixture
-			f.loggerManager.tell(LogEvent(signInEvent), testActor)
-
-			"generate a correct requestId and" should {
-				val requestIdA = s"${f.probeA.ref.path.name}_$initRequestIdNumber"
-				val requestIdB = s"${f.probeB.ref.path.name}_$initRequestIdNumber"
-				val expectedRequestIds = Set(requestIdA, requestIdB)
-
-				"send LogEventWithRetry with the requestId and event" in {
-					val expectMsgA = f.probeA.expectMsgType[LogEventWithRetry]
-					assert(expectMsgA.event === signInEvent)
-
-					val expectMsgB = f.probeB.expectMsgType[LogEventWithRetry]
-					assert(expectMsgB.event === signInEvent)
-
-					val actualRequestIds = Set(expectMsgA.requestId, expectMsgB.requestId)
-
-					assert(actualRequestIds === expectedRequestIds)
-				}
 			}
 		}
 	}
