@@ -8,8 +8,7 @@ import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.LoggerMan
 	* Created by Oleg Stoliarov on 12/4/18.
 	*/
 private[eventsourcing] object EventSourcingSupervisor {
-	val EventLogSupervisorName = "top-supervisor"
-	private val LoggerManagerInitRequestId = 1
+	val eventLogSupervisorName = "top-supervisor"
 
 	def props: Props = Props[EventSourcingSupervisor]
 
@@ -19,9 +18,9 @@ private[eventsourcing] object EventSourcingSupervisor {
 
 private[eventsourcing] class EventSourcingSupervisor extends Actor with ActorLogging {
 
-	import EventSourcingSupervisor._
+	context.actorOf(LoggerManager.props, LoggerManagerName)
 
-	context.actorOf(LoggerManager.props(LoggerManagerInitRequestId), LoggerManagerName)
+	println("-----------------------------------------------")
 
 	override def preStart(): Unit = log.info("Starting actor EventSourcingSupervisor...")
 

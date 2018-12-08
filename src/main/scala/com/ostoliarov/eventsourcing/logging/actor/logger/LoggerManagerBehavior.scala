@@ -12,7 +12,7 @@ trait LoggerManagerBehavior {
 
 	override def receive: Receive = {
 		case LogEvent(event) =>
-			val requestIdNumber = nextRequestIdNumber.getAndIncrement()
+			val requestIdNumber = event.uuid
 			for (logger <- loggers) {
 				val requestId = s"${logger.path.name}_$requestIdNumber"
 				logger ! LogEventWithRetry(requestId, event)

@@ -34,7 +34,6 @@ class LoggerManagerTest extends WordSpecAkkaTestKit {
 			props = Props(new Actor with LoggerManagerBehavior with LoggerManagerState {
 				override val loggers: Set[ActorRef] = loggerTestProbes.map(_.ref)
 				override val failedRequestIds: mutable.Set[RequestId] = loggingFailures
-				override val nextRequestIdNumber: AtomicLong = new AtomicLong(initRequestIdNumber)
 			})
 		)
 	}

@@ -13,5 +13,4 @@ import scala.collection.mutable
 trait LoggerManagerState {
 	val loggers: Set[ActorRef]
 	val failedRequestIds: mutable.Set[RequestId]
-	val nextRequestIdNumber: AtomicLong
 }

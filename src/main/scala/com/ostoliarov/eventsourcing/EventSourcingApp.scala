@@ -1,7 +1,7 @@
 package com.ostoliarov.eventsourcing
 
 import akka.actor.ActorSystem
-import com.ostoliarov.eventsourcing.EventSourcingSupervisor.EventLogSupervisorName
+import com.ostoliarov.eventsourcing.EventSourcingSupervisor.eventLogSupervisorName
 
 /**
 	* Created by Oleg Stoliarov on 12/4/18.
@@ -21,7 +21,7 @@ class EventSourcingApp[State <: EventSourcingAppState] private(actorSystemName: 
 		println(s"Starting actor system '$actorSystemName'...")
 		actorSystem = ActorSystem(actorSystemName)
 
-		actorSystem.actorOf(EventSourcingSupervisor.props, name = EventLogSupervisorName)
+		actorSystem.actorOf(EventSourcingSupervisor.props, name = eventLogSupervisorName)
 
 		this.asInstanceOf[EventSourcingApp[Started]]
 	}

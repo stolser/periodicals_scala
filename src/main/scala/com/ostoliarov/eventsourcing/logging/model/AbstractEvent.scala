@@ -1,8 +1,8 @@
 package com.ostoliarov.eventsourcing.logging.model
 
 import java.time.Instant
-import java.util.concurrent.atomic.AtomicLong
 
+import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.nextEventUUID
 import com.ostoliarov.webproject.model.entity.invoice.Invoice
 import com.ostoliarov.webproject.model.entity.periodical.Periodical
 import com.ostoliarov.webproject.model.entity.user.User
@@ -10,14 +10,8 @@ import com.ostoliarov.webproject.model.entity.user.User
 /**
 	* Created by Oleg Stoliarov on 12/5/18.
 	*/
-object AbstractEvent {
-	private val nextEventUUID = new AtomicLong(1)
-}
-
 sealed abstract class AbstractEvent extends Event {
 	this: Product =>
-
-	import AbstractEvent._
 
 	val uuid: Long = nextEventUUID.getAndIncrement()
 	val time: Instant = Instant.now()
