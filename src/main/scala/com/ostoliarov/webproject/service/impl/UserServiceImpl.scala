@@ -78,8 +78,7 @@ abstract class UserServiceImpl extends UserService {
 			val newUserId = daoFactory.userDao(conn).createNew(user)
 			credential.userId = newUserId
 
-			val isNewCredentialCreated = daoFactory.credentialDao(conn)
-				.createNew(credential)
+			val isNewCredentialCreated = daoFactory.credentialDao(conn).createNew(credential)
 
 			if (!isNewCredentialCreated) {
 				conn.rollbackTransaction()

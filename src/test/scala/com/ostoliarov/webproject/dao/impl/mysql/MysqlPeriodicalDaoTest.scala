@@ -1,6 +1,6 @@
 package com.ostoliarov.webproject.dao.impl.mysql
 
-import java.sql.{Connection, PreparedStatement, ResultSet}
+import java.sql.{Connection, PreparedStatement, ResultSet, Statement}
 
 import com.ostoliarov.webproject.FunSuiteWithMockitoScalaBase
 import com.ostoliarov.webproject.controller.utils.DaoUtilsTrait
@@ -88,6 +88,7 @@ class MysqlPeriodicalDaoTest extends FunSuiteWithMockitoScalaBase {
 	}
 
 	test("createNew() Should set up a statement with correct data from a specified periodical") {
+		val createdPeriodicalId = 11
 		val newPeriodical = Periodical(
 			name = "Test Periodical",
 			category = PeriodicalCategory.SPORTS,
@@ -97,9 +98,13 @@ class MysqlPeriodicalDaoTest extends FunSuiteWithMockitoScalaBase {
 			status = PeriodicalStatus.INACTIVE
 		)
 
-		when(connMock.prepareStatement(INSERT_INTO_PERIODICALS_VALUES)) thenReturn statementMock
+		when(connMock.prepareStatement(INSERT_INTO_PERIODICALS_VALUES, Statement.RETURN_GENERATED_KEYS))
+			.thenReturn(statementMock)
+		when(statementMock.executeUpdate()) thenReturn 1
+		when(statementMock.getGeneratedKeys) thenReturn resultSetMock
+		when(resultSetMock.getLong(1)) thenReturn createdPeriodicalId
 
-		periodicalDao.createNew(newPeriodical)
+		val expectedGeneratedId = periodicalDao.createNew(newPeriodical)
 
 		verify(statementMock).setString(1, newPeriodical.name)
 		verify(statementMock).setString(2, newPeriodical.category.toString.toLowerCase)
@@ -110,6 +115,8 @@ class MysqlPeriodicalDaoTest extends FunSuiteWithMockitoScalaBase {
 
 		verify(statementMock).executeUpdate()
 		verify(statementMock).close()
+
+		assert(expectedGeneratedId === createdPeriodicalId)
 	}
 
 	test("deleteAllDiscarded() Should set up a statement with 'DISCARDED' status") {

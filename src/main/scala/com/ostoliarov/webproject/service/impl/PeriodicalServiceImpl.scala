@@ -40,29 +40,23 @@ abstract class PeriodicalServiceImpl extends PeriodicalService {
 	override def save(periodical: Periodical): (Periodical, IsPeriodicalNew) = {
 		require(periodical != null)
 
-		val isPeriodicalNew =
+		val isPeriodicalNew = if (periodical.id == 0) true else false
+
+		val savedPeriodical =
 			if (periodical.id == 0) {
-				createNewPeriodical(periodical)
-				true
+				val newPeriodicalId = createNewPeriodical(periodical)
+				periodical.copy(id = newPeriodicalId)
 			} else {
 				updatePeriodical(periodical)
-				false
+				periodical
 			}
 
-		(getPeriodicalFromDbByName(periodical.name), isPeriodicalNew)
+		(savedPeriodical, isPeriodicalNew)
 	}
 
-	private def createNewPeriodical(periodical: Periodical): Unit =
+	private def createNewPeriodical(periodical: Periodical): Long =
 		withConnection { conn =>
 			daoFactory.periodicalDao(conn).createNew(periodical)
-		}
-
-	private def getPeriodicalFromDbByName(name: String): Periodical =
-		withConnection { conn =>
-			daoFactory.periodicalDao(conn).findOneByName(name) match {
-				case Some(periodical) => periodical
-				case None => throw new RuntimeException(s"Periodical with name $name must exist in the db.")
-			}
 		}
 
 	private def updatePeriodical(periodical: Periodical): Unit =

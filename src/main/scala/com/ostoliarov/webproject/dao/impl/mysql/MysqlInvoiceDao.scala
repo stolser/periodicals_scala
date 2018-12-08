@@ -4,7 +4,7 @@ import java.sql._
 import java.time.Instant
 
 import com.ostoliarov.webproject._
-import com.ostoliarov.webproject.dao.InvoiceDao
+import com.ostoliarov.webproject.dao._
 import com.ostoliarov.webproject.dao.impl.mysql.MysqlInvoiceDao._
 import com.ostoliarov.webproject.model.entity.invoice.{Invoice, InvoiceStatus}
 import com.ostoliarov.webproject.model.entity.periodical.Periodical
@@ -151,10 +151,11 @@ class MysqlInvoiceDao private[mysql](conn: Connection) extends InvoiceDao {
 		val exceptionMessage = EXCEPTION_DURING_EXECUTION_STATEMENT_FOR_INVOICE.format(sqlStatement, invoice)
 
 		tryAndCatchSqlException(exceptionMessage) {
-			withResources(conn.prepareStatement(sqlStatement)) {
+			withResources(conn.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS)) {
 				st: PreparedStatement => {
 					setCreateUpdateStatementFromInvoice(st, invoice)
-					st.executeUpdate()
+
+					tryCreateNewEntityAndRetrieveGeneratedId(st, exceptionMessage)
 				}
 			}
 		}

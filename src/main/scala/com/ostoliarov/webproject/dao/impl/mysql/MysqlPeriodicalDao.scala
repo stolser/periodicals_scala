@@ -1,11 +1,11 @@
 package com.ostoliarov.webproject.dao.impl.mysql
 
-import java.sql.{Connection, PreparedStatement, ResultSet, SQLException}
+import java.sql._
 
 import com.ostoliarov.webproject._
 import com.ostoliarov.webproject.controller.utils.{DaoUtils, DaoUtilsTrait}
-import com.ostoliarov.webproject.dao.PeriodicalDao
 import com.ostoliarov.webproject.dao.impl.mysql.MysqlPeriodicalDao._
+import com.ostoliarov.webproject.dao.{PeriodicalDao, tryCreateNewEntityAndRetrieveGeneratedId}
 import com.ostoliarov.webproject.model.entity.periodical.PeriodicalStatus.PeriodicalStatus
 import com.ostoliarov.webproject.model.entity.periodical.{Periodical, PeriodicalCategory, PeriodicalStatus}
 import com.ostoliarov.webproject.model.entity.subscription.SubscriptionStatus
@@ -144,16 +144,19 @@ class MysqlPeriodicalDao private[mysql](conn: Connection) extends PeriodicalDao 
 		}
 	}
 
-	override def createNew(periodical: Periodical): Long =
-		tryAndCatchSqlException(exceptionMessage = EXCEPTION_DURING_INSERTING.format(periodical)) {
-			withResources(conn.prepareStatement(INSERT_INTO_PERIODICALS_VALUES)) {
+	override def createNew(periodical: Periodical): Long = {
+		val exceptionMessage = EXCEPTION_DURING_INSERTING.format(periodical)
+
+		tryAndCatchSqlException(exceptionMessage) {
+			withResources(conn.prepareStatement(INSERT_INTO_PERIODICALS_VALUES, Statement.RETURN_GENERATED_KEYS)) {
 				st: PreparedStatement => {
 					setStatementFromPeriodical(st, periodical)
 
-					st.executeUpdate()
+					tryCreateNewEntityAndRetrieveGeneratedId(st, exceptionMessage)
 				}
 			}
 		}
+	}
 
 	@throws[SQLException]
 	private def setStatementFromPeriodical(st: PreparedStatement,

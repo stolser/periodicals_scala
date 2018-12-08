@@ -20,7 +20,7 @@ trait InvoiceService {
 		* @throws IllegalArgumentException - in case the given invoice is null
 		*/
 	@throws[IllegalArgumentException]
-	def createNew(newInvoice: Invoice): Unit
+	def createNew(newInvoice: Invoice): Long
 
 	/**
 		* Updates the status of this invoice to { @code paid} and updates an existing subscription

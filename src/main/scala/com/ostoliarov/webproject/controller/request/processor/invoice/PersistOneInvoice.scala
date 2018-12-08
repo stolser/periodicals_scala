@@ -98,14 +98,18 @@ object PersistOneInvoice extends RequestProcessor {
 	}
 
 	private def tryToPersistInvoice(invoiceToPersist: Invoice,
-																		 generalMessages: mutable.ListBuffer[FrontendMessage],
-																		 request: HttpServletRequest): Unit = {
+																	generalMessages: mutable.ListBuffer[FrontendMessage],
+																	request: HttpServletRequest): Unit = {
 		generalMessages += messageFactory.info(MSG_VALIDATION_PASSED_SUCCESS)
 		try {
-			invoiceService.createNew(invoiceToPersist)
+			val newInvoiceId = invoiceService.createNew(invoiceToPersist)
 			generalMessages += messageFactory.success(MSG_INVOICE_CREATION_SUCCESS)
 
-			EventLoggingUtils.logEvent(PersistOneInvoiceEvent(userIdFromSession(request), invoiceToPersist))
+			EventLoggingUtils.logEvent(
+				PersistOneInvoiceEvent(
+					userId = userIdFromSession(request),
+					invoice = invoiceToPersist.copy(id = newInvoiceId))
+			)
 
 		} catch {
 			case e: RuntimeException =>

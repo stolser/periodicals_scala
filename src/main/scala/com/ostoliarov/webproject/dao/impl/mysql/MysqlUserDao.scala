@@ -4,9 +4,8 @@ import java.sql.{Date => SqlDate, _}
 import java.util.{Date => JavaDate}
 
 import com.ostoliarov.webproject._
-import com.ostoliarov.webproject.dao.UserDao
-import com.ostoliarov.webproject.dao.exception.DaoException
 import com.ostoliarov.webproject.dao.impl.mysql.MysqlUserDao._
+import com.ostoliarov.webproject.dao.{UserDao, _}
 import com.ostoliarov.webproject.model.entity.user.{User, UserStatus}
 
 import scala.collection.mutable
@@ -27,7 +26,6 @@ object MysqlUserDao {
 	private val EXCEPTION_DURING_FINDING_USER_BY_NAME = "Exception during finding a user with userName = %s."
 	private val EXCEPTION_DURING_FINDING_USER_BY_ID = "Exception during finding a user with id = %d."
 	private val EXCEPTION_DURING_CREATING_NEW_USER = "Exception during creating a new user: %s"
-	private val CREATING_USER_FAILED_NO_ROWS_AFFECTED = "Creating user (%s) failed, no rows affected."
 	private val SELECT_COUNT_FROM_USERS_WHERE_EMAIL = "SELECT COUNT(id) FROM users WHERE users.email = ?"
 }
 
@@ -146,33 +144,11 @@ class MysqlUserDao private[mysql](conn: Connection) extends UserDao {
 					st.setString(5, user.address.getOrElse(""))
 					st.setString(6, user.status.toString.toLowerCase)
 
-					tryExecuteUpdate(st, exceptionMessage)
-
-					tryRetrieveId(st, exceptionMessageNoRows = CREATING_USER_FAILED_NO_ROWS_AFFECTED.format(user))
+					tryCreateNewEntityAndRetrieveGeneratedId(st, exceptionMessage)
 				}
 			}
 		}
 	}
-
-	@throws[SQLException]
-	private def tryExecuteUpdate(st: PreparedStatement,
-															 exceptionMessage: String): Unit =
-		st.executeUpdate match {
-			case 0 => throw DaoException(exceptionMessage)
-			case _ => ()
-		}
-
-	@throws[SQLException]
-	private def tryRetrieveId(st: PreparedStatement,
-														exceptionMessageNoRows: String) =
-		withResources(st.getGeneratedKeys) {
-			generatedKeys: ResultSet => {
-				if (generatedKeys.next)
-					generatedKeys.getLong(1)
-				else
-					throw DaoException(exceptionMessageNoRows)
-			}
-		}
 
 	private def birthday(user: User): SqlDate =
 		user.birthday match {

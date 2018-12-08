@@ -31,7 +31,7 @@ abstract class InvoiceServiceImpl extends InvoiceService {
 			daoFactory.invoiceDao(conn).findAllByPeriodicalId(periodicalId)
 		}
 
-	override def createNew(invoice: Invoice): Unit = {
+	override def createNew(invoice: Invoice): Long = {
 		require(invoice != null)
 
 		withConnection { conn =>

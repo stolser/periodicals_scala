@@ -15,7 +15,7 @@ object EventSourcingApp {
 
 	actorSystem.actorOf(EventSourcingSupervisor.props, name = eventLogSupervisorName)
 
-	def stop(): Unit = {
+	def shutdown(): Unit = {
 		println(s"------- Terminating actor system '$actorSystemName'...")
 
 		actorSystem.terminate()

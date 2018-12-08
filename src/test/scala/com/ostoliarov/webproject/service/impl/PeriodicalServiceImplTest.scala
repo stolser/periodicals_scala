@@ -58,14 +58,13 @@ class PeriodicalServiceImplTest extends FunSuiteWithMockitoScalaBase {
 
 		when(connectionPoolMock.connection) thenReturn connMock
 		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDaoMock
-		when(periodicalDaoMock.findOneByName(periodicalName)) thenReturn savedPeriodical
+		when(periodicalDaoMock.createNew(periodicalToSave)) thenReturn newPeriodicalIdInDb
 
 		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave)._1
 
 		assert(actualPeriodical === savedPeriodical.get)
 
 		verify(periodicalDaoMock).createNew(periodicalToSave)
-		verify(periodicalDaoMock).findOneByName(periodicalName)
 	}
 
 	test("save() Should update an existing periodical if id != 0") {
@@ -75,7 +74,6 @@ class PeriodicalServiceImplTest extends FunSuiteWithMockitoScalaBase {
 
 		when(connectionPoolMock.connection) thenReturn connMock
 		when(daoFactoryMock.periodicalDao(any[AbstractConnection])) thenReturn periodicalDaoMock
-		when(periodicalDaoMock.findOneByName(periodicalName)) thenReturn periodicalToSave
 		when(periodicalDaoMock.update(periodicalToSave.get)) thenReturn updatedRowsNumber
 
 		val actualPeriodical = periodicalServiceImpl.save(periodicalToSave.get)._1
@@ -83,7 +81,6 @@ class PeriodicalServiceImplTest extends FunSuiteWithMockitoScalaBase {
 		assert(actualPeriodical === periodicalToSave.get)
 
 		verify(periodicalDaoMock).update(periodicalToSave.get)
-		verify(periodicalDaoMock).findOneByName(periodicalName)
 	}
 
 	test("save() Should throw NoSuchElementException if no rows were updated by the query") {

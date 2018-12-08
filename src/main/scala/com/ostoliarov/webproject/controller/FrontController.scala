@@ -23,7 +23,10 @@ class FrontController extends HttpServlet {
 	private val requestProvider = RequestProviderImpl
 	private val viewResolver = JspViewResolver
 
-	override def destroy(): Unit = EventSourcingApp.stop()
+	override def destroy(): Unit = {
+		EventSourcingApp.shutdown()
+		Thread.sleep(5000)
+	}
 
 	@throws[ServletException]
 	@throws[IOException]

@@ -5,7 +5,7 @@ import akka.testkit.{TestKit, TestProbe}
 import com.ostoliarov.eventsourcing.WordSpecAkkaTestKit
 import com.ostoliarov.eventsourcing.logging._
 import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.{LogEvent, LogEventWithRetry, StopAllLoggers}
-import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.{LogEventFailure, Stop}
+import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.Stop
 import com.ostoliarov.eventsourcing.logging.model.SignInEvent
 
 import scala.collection.mutable
@@ -44,19 +44,6 @@ class LoggerManagerTest extends WordSpecAkkaTestKit {
 				f.loggerManager.tell(LogEvent(signInEvent), testActor)
 
 				f.loggerTestProbes.foreach(_.expectMsgType[LogEventWithRetry])
-			}
-		}
-	}
-
-	"LoggerManager" when {
-		"receiving LogEventFailure" should {
-			"store the received requestId" in {
-				val failedRequestId = "logger_777"
-				val f = fixture
-
-				f.loggerManager.tell(LogEventFailure(failedRequestId), testActor)
-
-				assert(f.loggingFailures.contains(failedRequestId))
 			}
 		}
 	}
