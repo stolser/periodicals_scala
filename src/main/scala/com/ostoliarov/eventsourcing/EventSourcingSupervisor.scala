@@ -16,9 +16,10 @@ private[eventsourcing] object EventSourcingSupervisor {
 
 private[eventsourcing] class EventSourcingSupervisor extends Actor with ActorLogging {
 
-	context.actorOf(LoggerManager.props, LoggerManagerName)
-
-	override def preStart(): Unit = log.info("Starting actor EventSourcingSupervisor...")
+	override def preStart(): Unit = {
+		log.info("Starting actor EventSourcingSupervisor...")
+		context.actorOf(LoggerManager.props, LoggerManagerName)
+	}
 
 	override def postStop(): Unit = log.info("Stopping actor EventSourcingSupervisor...")
 

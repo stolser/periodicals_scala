@@ -25,7 +25,7 @@ class FrontController extends HttpServlet {
 
 	override def destroy(): Unit = {
 		EventSourcingApp.shutdown()
-		Thread.sleep(5000)
+		Thread.sleep(3000)
 	}
 
 	@throws[ServletException]

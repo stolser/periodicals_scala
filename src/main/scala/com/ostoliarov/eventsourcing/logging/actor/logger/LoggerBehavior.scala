@@ -2,7 +2,7 @@ package com.ostoliarov.eventsourcing.logging.actor.logger
 
 import akka.actor.{Actor, ActorLogging}
 import com.ostoliarov.eventsourcing.logging.actor.logger.LoggerManager.LogEventWithRetry
-import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.{LogEventFailure, LogEventSuccess, Stop}
+import com.ostoliarov.eventsourcing.logging.actor.logger.impl.Logger.{LogEventFailure, LogEventSuccess, Stop, WriterIsAlive}
 import com.ostoliarov.eventsourcing.logging.actor.writer.ConsoleWriter.WriteEvent
 
 /**
@@ -13,6 +13,8 @@ trait LoggerBehavior {
 
 	override def receive: Receive = {
 		case LogEventWithRetry(requestId, event) =>
+			println(s"== Logger state: requestRetries=$requestRetries")
+
 			requestId2Events += (requestId -> event)
 			val increasedRetryNumber = requestRetries.getOrElse(requestId, 0) + 1
 			requestRetries += (requestId -> increasedRetryNumber)
@@ -29,6 +31,9 @@ trait LoggerBehavior {
 
 		case LogEventFailure(requestId) =>
 			self ! LogEventWithRetry(requestId, requestId2Events(requestId))
+
+		case WriterIsAlive =>
+			requestRetries.foreach({ case (requestId, _) => self ! LogEventFailure(requestId) })
 
 		case LogEventSuccess(requestId) =>
 			requestRetries.remove(requestId)

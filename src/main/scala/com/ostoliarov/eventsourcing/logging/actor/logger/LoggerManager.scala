@@ -51,7 +51,7 @@ private[logger] class LoggerManager extends Actor
 	override val failedRequestIds: mutable.Set[RequestId] = mutable.Set.empty
 
 	override def postStop(): Unit = {
-		log.error(s"The ids of the failed logging requests: $failedRequestIds")
+		log.info(s"The ids of the failed logging requests: $failedRequestIds")
 		persistCurrentState()
 	}
 
@@ -61,7 +61,7 @@ private[logger] class LoggerManager extends Actor
 	}
 
 	private val consoleLogger: ActorRef = {
-		val consoleWriter = context.actorOf(ConsoleWriter.props(withFailures = false), ConsoleWriterName)
+		val consoleWriter = context.actorOf(ConsoleWriter.props(withFailures = true), ConsoleWriterName)
 		val consoleLogger = context.actorOf(Logger.props(writer = consoleWriter), ConsoleLoggerName)
 		consoleLogger
 	}

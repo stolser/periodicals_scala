@@ -19,16 +19,17 @@ private[actor] object Logger {
 
 	case object Stop
 
+	case object WriterIsAlive
+
 }
 
-private[impl] class Logger(_writer: ActorRef) extends Actor
+private[impl] class Logger(val writer: ActorRef) extends Actor
 	with LoggerState
 	with LoggerBehavior
 	with ActorLogging {
 
-	override val writer = _writer
-	override val requestRetries = mutable.Map[RequestId, Retry]()
-	override val requestId2Events = mutable.Map[RequestId, Event]()
+	override val requestRetries: mutable.Map[RequestId, Retry] = mutable.Map.empty
+	override val requestId2Events: mutable.Map[RequestId, Event] = mutable.Map.empty
 	override val RetryNumberLimit = 5
 
 	override def preStart(): Unit = log.info(s"Starting Logger '${self.path.name}' with writer = '$writer'...")

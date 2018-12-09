@@ -30,7 +30,7 @@ object EventLoggingUtils {
 			.onComplete {
 				case Success(loggerManagerRef) => loggerManagerRef ! LogEvent(event)
 				case Failure(_) => actorSystem.log.error("Unable to look up the Logger Manager actor " +
-					s"with name = '$LoggerManagerPath'")
+					s"with path '$LoggerManagerPath'")
 			}
 
 	def readPropertiesFromFile(propFile: File): Map[String, String] = withResources(Source.fromFile(propFile)) {
@@ -50,13 +50,14 @@ object EventLoggingUtils {
 	)(LoggerManager.initEventUUIDKeyName).toInt
 
 	def writePropertiesToFile(props: Map[String, String]): Unit = {
-		println(s"props=$props")
-		val propsAsString = props.map({ case (key, value) => s"$key$keyValueSeparator$value\n" }).mkString("")
-		//		val lines = for((key, value) <- props) yield s"$key$keyValueSeparator$value\n"
-		//		val propsAsString = lines.mkString("")
-		val file = new File(EventSourcingSettings(actorSystem).pathToLoggerManagerPropFile)
-		val bw = new BufferedWriter(new FileWriter(file))
+		println(s"Persisting properties to a file: props=$props")
+		val propsAsString = props
+			.map({ case (key, value) => s"$key$keyValueSeparator$value\n" })
+			.mkString("")
 
+		val file = new File(EventSourcingSettings(actorSystem).pathToLoggerManagerPropFile)
+
+		val bw = new BufferedWriter(new FileWriter(file))
 		bw.write(propsAsString)
 		bw.close()
 	}
