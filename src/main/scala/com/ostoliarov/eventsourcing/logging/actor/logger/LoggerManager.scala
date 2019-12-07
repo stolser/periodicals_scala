@@ -61,7 +61,7 @@ private[logger] class LoggerManager extends Actor
 	}
 
 	private val consoleLogger: ActorRef = {
-		val consoleWriter = context.actorOf(ConsoleWriter.props(withFailures = true), ConsoleWriterName)
+		val consoleWriter = context.actorOf(ConsoleWriter.props(withFailures = false), ConsoleWriterName)
 		val consoleLogger = context.actorOf(Logger.props(writer = consoleWriter), ConsoleLoggerName)
 		consoleLogger
 	}

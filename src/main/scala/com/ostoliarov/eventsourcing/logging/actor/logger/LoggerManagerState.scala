@@ -1,7 +1,5 @@
 package com.ostoliarov.eventsourcing.logging.actor.logger
 
-import java.util.concurrent.atomic.AtomicLong
-
 import akka.actor.ActorRef
 import com.ostoliarov.eventsourcing.logging._
 
